@@ -1,5 +1,10 @@
 export { ADAPTER_NAME, createClaudeAdapter, type ClaudeAdapterConfig } from './adapter.js';
-export { resolveComputerTool, DEFAULT_DISPLAY, type ComputerToolSpec } from './tool.js';
+export {
+  resolveComputerTool,
+  supportsEffort,
+  DEFAULT_DISPLAY,
+  type ComputerToolSpec,
+} from './tool.js';
 export {
   parseAction,
   isClickAction,

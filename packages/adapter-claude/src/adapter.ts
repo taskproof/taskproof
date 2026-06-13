@@ -18,7 +18,7 @@ import { chromium, type Page } from 'playwright';
 
 import { parseAction, ActionParseError, type ComputerAction } from './actions.js';
 import { capture, executeAction } from './execute.js';
-import { DEFAULT_DISPLAY, resolveComputerTool } from './tool.js';
+import { DEFAULT_DISPLAY, resolveComputerTool, supportsEffort } from './tool.js';
 
 export const ADAPTER_NAME = 'claude';
 
@@ -66,6 +66,8 @@ async function runClaude(
 
   const display = config.display ?? DEFAULT_DISPLAY;
   const tool = resolveComputerTool(config.model);
+  // effort 400s on models that don't support it (Haiku 4.5, Sonnet 4.5) — omit it there.
+  const effort = config.effort ?? (supportsEffort(config.model) ? 'high' : undefined);
   const maxCostUsd = config.maxCostUsd ?? spec.maxCostUsd;
   // Build options conditionally: exactOptionalPropertyTypes forbids passing `undefined`.
   const meterOptions: CostMeterOptions = { model: config.model };
@@ -152,7 +154,7 @@ async function runClaude(
         tools: [computerTool],
         messages,
         betas: [tool.betaHeader],
-        output_config: { effort: config.effort ?? 'high' },
+        ...(effort !== undefined ? { output_config: { effort } } : {}),
       });
 
       const usage = {

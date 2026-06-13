@@ -58,3 +58,17 @@ export function resolveComputerTool(model: string): ComputerToolSpec & { known: 
 
 /** Default virtual display. ≤1568px long edge and ≤1.15MP keeps coordinates 1:1 on every model. */
 export const DEFAULT_DISPLAY = { widthPx: 1280, heightPx: 800 } as const;
+
+// The `output_config.effort` parameter is supported on Opus 4.5+ and Sonnet 4.6, but
+// 400s on Haiku 4.5 and Sonnet 4.5 — so it must be omitted for those.
+const EFFORT_CAPABLE_MODELS = new Set([
+  'claude-opus-4-8',
+  'claude-opus-4-7',
+  'claude-opus-4-6',
+  'claude-opus-4-5',
+  'claude-sonnet-4-6',
+]);
+
+export function supportsEffort(model: string): boolean {
+  return EFFORT_CAPABLE_MODELS.has(model);
+}
