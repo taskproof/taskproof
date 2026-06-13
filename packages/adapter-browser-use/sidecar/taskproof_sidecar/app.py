@@ -10,12 +10,11 @@ from __future__ import annotations
 
 import asyncio
 
-import browser_use
 from fastapi import FastAPI
 
 from . import extract
 from .models import RunRequest
-from .runner import run_task
+from .runner import BROWSER_USE_VERSION, run_task
 
 app = FastAPI(title="taskproof browser-use sidecar")
 _run_lock = asyncio.Lock()
@@ -23,7 +22,7 @@ _run_lock = asyncio.Lock()
 
 @app.get("/health")
 async def health() -> dict[str, object]:
-    return {"ready": True, "browserUseVersion": browser_use.__version__}
+    return {"ready": True, "browserUseVersion": BROWSER_USE_VERSION}
 
 
 @app.post("/run")
