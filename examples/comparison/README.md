@@ -51,9 +51,13 @@ click-through, so treat the first paid run as a calibration pass:
 - **Selectors / URLs** (`.complete-header`, `[data-test=back-to-products]`, `article.product_page`,
   `#finish h4`) are the documented stable hooks for each site, but confirm them against the real
   DOM if a cell fails for a surprising reason.
-- **The network endpoint** in `scrapingcourse-cart-network` (`**wc-ajax=add_to_cart**`) is the
-  classic WooCommerce path; if that store uses the newer Store API (`/wp-json/wc/store/…`),
-  update `urlPattern` after the first run shows the captured request.
+- **`scrapingcourse-cart-network` was recalibrated** after the first run failed on both harnesses:
+  the original product was _variable_ (needs size/color before add) and the cart is _block-based_
+  (Store API), so the old `.woocommerce-cart-form` selector never existed. It now adds a **simple**
+  product (Affirm Water Bottle) **from the shop listing**, whose `ajax_add_to_cart` button fires
+  the same-origin `?wc-ajax=add_to_cart` POST the network assertion matches; the cart is checked
+  via the block-cart wrapper. If the network assertion is the sole failure on re-run, broaden it to
+  `**wc-ajax=*` or the Store API path `**/wp-json/wc/store/**`.
 - **browser-use captures same-origin network only** — every network assertion here targets a
   same-origin endpoint on purpose.
 - **Cold starts**: `the-internet.herokuapp.com` (dynamic-loading) can sleep on free-tier hosting;
