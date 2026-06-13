@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveComputerTool } from '../src/tool.js';
+import { resolveComputerTool, supportsEffort } from '../src/tool.js';
 
 describe('resolveComputerTool', () => {
   it('picks the 20251124 tool + beta for current models', () => {
@@ -27,5 +27,16 @@ describe('resolveComputerTool', () => {
     const tool = resolveComputerTool('claude-future-9');
     expect(tool.toolType).toBe('computer_20251124');
     expect(tool.known).toBe(false);
+  });
+});
+
+describe('supportsEffort', () => {
+  it('is true for Opus 4.5+ and Sonnet 4.6', () => {
+    expect(supportsEffort('claude-opus-4-8')).toBe(true);
+    expect(supportsEffort('claude-sonnet-4-6')).toBe(true);
+  });
+
+  it('is false for Haiku 4.5 (effort 400s there)', () => {
+    expect(supportsEffort('claude-haiku-4-5')).toBe(false);
   });
 });
