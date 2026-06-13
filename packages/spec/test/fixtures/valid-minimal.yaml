@@ -1,0 +1,7 @@
+specVersion: "0.1"
+id: minimal
+goal: "Reach the pricing page"
+entryUrl: "https://example.com"
+assertions:
+  - type: url
+    pattern: "**/pricing**"

@@ -1,0 +1,17 @@
+# Starter task: docs-as-target — can an agent find the install command?
+specVersion: '0.1'
+id: docs-quickstart
+goal: 'Find the quickstart guide and locate the exact command that installs the CLI'
+entryUrl: 'https://docs.example.com'
+tags: [docs]
+maxSteps: 15
+passPolicy:
+  k: 3
+  minPasses: 2
+assertions:
+  - type: url
+    pattern: '**/quickstart**'
+  - type: dom
+    selector: 'pre code'
+    state: text
+    text: 'npm install'

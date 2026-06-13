@@ -1,0 +1,36 @@
+{
+  "name": "@taskproof/cli",
+  "version": "0.1.0",
+  "description": "CLI for running a matrix of real AI agents through task specs against your site",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "taskproof": "./dist/index.js"
+  },
+  "main": "./dist/program.js",
+  "types": "./dist/program.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/program.d.ts",
+      "default": "./dist/program.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "@taskproof/spec": "workspace:^",
+    "commander": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

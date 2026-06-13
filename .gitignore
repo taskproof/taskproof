@@ -1,0 +1,20 @@
+.env
+.env.*
+node_modules/
+dist/
+.turbo/
+coverage/
+__pycache__/
+.venv/
+.pytest_cache/
+.DS_Store
+taskproof-runs/
+
+# Internal planning & strategy — never published (this repo is destined to be public).
+# Kept on disk for local work; git-ignored so they can never enter public history.
+/CLAUDE.md
+/docs/BRIEF.md
+/docs/VETTING.md
+/docs/LAUNCH.md
+/docs/NAMING.md
+/docs/ROADMAP.md

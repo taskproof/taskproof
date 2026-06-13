@@ -1,0 +1,21 @@
+# Starter task: the e-commerce journey the Agent Usability Index measures.
+specVersion: '0.1'
+id: checkout-tshirt
+goal: 'Buy one plain t-shirt in size M, paying with the test card 4242 4242 4242 4242'
+entryUrl: 'https://demo-store.example.com'
+allowedDomains:
+  - demo-store.example.com
+  - '*.checkout-provider.example.com'
+maxSteps: 40
+maxCostUsd: 2.50
+passPolicy:
+  k: 5
+  minPasses: 3
+assertions:
+  - type: url
+    pattern: '**/order/confirmed**'
+  - type: network
+    urlPattern: '**/api/orders'
+    method: POST
+    status: '2xx'
+    description: 'An order was actually created, not just a thank-you page reached'
