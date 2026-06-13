@@ -22,24 +22,29 @@ describe('effectivePolicy', () => {
 describe('formatReport', () => {
   it('renders pass/fail marks and a summary line', () => {
     const out = formatReport({
+      manifestVersion: '0.1',
+      generatedAtMs: 0,
+      totalCostUsd: 0.91,
       cells: [
         {
           taskId: 't1',
+          goal: 'do a thing',
           model: 'claude-opus-4-8',
           passK: { k: 5, passes: 4, required: 4, passed: true },
           costUsd: 0.61,
           statuses: [],
+          runIds: [],
         },
         {
           taskId: 't1',
+          goal: 'do a thing',
           model: 'claude-sonnet-4-6',
           passK: { k: 5, passes: 1, required: 4, passed: false },
           costUsd: 0.3,
           statuses: [],
+          runIds: [],
         },
       ],
-      totalCostUsd: 0.91,
-      allPassed: false,
     });
     expect(out).toContain('✓');
     expect(out).toContain('✗');

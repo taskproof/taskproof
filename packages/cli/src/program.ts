@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import { join } from 'node:path';
 
 import * as clack from '@clack/prompts';
 import { Command } from 'commander';
@@ -9,7 +10,6 @@ import { formatFileResult, validateFiles } from './validate.js';
 const pkg = createRequire(import.meta.url)('../package.json') as { version: string };
 
 const NOT_IMPLEMENTED: ReadonlyArray<{ name: string; description: string }> = [
-  { name: 'report', description: 'Render the latest run as an HTML report' },
   { name: 'baseline', description: 'Save or compare agent-usability baselines' },
 ];
 
@@ -63,9 +63,9 @@ export function buildProgram(): Command {
           return;
         }
         // Lazy import: keeps Playwright/Anthropic out of the `validate`-only path.
-        const { runSpecs, formatReport } = await import('./run.js');
+        const { runSpecs, formatReport, allPassed } = await import('./run.js');
         try {
-          const report = await runSpecs(
+          const manifest = await runSpecs(
             files,
             {
               models,
@@ -76,8 +76,8 @@ export function buildProgram(): Command {
             },
             (message) => process.stderr.write(`${message}\n`),
           );
-          process.stdout.write(`${formatReport(report)}\n`);
-          if (!report.allPassed) process.exitCode = 1;
+          process.stdout.write(`${formatReport(manifest)}\n`);
+          if (!allPassed(manifest)) process.exitCode = 1;
         } catch (error) {
           process.stderr.write(
             `run failed: ${error instanceof Error ? error.message : String(error)}\n`,
@@ -86,6 +86,27 @@ export function buildProgram(): Command {
         }
       },
     );
+
+  program
+    .command('report')
+    .description('Render a run directory as a self-contained HTML report')
+    .option('--dir <dir>', 'run artifacts directory', 'taskproof-runs')
+    .option('--out <file>', 'output HTML file (default <dir>/report.html)')
+    .action(async (opts: { dir: string; out?: string }) => {
+      const { generateReport } = await import('./report.js');
+      const outFile = opts.out ?? join(opts.dir, 'report.html');
+      try {
+        const result = await generateReport(opts.dir, outFile);
+        process.stdout.write(
+          `report written to ${result.outFile} (${result.cells} cell(s), ${result.runs} run(s))\n`,
+        );
+      } catch (error) {
+        process.stderr.write(
+          `report failed: ${error instanceof Error ? error.message : String(error)}\n`,
+        );
+        process.exitCode = 1;
+      }
+    });
 
   program
     .command('init')
