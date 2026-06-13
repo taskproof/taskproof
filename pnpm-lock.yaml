@@ -30,6 +30,21 @@ importers:
         specifier: ^3.0.0
         version: 3.2.6(@types/node@22.19.21)(yaml@2.9.0)
 
+  packages/adapter-browser-use:
+    dependencies:
+      '@taskproof/core':
+        specifier: workspace:^
+        version: link:../core
+      '@taskproof/grader':
+        specifier: workspace:^
+        version: link:../grader
+      '@taskproof/spec':
+        specifier: workspace:^
+        version: link:../spec
+      zod:
+        specifier: ^4.0.0
+        version: 4.4.3
+
   packages/adapter-claude:
     dependencies:
       '@anthropic-ai/sdk':
@@ -53,6 +68,9 @@ importers:
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
+      '@taskproof/adapter-browser-use':
+        specifier: workspace:^
+        version: link:../adapter-browser-use
       '@taskproof/adapter-claude':
         specifier: workspace:^
         version: link:../adapter-claude

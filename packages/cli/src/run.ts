@@ -1,8 +1,9 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { createClaudeAdapter, type ClaudeAdapterConfig } from '@taskproof/adapter-claude';
-import type { RunArtifact } from '@taskproof/core';
+import { createBrowserUseAdapter } from '@taskproof/adapter-browser-use';
+import { createClaudeAdapter } from '@taskproof/adapter-claude';
+import type { Adapter, AdapterConfig, RunArtifact } from '@taskproof/core';
 import { aggregatePassK, deterministicPass } from '@taskproof/grader';
 import { MANIFEST_VERSION, type ManifestCell, type RunManifest } from '@taskproof/report';
 import { safeParseTaskSpec, type PassPolicy, type TaskSpec } from '@taskproof/spec';
@@ -28,6 +29,23 @@ export type ProgressFn = (message: string) => void;
 
 export const MANIFEST_FILENAME = 'run-manifest.json';
 
+/**
+ * Map a `--models` selector to an adapter + the LLM model it should drive. `browser-use`
+ * (or `browser-use:<model>`) selects the browser-use adapter; anything else is a Claude
+ * model id for the computer-use adapter (`claude` is shorthand for the default Opus).
+ */
+export function resolveAdapter(selector: string): { adapter: Adapter; model: string } {
+  if (selector === 'browser-use' || selector.startsWith('browser-use:')) {
+    const colon = selector.indexOf(':');
+    const model = colon === -1 ? 'claude-opus-4-8' : selector.slice(colon + 1);
+    return { adapter: createBrowserUseAdapter(), model };
+  }
+  const model = selector === 'claude' ? 'claude-opus-4-8' : selector;
+  return { adapter: createClaudeAdapter(), model };
+}
+
+const sanitizeSelector = (selector: string): string => selector.replace(/[^a-z0-9-]/gi, '-');
+
 /** Run each spec across each model, grade with pass@k, write artifacts + a manifest. */
 export async function runSpecs(
   files: string[],
@@ -42,13 +60,13 @@ export async function runSpecs(
   }
 
   await mkdir(options.outDir, { recursive: true });
-  const adapter = createClaudeAdapter();
   const cells: ManifestCell[] = [];
   let totalCostUsd = 0;
   let counter = 0;
 
   for (const spec of specs) {
-    for (const model of options.models) {
+    for (const selector of options.models) {
+      const { adapter, model } = resolveAdapter(selector);
       const policy = effectivePolicy(spec, options.k);
       const perRunPassed: boolean[] = [];
       const statuses: string[] = [];
@@ -56,9 +74,9 @@ export async function runSpecs(
       let cellCost = 0;
 
       for (let run = 0; run < policy.k; run++) {
-        onProgress(`running ${spec.id} / ${model} (run ${run + 1}/${policy.k})…`);
-        const runId = `${spec.id}__${model}__run${run}__${++counter}`;
-        const config: ClaudeAdapterConfig = {
+        onProgress(`running ${spec.id} / ${selector} (run ${run + 1}/${policy.k})…`);
+        const runId = `${spec.id}__${sanitizeSelector(selector)}__run${run}__${++counter}`;
+        const config: AdapterConfig = {
           model,
           headless: options.headed !== true,
           artifactsDir: options.outDir,
@@ -81,7 +99,7 @@ export async function runSpecs(
       cells.push({
         taskId: spec.id,
         goal: spec.goal,
-        model,
+        model: selector,
         passK: aggregatePassK(perRunPassed, policy),
         costUsd: cellCost,
         statuses,
