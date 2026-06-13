@@ -1,7 +1,6 @@
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
 
-import * as clack from '@clack/prompts';
 import { Command } from 'commander';
 
 import { formatFileResult, validateFiles } from './validate.js';
@@ -110,12 +109,19 @@ export function buildProgram(): Command {
 
   program
     .command('init')
-    .description('Detect your framework and scaffold starter task specs (not implemented yet)')
-    .action(() => {
-      clack.intro('taskproof init');
-      clack.log.warn('Not implemented yet — this is an early scaffold.');
-      clack.outro('Coming soon');
-      process.exitCode = 1;
+    .description('Detect your framework and scaffold starter task specs')
+    .option('--url <url>', 'base URL of the site to test')
+    .option('--dir <dir>', 'directory for the scaffolded specs', 'taskproof/tasks')
+    .option('--force', 'overwrite existing spec files')
+    .option('-y, --yes', 'skip prompts; use the detected/default URL')
+    .action(async (opts: { url?: string; dir: string; force?: boolean; yes?: boolean }) => {
+      const { runInit } = await import('./init.js');
+      await runInit({
+        dir: opts.dir,
+        ...(opts.url !== undefined ? { url: opts.url } : {}),
+        ...(opts.force !== undefined ? { force: opts.force } : {}),
+        ...(opts.yes !== undefined ? { yes: opts.yes } : {}),
+      });
     });
 
   for (const { name, description } of NOT_IMPLEMENTED) {
