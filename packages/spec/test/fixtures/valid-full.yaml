@@ -1,0 +1,26 @@
+specVersion: "0.1"
+id: full-example
+goal: "Buy one plain t-shirt in size M"
+description: "Exercises every field in the 0.1 format"
+tags: [ecommerce, smoke]
+entryUrl: "https://shop.example.com"
+allowedDomains:
+  - shop.example.com
+  - "*.payments.example.com"
+  - localhost
+maxSteps: 40
+maxCostUsd: 2.5
+passPolicy:
+  k: 5
+  minPasses: 3
+assertions:
+  - type: url
+    pattern: "**/order/confirmed**"
+  - type: dom
+    selector: "h1.confirmation"
+    state: text
+    text: "Thank you"
+  - type: network
+    urlPattern: "**/api/orders"
+    method: POST
+    status: "2xx"

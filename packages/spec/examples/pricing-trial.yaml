@@ -1,0 +1,17 @@
+# Starter task: the canonical SaaS journey — find a price, start a trial.
+specVersion: '0.1'
+id: pricing-trial
+goal: 'Find the price of the Team plan and start a free trial'
+entryUrl: 'https://example.com'
+maxSteps: 20
+maxCostUsd: 1.00
+passPolicy:
+  k: 5
+  minPasses: 4
+assertions:
+  - type: url
+    pattern: '**/trial**'
+    description: 'Agent ends on a trial-related page'
+  - type: dom
+    selector: '[data-testid=trial-confirmation]'
+    state: visible
