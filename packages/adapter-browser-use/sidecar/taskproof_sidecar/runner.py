@@ -17,8 +17,10 @@ crashing if a 0.13.x point release shifts an accessor.
 from __future__ import annotations
 
 import json
-import time
+import shutil
+import tempfile
 from collections.abc import Callable
+from datetime import datetime
 from importlib.metadata import version as _pkg_version
 from typing import Any
 
@@ -79,6 +81,43 @@ async def _probe_selectors(cdp: Any, selectors: list[str]) -> dict[str, dict[str
         except Exception as exc:  # noqa: BLE001
             out[sel] = {"exists": False, "visible": False, "text": None, "error": str(exc)}
     return out
+
+
+def _parse_har(path: str) -> list[dict[str, Any]]:
+    """Parse a HAR file (written by browser-use's HarRecordingWatchdog on stop) into the
+    NetworkEvent shape. `atMs` is milliseconds since the earliest request. HTTPS only —
+    the watchdog doesn't capture plain HTTP."""
+    try:
+        with open(path) as f:
+            har = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return []
+    entries = har.get("log", {}).get("entries", [])
+    parsed: list[tuple[float | None, dict[str, Any]]] = []
+    for entry in entries:
+        request = entry.get("request", {})
+        url, method = request.get("url"), request.get("method")
+        if not url or not method:
+            continue
+        ts: float | None = None
+        started = entry.get("startedDateTime")
+        if isinstance(started, str):
+            try:
+                ts = datetime.fromisoformat(started.replace("Z", "+00:00")).timestamp()
+            except ValueError:
+                ts = None
+        event: dict[str, Any] = {"url": url, "method": method}
+        status = entry.get("response", {}).get("status")
+        if isinstance(status, int) and status > 0:
+            event["status"] = status
+        resource_type = entry.get("_resourceType") or request.get("_resourceType")
+        if resource_type:
+            event["resourceType"] = resource_type
+        parsed.append((ts, event))
+    base = min((t for t, _ in parsed if t is not None), default=None)
+    for ts, event in parsed:
+        event["atMs"] = int((ts - base) * 1000) if ts is not None and base is not None else 0
+    return [event for _, event in parsed]
 
 
 def _thought_text(thought: Any) -> str | None:
@@ -171,15 +210,25 @@ def _assemble(
 
 async def run_task(req: RunRequest) -> dict[str, Any]:
     agent: Any = None
+    killed = False
+    # Network is captured via browser-use's HarRecordingWatchdog (record_har_path), flushed
+    # on browser stop. HTTPS only. It reliably captures same-origin traffic (the site's own
+    # API calls — the common network-assertion case), but the watchdog only enables Network
+    # on the initial session, so a cross-origin navigation to a NEW target is missed. Full
+    # cross-origin capture would need per-target Network.enable via Target.attachedToTarget.
+    har_dir = tempfile.mkdtemp(prefix="taskproof-har-")
+    har_path = f"{har_dir}/net.har"
     try:
         # No temperature/top_p: Opus 4.8+ and Fable reject them (400 "deprecated for this model").
         llm = ChatAnthropic(model=req.model)  # reads ANTHROPIC_API_KEY
         browser_kwargs: dict[str, Any] = {
             "headless": req.headless,
             "window_size": {"width": req.display.widthPx, "height": req.display.heightPx},
-            # keep_alive so the session survives agent.run() for the post-run DOM probe;
-            # the finally block kills it explicitly.
+            # keep_alive so the session survives agent.run() for the post-run DOM probe.
             "keep_alive": True,
+            "record_har_path": har_path,
+            "record_har_mode": "minimal",
+            "record_har_content": "omit",
         }
         if req.allowedDomains:
             browser_kwargs["allowed_domains"] = req.allowedDomains
@@ -192,31 +241,6 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
             calculate_cost=True,  # REQUIRED for history.usage to populate
         )
 
-        # Best-effort live network capture over CDP (see research risks: target/field names).
-        events: dict[str, dict[str, Any]] = {}
-        start = time.monotonic()
-        try:
-            cdp = await agent.browser_session.get_or_create_cdp_session()
-            await cdp.cdp_client.send.Network.enable(session_id=cdp.session_id)
-
-            def _on_request(evt: dict[str, Any], _session_id: str) -> None:
-                events[evt["requestId"]] = {
-                    "url": evt["request"]["url"],
-                    "method": evt["request"]["method"],
-                    "atMs": int((time.monotonic() - start) * 1000),
-                }
-
-            def _on_response(evt: dict[str, Any], _session_id: str) -> None:
-                existing = events.get(evt["requestId"])
-                if existing is not None:
-                    existing["status"] = evt["response"]["status"]
-                    existing["resourceType"] = evt.get("type")
-
-            cdp.cdp_client.register.Network.requestWillBeSent(_on_request)
-            cdp.cdp_client.register.Network.responseReceived(_on_response)
-        except Exception:  # noqa: BLE001 - capture is best-effort
-            pass
-
         history = await agent.run(max_steps=req.maxSteps)
 
         usage_summary: Any = None
@@ -225,6 +249,7 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
         except Exception:  # noqa: BLE001 - usage is best-effort
             usage_summary = None
 
+        # DOM probe while the session is still alive (visibility needs live layout).
         dom_probes: dict[str, dict[str, Any]] = {}
         if req.domSelectors:
             try:
@@ -236,14 +261,21 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
                     for sel in req.domSelectors
                 }
 
-        return _assemble(
-            req, history, dom_probes, list(events.values()), usage_summary, budget_exceeded=False
-        )
+        # Stop the browser now so the HAR watchdog flushes the file, then parse it.
+        try:
+            await agent.browser_session.kill()
+            killed = True
+        except Exception:  # noqa: BLE001
+            pass
+        network = _parse_har(har_path)
+
+        return _assemble(req, history, dom_probes, network, usage_summary, budget_exceeded=False)
     except Exception as exc:  # noqa: BLE001 - return an artifact, never a bare 500
         return extract.error_response(str(exc))
     finally:
-        if agent is not None:
+        if agent is not None and not killed:
             try:
                 await agent.browser_session.kill()
             except Exception:  # noqa: BLE001
                 pass
+        shutil.rmtree(har_dir, ignore_errors=True)
