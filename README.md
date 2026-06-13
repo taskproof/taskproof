@@ -1,16 +1,16 @@
-# taskproof (working name)
+# taskproof
 
 Playwright + Lighthouse for the agent channel — an open-source CI harness that runs a matrix of real AI agents through defined tasks on your website, docs, or MCP server, scoring task completion, cost, and exact failure points, and diffing agent-usability across releases.
 
-> Status: pre-release, pre-rename.
+> Status: pre-release.
 
 ## Packages
 
-| Package                                               | What it is                                                                            |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [`@taskproof/spec`](packages/spec)                     | The task-spec format: versioned YAML schema with Zod validation. Start here.          |
-| [`@taskproof/cli`](packages/cli)                       | The `taskproof` command. `validate` works; `init`/`run`/`report`/`baseline` are stubs. |
-| [`@taskproof/adapter-claude`](packages/adapter-claude) | Claude computer-use runner adapter (placeholder).                                     |
+| Package                                                | What it is                                                                             |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| [`@taskproof/spec`](packages/spec)                     | The task-spec format: versioned YAML schema with Zod validation. Start here.           |
+| [`taskproof`](packages/cli)                            | The `taskproof` command. `validate` works; `init`/`run`/`report`/`baseline` are stubs. |
+| [`@taskproof/adapter-claude`](packages/adapter-claude) | Claude computer-use runner adapter (placeholder).                                      |
 
 ## Development
 

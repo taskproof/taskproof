@@ -1,5 +1,5 @@
 {
-  "name": "@taskproof/cli",
+  "name": "taskproof",
   "version": "0.1.0",
   "description": "CLI for running a matrix of real AI agents through task specs against your site",
   "license": "Apache-2.0",

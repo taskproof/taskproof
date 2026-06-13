@@ -1,7 +1,7 @@
 {
   "name": "@taskproof/adapter-claude",
   "version": "0.1.0",
-  "description": "Claude computer-use runner adapter (placeholder — Sprint 0 item 4)",
+  "description": "Claude computer-use runner adapter (placeholder).",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",

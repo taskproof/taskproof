@@ -5,7 +5,7 @@ complete on your site, plus the deterministic assertions that decide whether it 
 is the single source of truth for the format — the CLI, every runner adapter, and the report
 generator all validate through it.
 
-> Working name. The package scope will be renamed before public launch.
+> Pre-release; `0.x` versions may break between releases.
 
 ## A task spec
 
