@@ -8,10 +8,6 @@ import { formatFileResult, validateFiles } from './validate.js';
 // Resolves to packages/cli/package.json from both src/ (tests) and dist/ (published).
 const pkg = createRequire(import.meta.url)('../package.json') as { version: string };
 
-const NOT_IMPLEMENTED: ReadonlyArray<{ name: string; description: string }> = [
-  { name: 'baseline', description: 'Save or compare agent-usability baselines' },
-];
-
 export function buildProgram(): Command {
   const program = new Command();
 
@@ -124,17 +120,49 @@ export function buildProgram(): Command {
       });
     });
 
-  for (const { name, description } of NOT_IMPLEMENTED) {
-    program
-      .command(name)
-      .description(`${description} (not implemented yet)`)
-      .allowUnknownOption(true)
-      .allowExcessArguments(true)
-      .action(() => {
-        process.stderr.write(`taskproof ${name} is not implemented yet (early scaffold).\n`);
+  const baseline = program
+    .command('baseline')
+    .description('Save an agent-usability baseline to diff future runs against');
+  baseline
+    .command('save')
+    .description('Snapshot the latest run as the baseline')
+    .option('--dir <dir>', 'run artifacts directory', 'taskproof-runs')
+    .option('--to <file>', 'baseline file to write', 'taskproof-baseline.json')
+    .action(async (opts: { dir: string; to: string }) => {
+      const { saveBaseline } = await import('./baseline.js');
+      try {
+        const result = await saveBaseline(opts.dir, opts.to);
+        process.stdout.write(`baseline saved to ${result.to} (${result.cells} cell(s))\n`);
+      } catch (error) {
+        process.stderr.write(
+          `baseline save failed: ${error instanceof Error ? error.message : String(error)}\n`,
+        );
         process.exitCode = 1;
-      });
-  }
+      }
+    });
+
+  program
+    .command('diff')
+    .description('Diff the latest run against a baseline; exits non-zero on a regression')
+    .option('--dir <dir>', 'run artifacts directory', 'taskproof-runs')
+    .option('--baseline <file>', 'baseline file to compare against', 'taskproof-baseline.json')
+    .option('--markdown', 'emit a GitHub-flavored markdown comment instead of plain text')
+    .action(async (opts: { dir: string; baseline: string; markdown?: boolean }) => {
+      const { diffAgainstBaseline } = await import('./baseline.js');
+      const { formatDiff, formatDiffMarkdown } = await import('@taskproof/report');
+      try {
+        const diff = await diffAgainstBaseline(opts.dir, opts.baseline);
+        process.stdout.write(
+          `${opts.markdown === true ? formatDiffMarkdown(diff) : formatDiff(diff)}\n`,
+        );
+        if (diff.hasRegression) process.exitCode = 1;
+      } catch (error) {
+        process.stderr.write(
+          `diff failed: ${error instanceof Error ? error.message : String(error)}\n`,
+        );
+        process.exitCode = 1;
+      }
+    });
 
   return program;
 }
