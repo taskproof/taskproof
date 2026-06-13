@@ -112,6 +112,42 @@ describe('buildReportHtml', () => {
     expect(html).toContain('unavailable]');
   });
 
+  it('surfaces step count and the failure reason in the matrix, and calls out divergence', () => {
+    const withStory: RunManifest = {
+      manifestVersion: '0.1',
+      generatedAtMs: 0,
+      totalCostUsd: 0.84,
+      cells: [
+        {
+          taskId: 'checkout',
+          goal: 'buy a t-shirt',
+          model: 'claude-opus-4-8',
+          passK: { k: 3, passes: 3, required: 2, passed: true },
+          costUsd: 0.54,
+          statuses: ['completed'],
+          runIds: ['checkout__opus__0'],
+          stepCount: 18,
+        },
+        {
+          taskId: 'checkout',
+          goal: 'buy a t-shirt',
+          model: 'browser-use',
+          passK: { k: 3, passes: 1, required: 2, passed: false },
+          costUsd: 0.3,
+          statuses: ['completed'],
+          runIds: ['checkout__browser-use__0'],
+          stepCount: 31,
+          failureSummary: 'could not dismiss the entry-ad modal',
+        },
+      ],
+    };
+    const html = buildReportHtml({ manifest: withStory, artifacts: [] });
+    expect(html).toContain('18 steps');
+    expect(html).toContain('31 steps');
+    expect(html).toContain('could not dismiss the entry-ad modal');
+    expect(html).toContain('Where the harnesses diverged');
+  });
+
   it('escapes HTML in user-controlled text', () => {
     const evil = artifact('pricing-trial__opus__0', 'claude-opus-4-8', true);
     evil.steps[0]!.text = '<script>alert(1)</script>';

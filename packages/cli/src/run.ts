@@ -72,6 +72,10 @@ export async function runSpecs(
       const statuses: string[] = [];
       const runIds: string[] = [];
       let cellCost = 0;
+      // The linked (first) run's step count, and why the first failing run failed — both
+      // surfaced in the matrix so a cell tells the efficiency + failure story at a glance.
+      let stepCount: number | undefined;
+      let failureSummary: string | undefined;
 
       for (let run = 0; run < policy.k; run++) {
         onProgress(`running ${spec.id} / ${selector} (run ${run + 1}/${policy.k})…`);
@@ -91,6 +95,11 @@ export async function runSpecs(
         statuses.push(artifact.status);
         runIds.push(runId);
         cellCost += artifact.usage.costUsd;
+        if (run === 0) stepCount = artifact.steps.length;
+        if (!passed && failureSummary === undefined) {
+          const failing = artifact.assertions.find((a) => !a.ok);
+          failureSummary = failing?.detail ?? artifact.error ?? artifact.status;
+        }
         onProgress(
           `  ↳ ${passed ? 'PASS' : 'fail'} (${artifact.status}, ${artifact.steps.length} steps, $${artifact.usage.costUsd.toFixed(4)})`,
         );
@@ -104,6 +113,8 @@ export async function runSpecs(
         costUsd: cellCost,
         statuses,
         runIds,
+        ...(stepCount !== undefined ? { stepCount } : {}),
+        ...(failureSummary !== undefined ? { failureSummary } : {}),
       });
       totalCostUsd += cellCost;
     }
@@ -135,7 +146,13 @@ export function formatReport(manifest: RunManifest): string {
     }
     const mark = cell.passK.passed ? '✓' : '✗';
     const gate = `pass@${cell.passK.k} ${cell.passK.passes}/${cell.passK.k} (need ${cell.passK.required})`;
-    lines.push(`  ${mark} ${cell.model.padEnd(20)} ${gate.padEnd(28)} $${cell.costUsd.toFixed(4)}`);
+    const steps = cell.stepCount !== undefined ? `${cell.stepCount} steps` : '';
+    lines.push(
+      `  ${mark} ${cell.model.padEnd(20)} ${gate.padEnd(26)} ${steps.padStart(9)}  $${cell.costUsd.toFixed(4)}`,
+    );
+    if (!cell.passK.passed && cell.failureSummary !== undefined && cell.failureSummary !== '') {
+      lines.push(`      ↳ ${cell.failureSummary}`);
+    }
   }
   const passedCells = manifest.cells.filter((cell) => cell.passK.passed).length;
   lines.push(
