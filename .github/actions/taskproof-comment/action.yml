@@ -1,0 +1,173 @@
+name: 'taskproof agent-usability comment'
+description: >-
+  Diff the latest taskproof run against a saved baseline and post the result as a sticky
+  pull-request comment. Run `taskproof run` first; this action turns the result into a PR
+  comment and an optional regression gate.
+author: 'taskproof'
+branding:
+  icon: 'check-circle'
+  color: 'purple'
+
+inputs:
+  run-dir:
+    description: 'Directory of taskproof run artifacts (must contain run-manifest.json).'
+    required: false
+    default: 'taskproof-runs'
+  baseline:
+    description: 'Baseline manifest file to diff against (produced by `taskproof baseline save`).'
+    required: false
+    default: 'taskproof-baseline.json'
+  taskproof:
+    description: >-
+      Command used to invoke the taskproof CLI. Once the package is published this is
+      `npx taskproof`; pre-release, build from source and pass
+      `node <path>/packages/cli/dist/index.js`.
+    required: false
+    default: 'npx taskproof'
+  github-token:
+    description: 'Token used to post the PR comment. Needs `pull-requests: write`.'
+    required: false
+    default: ${{ github.token }}
+  comment:
+    description: 'Post (or update) a sticky PR comment with the diff. Set "false" to only compute the result.'
+    required: false
+    default: 'true'
+  fail-on-regression:
+    description: >-
+      Fail the step (non-zero exit) when an agent-usability regression is detected.
+      Default "false" — comment only, never block the merge (taskproof favors signal over
+      binary gates). Set "true" to make a regression a required-check failure.
+    required: false
+    default: 'false'
+
+outputs:
+  has-regression:
+    description: '"true" if any task×model cell regressed against the baseline, else "false".'
+    value: ${{ steps.diff.outputs.has-regression }}
+  comment-file:
+    description: 'Path to the rendered markdown comment body.'
+    value: ${{ steps.diff.outputs.comment-file }}
+  markdown:
+    description: 'The rendered markdown comment body, as a (multiline) step output.'
+    value: ${{ steps.diff.outputs.markdown }}
+
+runs:
+  using: 'composite'
+  steps:
+    # ---------------------------------------------------------------------------------------
+    # Render the diff. `taskproof diff` uses unix-diff exit codes: 0 = clean, 1 = regression,
+    # 2 = the diff itself failed. We capture the status explicitly (no `set -e`) so a
+    # regression does not abort the step before we get to comment on it.
+    # ---------------------------------------------------------------------------------------
+    - id: diff
+      shell: bash
+      env:
+        TP_RUN_DIR: ${{ inputs.run-dir }}
+        TP_BASELINE: ${{ inputs.baseline }}
+        TP_CMD: ${{ inputs.taskproof }}
+        # Must match DIFF_COMMENT_MARKER in @taskproof/report (packages/report/src/diff.ts).
+        TP_MARKER: '<!-- taskproof:agent-usability-diff -->'
+      run: |
+        set -uo pipefail
+        comment_file="${RUNNER_TEMP:-/tmp}/taskproof-comment.md"
+
+        if [ ! -f "$TP_BASELINE" ]; then
+          # First run on a branch before any baseline exists: explain, don't fail.
+          echo "::notice title=taskproof::No baseline at $TP_BASELINE — diff skipped (commit one with \`taskproof baseline save\`)."
+          {
+            echo "$TP_MARKER"
+            echo '### ℹ️ taskproof: no baseline yet'
+            echo ''
+            echo "No baseline found at \`$TP_BASELINE\`. Snapshot one on your default branch"
+            echo "with \`taskproof baseline save\` and commit it, then future PRs are diffed against it."
+          } > "$comment_file"
+          echo "has-regression=false" >> "$GITHUB_OUTPUT"
+        else
+          $TP_CMD diff --dir "$TP_RUN_DIR" --baseline "$TP_BASELINE" --markdown > "$comment_file"
+          status=$?
+          case "$status" in
+            0) echo "has-regression=false" >> "$GITHUB_OUTPUT" ;;
+            1) echo "has-regression=true" >> "$GITHUB_OUTPUT" ;;
+            *)
+              # diff itself errored (errors go to stderr; stdout/$comment_file is empty). This
+              # exit is load-bearing: it must abort BEFORE the output/summary block below so a
+              # 0-byte comment file is never emitted as an output or posted as a blank comment.
+              echo "::error title=taskproof diff failed::taskproof diff exited $status (see log above)"
+              rm -f "$comment_file"
+              exit "$status"
+              ;;
+          esac
+        fi
+
+        echo "comment-file=$comment_file" >> "$GITHUB_OUTPUT"
+        # Randomized heredoc delimiter: the comment body carries user-controlled task/model ids,
+        # so a fixed delimiter could be collided to corrupt $GITHUB_OUTPUT (output injection).
+        eof="TASKPROOF_MD_EOF_${RANDOM}${RANDOM}${RANDOM}"
+        {
+          echo "markdown<<${eof}"
+          cat "$comment_file"
+          echo ""
+          echo "${eof}"
+        } >> "$GITHUB_OUTPUT"
+
+        echo "### taskproof agent-usability" >> "$GITHUB_STEP_SUMMARY"
+        cat "$comment_file" >> "$GITHUB_STEP_SUMMARY"
+
+    # ---------------------------------------------------------------------------------------
+    # Upsert one sticky PR comment, keyed by the hidden marker. First-party github-script
+    # only (no third-party action). On comments the marker is matched verbatim; content is
+    # passed via env (never `${{ }}`-interpolated into the script) to avoid injection.
+    #
+    # The `if:` skips fork PRs, where GITHUB_TOKEN is read-only and a comment would 403. As a
+    # backstop for other read-only-token cases (e.g. Dependabot PRs), the API calls are wrapped
+    # so a posting failure degrades to a warning instead of failing the job — the diff still
+    # shows in the step summary.
+    # ---------------------------------------------------------------------------------------
+    - if: ${{ inputs.comment == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+      uses: actions/github-script@v7
+      env:
+        COMMENT_FILE: ${{ steps.diff.outputs.comment-file }}
+        MARKER: '<!-- taskproof:agent-usability-diff -->'
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const fs = require('fs');
+          const marker = process.env.MARKER;
+          let body = fs.readFileSync(process.env.COMMENT_FILE, 'utf8');
+          if (!body.includes(marker)) body = `${marker}\n${body}`;
+
+          const { owner, repo } = context.repo;
+          const issue_number = context.issue.number;
+          const sha = (context.payload.pull_request?.head?.sha ?? context.sha).slice(0, 7);
+          const runUrl =
+            `${process.env.GITHUB_SERVER_URL}/${owner}/${repo}/actions/runs/${context.runId}`;
+          body += `\n<sub>baseline diff · \`${sha}\` · <a href="${runUrl}">run log</a></sub>\n`;
+
+          try {
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+          } catch (err) {
+            core.warning(
+              `Could not post the taskproof PR comment (${err.status ?? ''} ${err.message}). ` +
+                `The token may be read-only; the diff is in the job summary.`,
+            );
+          }
+
+    # ---------------------------------------------------------------------------------------
+    # Optional gate. Off by default — the comment is the signal. Turn on to block merges.
+    # ---------------------------------------------------------------------------------------
+    - if: ${{ inputs.fail-on-regression == 'true' && steps.diff.outputs.has-regression == 'true' }}
+      shell: bash
+      run: |
+        echo "::error title=Agent-usability regression::A task×model cell that passed in the baseline now fails. See the PR comment."
+        exit 1

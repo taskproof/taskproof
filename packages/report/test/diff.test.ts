@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { diffManifests, formatDiff, formatDiffMarkdown, type RunManifest } from '../src/index.js';
+import {
+  DIFF_COMMENT_MARKER,
+  diffManifests,
+  formatDiff,
+  formatDiffMarkdown,
+  type RunManifest,
+} from '../src/index.js';
 
 function cell(taskId: string, model: string, passes: number, k: number, costUsd = 0.1) {
   return {
@@ -83,8 +89,21 @@ describe('formatDiff / formatDiffMarkdown', () => {
     expect(md).toContain('| `checkout` | `claude-opus-4-8` | 5/5 → 1/5 |');
   });
 
-  it('markdown reports a clean run with no regressions', () => {
+  it('markdown leads with the sticky-comment marker (for find-and-update in CI)', () => {
+    const md = formatDiffMarkdown(diff);
+    expect(md.startsWith(DIFF_COMMENT_MARKER)).toBe(true);
+  });
+
+  it('markdown reports the run cost delta', () => {
+    expect(formatDiffMarkdown(diff)).toContain('Run cost: $0.5000 → $0.5000.');
+  });
+
+  it('markdown reports a clean run with no regressions (marker + cost, no table)', () => {
     const clean = diffManifests(manifest([cell('t', 'm', 3, 3)]), manifest([cell('t', 'm', 3, 3)]));
-    expect(formatDiffMarkdown(clean)).toContain('no agent-usability changes');
+    const md = formatDiffMarkdown(clean);
+    expect(md).toContain('no agent-usability changes');
+    expect(md.startsWith(DIFF_COMMENT_MARKER)).toBe(true);
+    expect(md).toContain('Run cost:');
+    expect(md).not.toContain('| Change |');
   });
 });

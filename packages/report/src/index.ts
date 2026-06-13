@@ -12,6 +12,7 @@ export {
 export { buildReportHtml, type ReportInput } from './html.js';
 
 export {
+  DIFF_COMMENT_MARKER,
   diffManifests,
   formatDiff,
   formatDiffMarkdown,
