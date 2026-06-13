@@ -42,6 +42,9 @@ tasks is the headline comparison: same model, two different agent harnesses.
 > `agent.token_cost_service.get_usage_summary()`, and set `keep_alive=True` so the session
 > survives `agent.run()` for the post-run DOM probe.
 >
-> **Known v0 gap:** CDP **network capture returns no events** (per-target `Network.enable`
-> is needed for the agent's page targets) — so `network` assertions don't yet pass for
-> browser-use, only `url` and `dom`. Tracked for a follow-up (or the HAR fallback).
+> **Network capture (HAR-based):** uses browser-use's `HarRecordingWatchdog`
+> (`record_har_path`), validated live — it captures **same-origin** HTTPS traffic (the
+> site's own API calls, the common `network`-assertion case). Remaining edge: the watchdog
+> only enables CDP `Network` on the initial session, so a **cross-origin navigation** to a
+> new target is missed; full coverage would need per-target `Network.enable` via
+> `Target.attachedToTarget`. HTTP (non-TLS) isn't captured.
