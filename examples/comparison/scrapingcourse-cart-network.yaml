@@ -1,24 +1,34 @@
 specVersion: '0.1'
 id: scrapingcourse-cart-network
-goal: "Open the product page for the 'Aero Daily Fitness Tee', add it to the cart, then open the cart page and confirm the tee is in the cart."
-entryUrl: 'https://www.scrapingcourse.com/ecommerce/product/aero-daily-fitness-tee/'
-maxSteps: 20
-maxCostUsd: 1.00
+goal: "On the shop page, find the 'Affirm Water Bottle' and click its 'Add to cart' button directly in the product listing (do not open the product detail page), then open the cart and confirm the Affirm Water Bottle is in it."
+entryUrl: 'https://www.scrapingcourse.com/ecommerce/'
+maxSteps: 22
+maxCostUsd: 1.25
 passPolicy:
   k: 3
   minPasses: 2
-# Network-assertion showcase on a real (WooCommerce) backend. Unlike saucedemo (localStorage
-# only), this store fires a SAME-ORIGIN add-to-cart POST, which the browser-use lane can
-# capture — so this exercises all three assertion types (url + dom + network) on both harnesses.
-# CALIBRATION: the wc-ajax endpoint below is the classic WooCommerce path; if this store uses
-# the Store API instead, confirm on the first run and update urlPattern (see README).
+# Network-assertion showcase on a real WooCommerce backend.
+# CALIBRATED 2026-06-13 after the first run failed on BOTH harnesses (free investigation of the
+# live markup found two real bugs): the original 'Aero Daily Fitness Tee' is a VARIABLE product
+# (size/color must be selected before it can be added — Claude thrashed to its budget, browser-use
+# never populated the cart), and this store's cart is BLOCK-based (Store API), so the old
+# '.woocommerce-cart-form' selector never existed. Fixed to a SIMPLE product (Affirm Water Bottle,
+# id 2765, product_type_simple verified) added from the shop archive, whose 'ajax_add_to_cart'
+# button fires a same-origin POST '?wc-ajax=add_to_cart' (the archive enqueues cart-fragments +
+# wc-ajax) — which both browser-use's HAR and the Claude CDP trace capture.
+# RESIDUAL RISK (the re-run confirms these): (1) the network assertion needs the agent to add from
+# the LISTING (ajax), not the product page (plain form POST has no wc-ajax) — hence the explicit
+# goal; if it's the sole failure, broaden to '**wc-ajax=*' or swap to '**/wp-json/wc/store/**'.
+# (2) '.wc-block-cart' is the block wrapper inferred from the empty-cart markup; the populated
+# markup wasn't observable without a live session — if the dom check misses, the run trace
+# screenshot shows the real cart class.
 assertions:
   - type: url
     pattern: '**/ecommerce/cart/**'
   - type: dom
-    selector: '.woocommerce-cart-form'
+    selector: '.wc-block-cart'
     state: text
-    text: 'Aero Daily Fitness Tee'
+    text: 'Affirm Water Bottle'
   - type: network
     urlPattern: '**wc-ajax=add_to_cart**'
     method: POST
