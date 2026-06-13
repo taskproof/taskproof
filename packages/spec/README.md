@@ -1,11 +1,11 @@
-# @gauntlet/spec
+# @taskproof/spec
 
 The task-spec format: a versioned YAML schema describing a task an AI agent should be able to
 complete on your site, plus the deterministic assertions that decide whether it did. This package
 is the single source of truth for the format — the CLI, every runner adapter, and the report
 generator all validate through it.
 
-> Working name. The package scope will be renamed before public launch.
+> Pre-release; `0.x` versions may break between releases.
 
 ## A task spec
 
@@ -60,7 +60,7 @@ silently at run time.
 ## API
 
 ```ts
-import { parseTaskSpec, safeParseTaskSpec, taskSpecSchema, type TaskSpec } from '@gauntlet/spec';
+import { parseTaskSpec, safeParseTaskSpec, taskSpecSchema, type TaskSpec } from '@taskproof/spec';
 
 const spec = parseTaskSpec(yamlSource, { filename: 'tasks/pricing.yaml' }); // throws TaskSpecError
 const result = safeParseTaskSpec(yamlSource); // { ok: true, spec } | { ok: false, error }

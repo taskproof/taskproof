@@ -1,7 +1,7 @@
 {
-  "name": "@gauntlet/spec",
+  "name": "@taskproof/spec",
   "version": "0.1.0",
-  "description": "The Gauntlet task-spec format: versioned YAML schema with Zod validation for agent-usability tasks",
+  "description": "The taskproof task-spec format: versioned YAML schema with Zod validation for agent-usability tasks",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",

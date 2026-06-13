@@ -18,7 +18,7 @@ export function buildProgram(): Command {
   const program = new Command();
 
   program
-    .name('gauntlet')
+    .name('taskproof')
     .description(
       'Run a matrix of real AI agents through defined tasks on your site and report exactly where they fail.',
     )
@@ -27,7 +27,7 @@ export function buildProgram(): Command {
   program
     .command('validate')
     .description('Validate task-spec YAML files against the spec schema')
-    .argument('<files...>', 'task spec files (e.g. gauntlet/tasks/*.yaml)')
+    .argument('<files...>', 'task spec files (e.g. taskproof/tasks/*.yaml)')
     .action(async (files: string[]) => {
       const results = await validateFiles(files);
       for (const result of results) {
@@ -44,7 +44,7 @@ export function buildProgram(): Command {
     .command('init')
     .description('Detect your framework and scaffold starter task specs (not implemented yet)')
     .action(() => {
-      clack.intro('gauntlet init');
+      clack.intro('taskproof init');
       clack.log.warn('Not implemented yet — this is an early scaffold.');
       clack.outro('Coming soon');
       process.exitCode = 1;
@@ -57,7 +57,7 @@ export function buildProgram(): Command {
       .allowUnknownOption(true)
       .allowExcessArguments(true)
       .action(() => {
-        process.stderr.write(`gauntlet ${name} is not implemented yet (early scaffold).\n`);
+        process.stderr.write(`taskproof ${name} is not implemented yet (early scaffold).\n`);
         process.exitCode = 1;
       });
   }

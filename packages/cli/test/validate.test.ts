@@ -26,7 +26,7 @@ describe('validateFiles', () => {
   let dir: string;
 
   beforeAll(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'gauntlet-validate-'));
+    dir = await mkdtemp(join(tmpdir(), 'taskproof-validate-'));
     await writeFile(join(dir, 'valid.yaml'), VALID, 'utf8');
     await writeFile(join(dir, 'invalid.yaml'), INVALID, 'utf8');
   });

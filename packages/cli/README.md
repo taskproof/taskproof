@@ -1,8 +1,8 @@
-# @gauntlet/cli
+# taskproof
 
-The `gauntlet` command. Sprint 0 surface:
+The `taskproof` command. Current surface:
 
-- `gauntlet validate <files...>` — validate task-spec YAML against `@gauntlet/spec` (implemented)
-- `gauntlet init` / `run` / `report` / `baseline` — stubs (early scaffold)
+- `taskproof validate <files...>` — validate task-spec YAML against `@taskproof/spec` (implemented)
+- `taskproof init` / `run` / `report` / `baseline` — stubs (early scaffold)
 
-> Working name. Binary and package will be renamed before public launch.
+> Pre-release.

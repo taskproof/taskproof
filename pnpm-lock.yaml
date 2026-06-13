@@ -37,7 +37,7 @@ importers:
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
-      '@gauntlet/spec':
+      '@taskproof/spec':
         specifier: workspace:^
         version: link:../spec
       commander:

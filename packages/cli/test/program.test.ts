@@ -7,6 +7,6 @@ describe('buildProgram', () => {
     const program = buildProgram();
     const names = program.commands.map((command) => command.name()).sort();
     expect(names).toEqual(['baseline', 'init', 'report', 'run', 'validate']);
-    expect(program.name()).toBe('gauntlet');
+    expect(program.name()).toBe('taskproof');
   });
 });

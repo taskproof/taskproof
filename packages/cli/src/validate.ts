@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-import { TaskSpecValidationError, safeParseTaskSpec } from '@gauntlet/spec';
+import { TaskSpecValidationError, safeParseTaskSpec } from '@taskproof/spec';
 
 export interface FileResult {
   file: string;

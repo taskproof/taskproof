@@ -1,8 +1,8 @@
 {
-  "name": "gauntlet-monorepo",
+  "name": "taskproof-monorepo",
   "private": true,
   "version": "0.0.0",
-  "description": "Working-name monorepo for the agent-usability CI harness (see CLAUDE.md: rename before public launch)",
+  "description": "Monorepo for the taskproof agent-usability CI harness.",
   "license": "Apache-2.0",
   "type": "module",
   "packageManager": "pnpm@10.14.0",

@@ -9,5 +9,5 @@
 export const ADAPTER_NAME = 'claude';
 
 export function createClaudeAdapter(): never {
-  throw new Error('@gauntlet/adapter-claude is not implemented yet (early scaffold).');
+  throw new Error('@taskproof/adapter-claude is not implemented yet (early scaffold).');
 }
