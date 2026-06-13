@@ -143,7 +143,11 @@ export function buildProgram(): Command {
 
   program
     .command('diff')
-    .description('Diff the latest run against a baseline; exits non-zero on a regression')
+    .description(
+      // Unix-diff-style exit codes so CI can tell a regression from a crash:
+      // 0 = no regression, 1 = regression detected, 2 = the diff itself failed.
+      'Diff the latest run against a baseline (exit 0 = clean, 1 = regression, 2 = error)',
+    )
     .option('--dir <dir>', 'run artifacts directory', 'taskproof-runs')
     .option('--baseline <file>', 'baseline file to compare against', 'taskproof-baseline.json')
     .option('--markdown', 'emit a GitHub-flavored markdown comment instead of plain text')
@@ -160,7 +164,7 @@ export function buildProgram(): Command {
         process.stderr.write(
           `diff failed: ${error instanceof Error ? error.message : String(error)}\n`,
         );
-        process.exitCode = 1;
+        process.exitCode = 2;
       }
     });
 

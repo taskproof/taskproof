@@ -65,6 +65,24 @@ grades through the **same** grader, so a Claude run and a browser-use run are di
 comparable. Adding a vendor is implementing one interface — see
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## In CI
+
+Commit a baseline on your default branch, then on each PR run the cheap lane and post a
+sticky comment when agent usability regresses:
+
+```text
+### ⚠️ taskproof: 1 agent-usability regression(s)
+
+| Change      | Task       | Model             | pass@k    |
+| ----------- | ---------- | ----------------- | --------- |
+| ✗ REGRESSED | `checkout` | `claude-opus-4-8` | 5/5 → 1/5 |
+```
+
+Copy-paste GitHub Actions templates (Claude lane and a cheap browser-use lane) and the
+reusable comment action are in **[examples/github/](examples/github/)**. The check is
+advisory by default — `taskproof diff` exits `0`/`1`/`2` (clean/regression/error) like unix
+`diff`, so you can flip it to a required check whenever you trust the signal.
+
 ## Packages
 
 | Package                                                          | What it is                                                                         |

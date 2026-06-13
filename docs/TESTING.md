@@ -24,7 +24,7 @@ alias taskproof="node $(pwd)/packages/cli/dist/index.js"
 export ANTHROPIC_API_KEY=sk-ant-…
 ```
 
-`taskproof --help` should now list `validate`, `init`, `run`, `report`.
+`taskproof --help` should now list `validate`, `run`, `report`, `init`, `baseline`, `diff`.
 
 ## The loop
 
@@ -95,6 +95,48 @@ A single self-contained HTML file: the matrix up top, then each run expands to i
 trace — the agent's narration, the actions it took, the screenshot after each step, and
 exactly which assertion passed or failed.
 
+### 4. Save a baseline and catch regressions
+
+A single run tells you whether agents can do the task today. A **baseline** lets you catch
+the day a release breaks it. Snapshot a known-good run, then diff future runs against it:
+
+```bash
+# capture the current run as the baseline (reads <dir>/run-manifest.json)
+taskproof baseline save --dir runs --to baseline.json
+
+# …later, after a change, run again into runs/, then:
+taskproof diff --dir runs --baseline baseline.json
+```
+
+`diff` compares cell by cell and reports what changed — regressed (was passing pass@k, now
+failing), fixed, improved/worsened, added/removed. It uses unix-`diff` exit codes so it
+slots into any CI gate: **0 = no regression, 1 = a regression, 2 = the diff itself failed.**
+
+```text
+taskproof diff vs baseline
+
+  ✗ REGRESSED  checkout / claude-opus-4-8                   5/5 → 1/5
+
+1 regression(s), 0 fix(es), 2 unchanged · cost $1.2800 → $1.3400
+```
+
+Add `--markdown` to get a GitHub-flavored comment instead (that's what the PR-comment Action
+posts — see below).
+
+### 5. Wire it into CI (GitHub Action + PR comment)
+
+The point of the baseline is a PR comment that says _"checkout: claude-opus-4-8 5/5 → 1/5"_
+the moment a change regresses agent usability. The pattern is: commit a baseline on your
+default branch, then on each PR run the cheap lane and `diff --markdown` against it, and post
+a sticky comment.
+
+Ready-to-copy workflow templates and a reusable composite action live in
+**[`examples/github/`](../examples/github/)** — one Claude lane, one cheap browser-use lane,
+plus a setup checklist (secrets, baseline, the fork-PR caveat, advisory-vs-blocking). The
+comment is sticky (it updates in place) and, by default, advisory — it never blocks the
+merge until you opt in, because agents are non-deterministic and pass@k is a signal, not a
+hard gate.
+
 ## Try it right now (a public target, no setup of your own)
 
 ```bash
@@ -132,9 +174,10 @@ taskproof report --dir runs && open runs/report.html
 ```
 
 Note (v0): the Claude adapter reads `ANTHROPIC_API_KEY` from your shell; the browser-use
-adapter talks to the sidecar, which reads the key from _its_ shell. Known gap — browser-use
-runs don't yet capture network requests, so `network` assertions won't pass for that
-adapter (only `url` and `dom` do).
+adapter talks to the sidecar, which reads the key from _its_ shell. Known gap — the
+browser-use lane captures **same-origin HTTPS** network traffic (the site's own API calls),
+but a cross-origin navigation to a new origin is missed, so `network` assertions against a
+third-party/cross-origin endpoint won't pass on that adapter (`url` and `dom` always do).
 
 ## What it costs / what to expect
 

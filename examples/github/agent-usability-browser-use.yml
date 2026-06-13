@@ -1,0 +1,83 @@
+# taskproof — cheap agent-usability smoke lane on every PR (browser-use lane).
+#
+# Same shape as agent-usability-claude.yml, but drives the tasks with browser-use (a Python
+# agent) through taskproof's FastAPI sidecar, using a cheap LLM (Haiku) as the smoke lane.
+# browser-use is the inexpensive per-PR option; run the full Claude matrix nightly / on release.
+#
+# Copy into `.github/workflows/` in YOUR repo. Setup is the same as the Claude example
+# (init specs, commit a baseline, add ANTHROPIC_API_KEY) — but capture the baseline with the
+# SAME lane you gate on, so cells line up:
+#   taskproof run taskproof/tasks/*.yaml --models browser-use:claude-haiku-4-5 --out taskproof-runs
+#   taskproof baseline save --to taskproof/baseline.json
+#
+# browser-use caveat: its network capture is same-origin HTTPS only, so `network` assertions
+# against a cross-origin/third-party endpoint won't pass on this lane (url + dom do).
+
+name: agent-usability
+on:
+  pull_request:
+
+concurrency:
+  group: agent-usability-${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  agent-usability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # your repo (specs + committed baseline)
+
+      # ---- Build taskproof from source (delete once it's published) -------------------
+      - uses: actions/checkout@v4
+        with:
+          repository: taskproof/taskproof # ← the repo that hosts taskproof
+          path: .taskproof-src
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: .taskproof-src/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: .taskproof-src/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+        working-directory: .taskproof-src
+      - run: pnpm build
+        working-directory: .taskproof-src
+      # ---------------------------------------------------------------------------------
+
+      # ---- Start the browser-use sidecar (Python / uv) --------------------------------
+      - uses: astral-sh/setup-uv@v5
+      - name: Start browser-use sidecar
+        working-directory: .taskproof-src/packages/adapter-browser-use/sidecar
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -euo pipefail
+          uv sync
+          uv run browser-use install      # fetches browser-use's own Chromium
+          # Start in the background; it keeps running for the rest of the job.
+          uv run uvicorn taskproof_sidecar.app:app --port 8765 &
+          for i in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:8765/health > /dev/null; then
+              echo "sidecar ready"; exit 0
+            fi
+            sleep 2
+          done
+          echo "sidecar did not become ready in time" >&2; exit 1
+      # ---------------------------------------------------------------------------------
+      - name: Run agents
+        run: >-
+          node .taskproof-src/packages/cli/dist/index.js run taskproof/tasks/*.yaml
+          --models browser-use:claude-haiku-4-5 -k 1 --max-cost 0.50 --out taskproof-runs
+
+      - uses: taskproof/taskproof/.github/actions/taskproof-comment@main
+        with:
+          taskproof: node .taskproof-src/packages/cli/dist/index.js
+          run-dir: taskproof-runs
+          baseline: taskproof/baseline.json
+          fail-on-regression: 'false'
