@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "browser-use sidecar for taskproof: runs browser-use and reports artifacts to the TS adapter"
 requires-python = ">=3.12,<4.0"
 dependencies = [
-  "browser-use==0.13.2",
+  "browser-use==0.13.1",
   "fastapi>=0.115",
   "uvicorn[standard]>=0.32",
 ]

@@ -1,10 +1,17 @@
 """Live browser-use integration. Imports browser-use, so it is exercised only when the
 sidecar actually runs (not by the extract unit tests).
 
-VERIFY AT LIVE INTEGRATION: browser-use 0.13.x is fast-moving and the exact
-AgentHistoryList accessor names, the CDP `Runtime.evaluate` return envelope, and the
-Network event field names are version-sensitive (see the research risks). The defensive
-`_safe` wrappers degrade gracefully, but confirm against the installed version.
+Verified live against browser-use 0.13.1 (2026-06-13): version via importlib.metadata
+(no __version__), omit temperature (Opus 4.8 rejects it), usage via
+agent.token_cost_service.get_usage_summary(), keep_alive=True so the session survives
+agent.run() for the post-run CDP DOM probe (cdp_session.cdp_client.send.Runtime.evaluate,
+matching browser-use's own pattern).
+
+KNOWN GAP: the CDP Network listener below captures no events — page traffic flows through
+per-target sessions and Network.enable is only issued on the initial session. Fixing it
+needs a Target.attachedToTarget listener (or the record_har_path fallback); until then
+`network` assertions won't pass for browser-use. The `_safe` wrappers keep extraction from
+crashing if a 0.13.x point release shifts an accessor.
 """
 
 from __future__ import annotations
@@ -12,18 +19,19 @@ from __future__ import annotations
 import json
 import time
 from collections.abc import Callable
+from importlib.metadata import version as _pkg_version
 from typing import Any
 
-import browser_use
 from browser_use import Agent, Browser, ChatAnthropic
 
 from . import extract
 from .models import RunRequest
 
-if not browser_use.__version__.startswith("0.13"):
-    raise RuntimeError(
-        f"taskproof sidecar targets browser-use 0.13.x; found {browser_use.__version__}"
-    )
+# browser-use 0.13 has no `__version__` attribute (lazy module loading); read the
+# installed distribution version instead.
+BROWSER_USE_VERSION = _pkg_version("browser-use")
+if not BROWSER_USE_VERSION.startswith("0.13"):
+    raise RuntimeError(f"taskproof sidecar targets browser-use 0.13.x; found {BROWSER_USE_VERSION}")
 
 
 def _safe(fn: Callable[[], Any], default: Any) -> Any:
@@ -51,10 +59,18 @@ async def _probe_selectors(cdp: Any, selectors: list[str]) -> dict[str, dict[str
     for sel in selectors:
         try:
             res = await cdp.cdp_client.send.Runtime.evaluate(
-                params={"expression": _probe_js(sel), "returnByValue": True},
+                params={"expression": _probe_js(sel), "returnByValue": True, "awaitPromise": True},
                 session_id=cdp.session_id,
             )
-            value = res["result"]["value"]
+            value = res.get("result", {}).get("value")
+            if not isinstance(value, dict):
+                out[sel] = {
+                    "exists": False,
+                    "visible": False,
+                    "text": None,
+                    "error": "probe returned no value",
+                }
+                continue
             out[sel] = {
                 "exists": bool(value["exists"]),
                 "visible": bool(value["visible"]),
@@ -94,6 +110,7 @@ def _assemble(
     history: Any,
     dom_probes: dict[str, dict[str, Any]],
     network: list[dict[str, Any]],
+    usage_summary: Any,
     budget_exceeded: bool,
 ) -> dict[str, Any]:
     urls: list[Any] = _safe(history.urls, [])
@@ -126,7 +143,8 @@ def _assemble(
     final_url = next((str(u) for u in reversed(urls) if u), None)
     is_done = bool(_safe(history.is_done, False))
     has_errors = bool(_safe(history.has_errors, False))
-    usage_obj = getattr(history, "usage", None)
+    # Usage comes from the agent's token_cost_service (async), not the history object.
+    usage_obj = usage_summary
     usage = extract.build_usage(
         prompt_tokens=getattr(usage_obj, "total_prompt_tokens", 0) or 0,
         completion_tokens=getattr(usage_obj, "total_completion_tokens", 0) or 0,
@@ -154,11 +172,18 @@ def _assemble(
 async def run_task(req: RunRequest) -> dict[str, Any]:
     agent: Any = None
     try:
-        llm = ChatAnthropic(model=req.model, temperature=0.0)  # reads ANTHROPIC_API_KEY
-        browser = Browser(
-            headless=req.headless,
-            window_size={"width": req.display.widthPx, "height": req.display.heightPx},
-        )
+        # No temperature/top_p: Opus 4.8+ and Fable reject them (400 "deprecated for this model").
+        llm = ChatAnthropic(model=req.model)  # reads ANTHROPIC_API_KEY
+        browser_kwargs: dict[str, Any] = {
+            "headless": req.headless,
+            "window_size": {"width": req.display.widthPx, "height": req.display.heightPx},
+            # keep_alive so the session survives agent.run() for the post-run DOM probe;
+            # the finally block kills it explicitly.
+            "keep_alive": True,
+        }
+        if req.allowedDomains:
+            browser_kwargs["allowed_domains"] = req.allowedDomains
+        browser = Browser(**browser_kwargs)
         agent = Agent(
             task=req.goal,
             llm=llm,
@@ -194,6 +219,12 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
 
         history = await agent.run(max_steps=req.maxSteps)
 
+        usage_summary: Any = None
+        try:
+            usage_summary = await agent.token_cost_service.get_usage_summary()
+        except Exception:  # noqa: BLE001 - usage is best-effort
+            usage_summary = None
+
         dom_probes: dict[str, dict[str, Any]] = {}
         if req.domSelectors:
             try:
@@ -205,7 +236,9 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
                     for sel in req.domSelectors
                 }
 
-        return _assemble(req, history, dom_probes, list(events.values()), budget_exceeded=False)
+        return _assemble(
+            req, history, dom_probes, list(events.values()), usage_summary, budget_exceeded=False
+        )
     except Exception as exc:  # noqa: BLE001 - return an artifact, never a bare 500
         return extract.error_response(str(exc))
     finally:
