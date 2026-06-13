@@ -1,0 +1,32 @@
+{
+  "name": "@taskproof/report",
+  "version": "0.1.0",
+  "description": "Renders taskproof run artifacts into a self-contained HTML report: the matrix, the per-step trace, the failing step",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@taskproof/core": "workspace:^",
+    "zod": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

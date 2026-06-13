@@ -30,6 +30,7 @@
     "@taskproof/adapter-claude": "workspace:^",
     "@taskproof/core": "workspace:^",
     "@taskproof/grader": "workspace:^",
+    "@taskproof/report": "workspace:^",
     "@taskproof/spec": "workspace:^",
     "commander": "^14.0.0"
   },
