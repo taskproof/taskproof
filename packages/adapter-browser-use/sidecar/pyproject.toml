@@ -1,0 +1,27 @@
+[project]
+name = "taskproof-browser-use-sidecar"
+version = "0.1.0"
+description = "browser-use sidecar for taskproof: runs browser-use and reports artifacts to the TS adapter"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+  "browser-use==0.13.2",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.32",
+]
+
+[dependency-groups]
+dev = ["ruff>=0.8", "pytest>=8"]
+
+[tool.uv]
+# An application, not a distributable package — uv just manages the venv.
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

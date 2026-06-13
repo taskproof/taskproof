@@ -1,0 +1,35 @@
+{
+  "name": "@taskproof/adapter-browser-use",
+  "version": "0.1.0",
+  "description": "browser-use runner adapter: drives the Python/FastAPI sidecar and emits the identical taskproof artifacts",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "sidecar"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@taskproof/core": "workspace:^",
+    "@taskproof/grader": "workspace:^",
+    "@taskproof/spec": "workspace:^",
+    "zod": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
