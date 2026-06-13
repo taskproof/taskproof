@@ -3,7 +3,9 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**'],
+    // `.venv` is the Python sidecar's virtualenv (gitignored, but eslint doesn't read
+    // .gitignore); it contains third-party JS with browser globals.
+    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/.venv/**'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
