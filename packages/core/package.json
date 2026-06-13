@@ -1,7 +1,7 @@
 {
-  "name": "@taskproof/adapter-claude",
+  "name": "@taskproof/core",
   "version": "0.1.0",
-  "description": "Claude computer-use runner adapter: drives Playwright-managed Chromium and emits taskproof artifacts",
+  "description": "Shared contract for taskproof runner adapters: the run-artifact schema, the adapter interface, and the token/cost meter",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,10 +23,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.104.1",
-    "@taskproof/core": "workspace:^",
     "@taskproof/spec": "workspace:^",
-    "playwright": "^1.60.0"
+    "zod": "^4.0.0"
   },
   "engines": {
     "node": ">=22"
