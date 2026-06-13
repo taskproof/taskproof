@@ -51,4 +51,27 @@ describe('formatReport', () => {
     expect(out).toContain('1/2 cell(s) passed');
     expect(out).toContain('$0.9100');
   });
+
+  it('shows step count and the failure reason when present', () => {
+    const out = formatReport({
+      manifestVersion: '0.1',
+      generatedAtMs: 0,
+      totalCostUsd: 0.84,
+      cells: [
+        {
+          taskId: 'checkout',
+          goal: 'buy a t-shirt',
+          model: 'browser-use',
+          passK: { k: 3, passes: 1, required: 2, passed: false },
+          costUsd: 0.3,
+          statuses: [],
+          runIds: [],
+          stepCount: 31,
+          failureSummary: 'could not dismiss the entry-ad modal',
+        },
+      ],
+    });
+    expect(out).toContain('31 steps');
+    expect(out).toContain('↳ could not dismiss the entry-ad modal');
+  });
 });

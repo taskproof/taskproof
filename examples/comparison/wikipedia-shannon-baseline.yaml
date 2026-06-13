@@ -1,0 +1,18 @@
+specVersion: '0.1'
+id: wikipedia-shannon-baseline
+goal: "Use the Wikipedia search box to find the article for 'Claude Shannon', open it, and confirm you have reached his article page."
+entryUrl: 'https://en.wikipedia.org/wiki/Main_Page'
+maxSteps: 15
+maxCostUsd: 1.00
+passPolicy:
+  k: 3
+  minPasses: 2
+# Control row: a trivially-achievable search-and-navigate task every harness should pass 3/3.
+# Establishes the matrix isn't rigged, and exposes the cost/step floor (same model, two harnesses).
+assertions:
+  - type: url
+    pattern: '**/wiki/Claude_Shannon**'
+  - type: dom
+    selector: 'h1#firstHeading'
+    state: text
+    text: 'Claude Shannon'

@@ -1,0 +1,23 @@
+specVersion: '0.1'
+id: books-find-upc
+goal: "From the catalog, open the product detail page for the book 'A Light in the Attic' and confirm you have reached its product page showing the product information table."
+entryUrl: 'https://books.toscrape.com'
+maxSteps: 18
+maxCostUsd: 0.75
+passPolicy:
+  k: 3
+  minPasses: 2
+# Secondary control on a different surface: a docs/catalog search-and-extract flow (find the
+# answer, not buy). Fully static server-rendered HTML — near-zero flake — broadening the matrix
+# to the docs/MCP wedge audience. Reinforces the directional finding: on every non-friction row
+# the DOM-native harness is cheaper at equal success.
+assertions:
+  - type: url
+    pattern: '**/catalogue/a-light-in-the-attic_1000/index.html'
+  - type: dom
+    selector: 'article.product_page'
+    state: visible
+  - type: dom
+    selector: 'table.table-striped'
+    state: text
+    text: 'UPC'

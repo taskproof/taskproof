@@ -1,0 +1,25 @@
+specVersion: '0.1'
+id: scrapingcourse-cart-network
+goal: "Open the product page for the 'Aero Daily Fitness Tee', add it to the cart, then open the cart page and confirm the tee is in the cart."
+entryUrl: 'https://www.scrapingcourse.com/ecommerce/product/aero-daily-fitness-tee/'
+maxSteps: 20
+maxCostUsd: 1.00
+passPolicy:
+  k: 3
+  minPasses: 2
+# Network-assertion showcase on a real (WooCommerce) backend. Unlike saucedemo (localStorage
+# only), this store fires a SAME-ORIGIN add-to-cart POST, which the browser-use lane can
+# capture — so this exercises all three assertion types (url + dom + network) on both harnesses.
+# CALIBRATION: the wc-ajax endpoint below is the classic WooCommerce path; if this store uses
+# the Store API instead, confirm on the first run and update urlPattern (see README).
+assertions:
+  - type: url
+    pattern: '**/ecommerce/cart/**'
+  - type: dom
+    selector: '.woocommerce-cart-form'
+    state: text
+    text: 'Aero Daily Fitness Tee'
+  - type: network
+    urlPattern: '**wc-ajax=add_to_cart**'
+    method: POST
+    status: '2xx'

@@ -23,6 +23,17 @@ export const manifestCellSchema = z.strictObject({
   statuses: z.array(z.string()).default([]),
   /** runIds of the artifacts (one per pass@k run) backing this cell. */
   runIds: z.array(z.string()).default([]),
+  /**
+   * Step count of the linked (first) run — surfaced in the matrix so the agent-efficiency
+   * half of the comparison ("18 steps vs 31 steps") is legible without opening a trace.
+   * Optional so manifests written before this field still parse.
+   */
+  stepCount: z.number().int().nonnegative().optional(),
+  /**
+   * Why a failing cell failed: the first failing assertion's detail (or the run error/status).
+   * Surfaced next to the gate so a red cell explains itself — the product's signature line.
+   */
+  failureSummary: z.string().optional(),
 });
 export type ManifestCell = z.infer<typeof manifestCellSchema>;
 

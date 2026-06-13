@@ -1,0 +1,22 @@
+specVersion: '0.1'
+id: saucedemo-buy-tshirt
+goal: "Log in with username standard_user and password secret_sauce, add the 'Sauce Labs Bolt T-Shirt' to the cart, open the cart, check out using first name Test, last name User, zip 94016, and finish the purchase until you reach the order-complete confirmation."
+entryUrl: 'https://www.saucedemo.com'
+maxSteps: 30
+maxCostUsd: 2.50
+passPolicy:
+  k: 3
+  minPasses: 2
+# The e-commerce centerpiece ("buy a t-shirt"). A long, form-heavy SPA flow: login -> add to
+# cart -> cart -> checkout step one -> overview -> finish. The cost/step gap widens here, and
+# it's the most likely place the two harnesses diverge on a real run (SPA hydration + misclicks).
+assertions:
+  - type: url
+    pattern: '**/checkout-complete.html'
+  - type: dom
+    selector: '.complete-header'
+    state: text
+    text: 'Thank you for your order'
+  - type: dom
+    selector: '[data-test=back-to-products]'
+    state: visible

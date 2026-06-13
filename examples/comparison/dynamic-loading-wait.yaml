@@ -1,0 +1,19 @@
+specVersion: '0.1'
+id: dynamic-loading-wait
+goal: "Click the 'Start' button and wait for the page to finish loading, then confirm the result text appears."
+entryUrl: 'https://the-internet.herokuapp.com/dynamic_loading/2'
+maxSteps: 15
+maxCostUsd: 0.75
+passPolicy:
+  k: 3
+  minPasses: 2
+# Behavioral probe: the result element is rendered into the DOM only AFTER an async load that
+# follows clicking Start, so the assertion only holds if the harness initiates the action and
+# then WAITS for completion (rather than giving up or acting too early). A clean, deterministic
+# test of a real behavioral difference between a screenshot-poll harness and a DOM-wait harness.
+# NOTE: Heroku free-tier can cold-start; warm the URL before timing a run.
+assertions:
+  - type: dom
+    selector: '#finish h4'
+    state: text
+    text: 'Hello World!'
