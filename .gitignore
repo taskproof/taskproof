@@ -12,9 +12,6 @@ taskproof-runs/
 
 # Internal planning & strategy — never published (this repo is destined to be public).
 # Kept on disk for local work; git-ignored so they can never enter public history.
+# Anything under docs/internal/ is private by convention; add new strategy docs there.
 /CLAUDE.md
-/docs/BRIEF.md
-/docs/VETTING.md
-/docs/LAUNCH.md
-/docs/NAMING.md
-/docs/ROADMAP.md
+/docs/internal/
