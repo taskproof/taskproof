@@ -8,12 +8,14 @@ import {
   type AdapterConfig,
   type AdapterRunInput,
   type ActionArtifact,
+  type AssertionResult,
   type CostMeterOptions,
   type NetworkEvent,
   type RunArtifact,
   type RunStatus,
   type StepArtifact,
 } from '@taskproof/core';
+import { evaluateAssertions, type DomProbeResult } from '@taskproof/grader';
 import { chromium, type Page } from 'playwright';
 
 import { parseAction, ActionParseError, type ComputerAction } from './actions.js';
@@ -82,6 +84,7 @@ async function runClaude(
   let status: RunStatus = 'max_steps';
   let errorMessage: string | undefined;
   let finalUrl: string | undefined;
+  let assertions: AssertionResult[] = [];
 
   const runDir = config.artifactsDir ? join(config.artifactsDir, runId) : undefined;
   if (runDir) await mkdir(runDir, { recursive: true });
@@ -252,6 +255,13 @@ async function runClaude(
     }
 
     finalUrl = page.url();
+    // Evaluate the spec's deterministic assertions against the live page (dom visibility
+    // needs layout) before the browser closes; embed the results in the artifact.
+    assertions = await evaluateAssertions(spec.assertions, {
+      finalUrl,
+      network,
+      dom: (selector) => domProbe(page, selector),
+    });
   } catch (error) {
     status = 'error';
     errorMessage = error instanceof Error ? error.message : String(error);
@@ -273,6 +283,7 @@ async function runClaude(
     ...(finalUrl !== undefined ? { finalUrl } : {}),
     steps,
     network,
+    assertions,
     usage: {
       inputTokens: totals.inputTokens,
       outputTokens: totals.outputTokens,
@@ -282,6 +293,22 @@ async function runClaude(
     },
     ...(errorMessage !== undefined ? { error: errorMessage } : {}),
   };
+}
+
+/** Inspect a CSS selector against the live page for the grader's dom assertions. */
+async function domProbe(page: Page, selector: string): Promise<DomProbeResult> {
+  try {
+    const locator = page.locator(selector);
+    const count = await locator.count();
+    if (count === 0) return { exists: false, visible: false, text: null };
+    const first = locator.first();
+    const visible = await first.isVisible();
+    const text = (await first.textContent()) ?? '';
+    return { exists: true, visible, text };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { exists: false, visible: false, text: null, error: message };
+  }
 }
 
 interface AppliedAction {

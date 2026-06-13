@@ -38,6 +38,9 @@ importers:
       '@taskproof/core':
         specifier: workspace:^
         version: link:../core
+      '@taskproof/grader':
+        specifier: workspace:^
+        version: link:../grader
       '@taskproof/spec':
         specifier: workspace:^
         version: link:../spec
@@ -50,6 +53,15 @@ importers:
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
+      '@taskproof/adapter-claude':
+        specifier: workspace:^
+        version: link:../adapter-claude
+      '@taskproof/core':
+        specifier: workspace:^
+        version: link:../core
+      '@taskproof/grader':
+        specifier: workspace:^
+        version: link:../grader
       '@taskproof/spec':
         specifier: workspace:^
         version: link:../spec
@@ -65,6 +77,15 @@ importers:
       zod:
         specifier: ^4.0.0
         version: 4.4.3
+
+  packages/grader:
+    dependencies:
+      '@taskproof/core':
+        specifier: workspace:^
+        version: link:../core
+      '@taskproof/spec':
+        specifier: workspace:^
+        version: link:../spec
 
   packages/spec:
     dependencies:

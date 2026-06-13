@@ -9,7 +9,6 @@ import { formatFileResult, validateFiles } from './validate.js';
 const pkg = createRequire(import.meta.url)('../package.json') as { version: string };
 
 const NOT_IMPLEMENTED: ReadonlyArray<{ name: string; description: string }> = [
-  { name: 'run', description: 'Run task specs against a URL across a matrix of agent models' },
   { name: 'report', description: 'Render the latest run as an HTML report' },
   { name: 'baseline', description: 'Save or compare agent-usability baselines' },
 ];
@@ -39,6 +38,54 @@ export function buildProgram(): Command {
         process.exitCode = 1;
       }
     });
+
+  program
+    .command('run')
+    .description('Run task specs across a matrix of agent models and grade them with pass@k')
+    .argument('<files...>', 'task spec YAML files')
+    .option('--models <list>', 'comma-separated model ids', 'claude-opus-4-8')
+    .option('--out <dir>', 'directory for run artifacts', 'taskproof-runs')
+    .option('--max-cost <usd>', 'hard per-run budget cap in USD', parseFloat)
+    .option('-k, --runs <n>', 'override the spec pass@k k', (value) => Number.parseInt(value, 10))
+    .option('--headed', 'run with a visible browser (default headless)')
+    .action(
+      async (
+        files: string[],
+        opts: { models: string; out: string; maxCost?: number; runs?: number; headed?: boolean },
+      ) => {
+        const models = opts.models
+          .split(',')
+          .map((model) => model.trim())
+          .filter((model) => model !== '');
+        if (models.length === 0) {
+          process.stderr.write('no models specified\n');
+          process.exitCode = 1;
+          return;
+        }
+        // Lazy import: keeps Playwright/Anthropic out of the `validate`-only path.
+        const { runSpecs, formatReport } = await import('./run.js');
+        try {
+          const report = await runSpecs(
+            files,
+            {
+              models,
+              outDir: opts.out,
+              headed: opts.headed === true,
+              ...(opts.maxCost !== undefined ? { maxCostUsd: opts.maxCost } : {}),
+              ...(opts.runs !== undefined ? { k: opts.runs } : {}),
+            },
+            (message) => process.stderr.write(`${message}\n`),
+          );
+          process.stdout.write(`${formatReport(report)}\n`);
+          if (!report.allPassed) process.exitCode = 1;
+        } catch (error) {
+          process.stderr.write(
+            `run failed: ${error instanceof Error ? error.message : String(error)}\n`,
+          );
+          process.exitCode = 1;
+        }
+      },
+    );
 
   program
     .command('init')

@@ -1,7 +1,7 @@
 {
-  "name": "@taskproof/adapter-claude",
+  "name": "@taskproof/grader",
   "version": "0.1.0",
-  "description": "Claude computer-use runner adapter: drives Playwright-managed Chromium and emits taskproof artifacts",
+  "description": "Deterministic assertion engine for taskproof: evaluates url/dom/network assertions against a run and aggregates pass@k",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,11 +23,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.104.1",
     "@taskproof/core": "workspace:^",
-    "@taskproof/grader": "workspace:^",
-    "@taskproof/spec": "workspace:^",
-    "playwright": "^1.60.0"
+    "@taskproof/spec": "workspace:^"
   },
   "engines": {
     "node": ">=22"
