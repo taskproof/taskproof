@@ -54,6 +54,17 @@ export const stepArtifactSchema = z.strictObject({
 });
 export type StepArtifact = z.infer<typeof stepArtifactSchema>;
 
+/** Outcome of evaluating one deterministic assertion against the final run state. */
+export const assertionResultSchema = z.strictObject({
+  type: z.enum(['url', 'dom', 'network']),
+  ok: z.boolean(),
+  /** Human-readable explanation: what was checked and what was observed. */
+  detail: z.string(),
+  /** Echo of the assertion's `description`, if it had one. */
+  description: z.string().optional(),
+});
+export type AssertionResult = z.infer<typeof assertionResultSchema>;
+
 /** A network request observed during the run (drives `network` assertions later). */
 export const networkEventSchema = z.strictObject({
   url: z.string().min(1),
@@ -78,6 +89,8 @@ export const runArtifactSchema = z.strictObject({
   finalUrl: z.url().optional(),
   steps: z.array(stepArtifactSchema).default([]),
   network: z.array(networkEventSchema).default([]),
+  /** Deterministic assertion outcomes, evaluated against the final state at end-of-run. */
+  assertions: z.array(assertionResultSchema).default([]),
   usage: usageSchema,
   /** Populated when status is "error". */
   error: z.string().optional(),
