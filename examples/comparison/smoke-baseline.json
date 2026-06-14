@@ -1,0 +1,26 @@
+{
+  "manifestVersion": "0.1",
+  "generatedAtMs": 1781397841910,
+  "totalCostUsd": 0.5249550000000001,
+  "cells": [
+    {
+      "taskId": "wikipedia-shannon-baseline",
+      "goal": "Use the Wikipedia search box to find the article for 'Claude Shannon', open it, and confirm you have reached his article page.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.5249550000000001,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "wikipedia-shannon-baseline__claude-opus-4-8__run0__25",
+        "wikipedia-shannon-baseline__claude-opus-4-8__run1__26",
+        "wikipedia-shannon-baseline__claude-opus-4-8__run2__27"
+      ],
+      "stepCount": 5
+    }
+  ]
+}

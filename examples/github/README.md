@@ -12,6 +12,11 @@ at [`.github/actions/taskproof-comment`](../../.github/actions/taskproof-comment
 \* with `-k 1` (one pass per task). Costs scale with steps and with `k`. Keep the cheap lane
 per-PR; run the full Claude matrix nightly or on release.
 
+> **Live example:** taskproof dogfoods this action on its own repo —
+> [`.github/workflows/agent-usability.yml`](../../.github/workflows/agent-usability.yml) is a
+> working same-repo setup (local `./.github/actions/taskproof-comment`, one cheap control task,
+> paid steps gated on the secret so PRs stay green until it's added).
+
 ## The model: baseline on the default branch, diff on the PR
 
 taskproof catches **regressions** — a task×model cell that _used to_ pass pass@k and now

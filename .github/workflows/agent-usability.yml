@@ -1,0 +1,66 @@
+# taskproof dogfoods its own GitHub Action: on a PR, run a cheap agent smoke task, diff it
+# against a committed baseline, and post a sticky comment via .github/actions/taskproof-comment.
+#
+# Cost control:
+#   - Runs ONE cheap control task (Wikipedia, ~$0.45 for pass@3), Claude only (no sidecar),
+#     with a hard per-run cap. It validates the run→diff→comment→gate pipeline, not the full
+#     matrix — run the full examples/comparison set manually / nightly when you want that.
+#   - The paid steps are gated on the ANTHROPIC_API_KEY secret, so before you add it (and on
+#     fork PRs, which don't get the secret) the job just builds and stays green — no spend, no
+#     red X. Add the secret in Settings → Secrets and variables → Actions to activate it.
+name: agent-usability
+
+on:
+  pull_request:
+    paths:
+      - 'packages/**'
+      - 'examples/comparison/**'
+      - '.github/actions/taskproof-comment/**'
+      - '.github/workflows/agent-usability.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write # post the sticky comment
+
+concurrency:
+  group: agent-usability-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Secret not set — skipping the agent run
+        if: ${{ env.ANTHROPIC_API_KEY == '' }}
+        run: echo "::notice title=taskproof::ANTHROPIC_API_KEY not set (or a fork PR) — built only, skipped the agent smoke. Add the secret to enable it."
+
+      - name: Install Chromium
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
+        run: pnpm --filter @taskproof/adapter-claude exec playwright install --with-deps chromium
+
+      - name: Run agent smoke (1 control task)
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
+        run: >-
+          node packages/cli/dist/index.js run examples/comparison/wikipedia-shannon-baseline.yaml
+          --models claude-opus-4-8 --out taskproof-runs --max-cost 0.50
+
+      - name: Diff vs baseline + sticky PR comment
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
+        uses: ./.github/actions/taskproof-comment
+        with:
+          taskproof: node packages/cli/dist/index.js
+          run-dir: taskproof-runs
+          baseline: examples/comparison/smoke-baseline.json
+          fail-on-regression: 'false' # advisory; flip to 'true' to block merges
