@@ -25,6 +25,9 @@ export function sidecarProbe(response: SidecarRunResponse): Probe {
     finalUrl: response.finalUrl,
     network,
     dom: (selector: string): Promise<DomProbeResult> => {
+      // Page-level readiness (same for every selector) lets the grader reject a vacuous
+      // `absent` pass on a blank/failed page.
+      const pageReady = response.pageReady !== undefined ? { pageReady: response.pageReady } : {};
       const probe = response.domProbes[selector];
       if (probe === undefined) {
         return Promise.resolve({
@@ -32,6 +35,7 @@ export function sidecarProbe(response: SidecarRunResponse): Probe {
           visible: false,
           text: null,
           error: 'selector was not probed by the sidecar',
+          ...pageReady,
         });
       }
       return Promise.resolve({
@@ -39,6 +43,7 @@ export function sidecarProbe(response: SidecarRunResponse): Probe {
         visible: probe.visible,
         text: probe.text,
         ...(probe.error !== undefined ? { error: probe.error } : {}),
+        ...pageReady,
       });
     },
   };

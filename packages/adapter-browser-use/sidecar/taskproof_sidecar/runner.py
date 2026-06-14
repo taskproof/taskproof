@@ -83,6 +83,23 @@ async def _probe_selectors(cdp: Any, selectors: list[str]) -> dict[str, dict[str
     return out
 
 
+async def _probe_page_ready(cdp: Any) -> bool | None:
+    """Did the final page render real content (body has child elements)? Lets the grader
+    reject a vacuous `absent` pass on a blank/failed page. None if it can't be determined."""
+    try:
+        res = await cdp.cdp_client.send.Runtime.evaluate(
+            params={
+                "expression": "!!(document.body && document.body.childElementCount > 0)",
+                "returnByValue": True,
+            },
+            session_id=cdp.session_id,
+        )
+        value = res.get("result", {}).get("value")
+        return bool(value) if isinstance(value, bool) else None
+    except Exception:  # noqa: BLE001 - readiness is best-effort
+        return None
+
+
 def _parse_har(path: str) -> list[dict[str, Any]]:
     """Parse a HAR file (written by browser-use's HarRecordingWatchdog on stop) into the
     NetworkEvent shape. `atMs` is milliseconds since the earliest request. HTTPS only —
@@ -151,6 +168,7 @@ def _assemble(
     network: list[dict[str, Any]],
     usage_summary: Any,
     budget_exceeded: bool,
+    page_ready: bool | None = None,
 ) -> dict[str, Any]:
     urls: list[Any] = _safe(history.urls, [])
     actions: list[Any] = _safe(history.action_history, [])
@@ -205,6 +223,7 @@ def _assemble(
         network=network,
         dom_probes=dom_probes,
         usage=usage,
+        page_ready=page_ready,
     )
 
 
@@ -249,12 +268,15 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
         except Exception:  # noqa: BLE001 - usage is best-effort
             usage_summary = None
 
-        # DOM probe while the session is still alive (visibility needs live layout).
+        # DOM probe while the session is still alive (visibility needs live layout). Also grab
+        # page readiness so the grader can reject a vacuous `absent` pass on a blank/failed page.
         dom_probes: dict[str, dict[str, Any]] = {}
+        page_ready: bool | None = None
         if req.domSelectors:
             try:
                 cdp = await agent.browser_session.get_or_create_cdp_session()
                 dom_probes = await _probe_selectors(cdp, req.domSelectors)
+                page_ready = await _probe_page_ready(cdp)
             except Exception as exc:  # noqa: BLE001
                 dom_probes = {
                     sel: {"exists": False, "visible": False, "text": None, "error": str(exc)}
@@ -269,7 +291,15 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
             pass
         network = _parse_har(har_path)
 
-        return _assemble(req, history, dom_probes, network, usage_summary, budget_exceeded=False)
+        return _assemble(
+            req,
+            history,
+            dom_probes,
+            network,
+            usage_summary,
+            budget_exceeded=False,
+            page_ready=page_ready,
+        )
     except Exception as exc:  # noqa: BLE001 - return an artifact, never a bare 500
         return extract.error_response(str(exc))
     finally:

@@ -104,6 +104,7 @@ def assemble_response(
     dom_probes: dict[str, dict[str, Any]],
     usage: dict[str, Any],
     error: str | None = None,
+    page_ready: bool | None = None,
 ) -> dict[str, Any]:
     response: dict[str, Any] = {
         "status": status,
@@ -114,6 +115,8 @@ def assemble_response(
     }
     if final_url:
         response["finalUrl"] = final_url
+    if page_ready is not None:
+        response["pageReady"] = page_ready
     if error:
         response["error"] = error
     return response

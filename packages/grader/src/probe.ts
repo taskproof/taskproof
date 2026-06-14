@@ -10,6 +10,14 @@ export interface DomProbeResult {
   text: string | null;
   /** Set when the selector itself could not be evaluated (e.g. invalid CSS). */
   error?: string;
+  /**
+   * Whether the page rendered real content (body has child elements) — false on a blank /
+   * failed-navigation / error page. Lets `absent` reject a vacuous pass: a missing element on a
+   * dead page is not a dismissal. Optional; when undefined the grader can't tell, so it does not
+   * block (older probes / artifacts). It does NOT prove the *right* page loaded — pair `absent`
+   * with a positive anchor (url/visible/network) for that.
+   */
+  pageReady?: boolean;
 }
 
 /**
