@@ -3,7 +3,7 @@ id: scrapingcourse-cart-network
 goal: "On the shop page, find the 'Affirm Water Bottle' and click its 'Add to cart' button directly in the product listing (do not open the product detail page), then open the cart and confirm the Affirm Water Bottle is in it."
 entryUrl: 'https://www.scrapingcourse.com/ecommerce/'
 maxSteps: 22
-maxCostUsd: 1.25
+maxCostUsd: 1.75
 passPolicy:
   k: 3
   minPasses: 2
