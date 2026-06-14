@@ -6,7 +6,7 @@ export interface DomProbeResult {
   exists: boolean;
   /** The first match is visible (laid out, not hidden). */
   visible: boolean;
-  /** The first match's text content, or null if no match. */
+  /** The first match's text content ('' if the element has none); null only when no element matched. */
   text: string | null;
   /** Set when the selector itself could not be evaluated (e.g. invalid CSS). */
   error?: string;
