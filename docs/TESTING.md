@@ -55,9 +55,9 @@ assertions: # ALL must hold for a run to pass
   - type: url # the final page URL matched a glob
     pattern: '**/trial**'
   # other assertion types:
-  # - type: dom        # a CSS selector is attached / visible, or its text contains a string
+  # - type: dom        # a CSS selector is visible / attached / contains text / absent / hidden
   #     selector: "[data-testid=trial-confirmation]"
-  #     state: visible
+  #     state: visible   # also: attached | text | absent (gone) | hidden (dismissed)
   # - type: network    # a request was made (method/status optional)
   #     urlPattern: "**/api/subscribe"
   #     method: POST

@@ -106,6 +106,54 @@ describe('dom assertions', () => {
     expect(no.ok).toBe(false);
   });
 
+  it('absent passes only when nothing matches the selector', async () => {
+    const a: Assertion = { type: 'dom', selector: '.modal', state: 'absent' };
+    const gone = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: false, visible: false, text: null }) }),
+    );
+    expect(gone.ok).toBe(true);
+    expect(gone.detail).toContain('absent');
+    const present = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: true, visible: true, text: null }) }),
+    );
+    expect(present.ok).toBe(false);
+    expect(present.detail).toContain('still present');
+  });
+
+  it('hidden passes when present-but-not-visible, fails when visible or absent', async () => {
+    const a: Assertion = { type: 'dom', selector: '.modal', state: 'hidden' };
+    const dismissed = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: true, visible: false, text: null }) }),
+    );
+    expect(dismissed.ok).toBe(true);
+    const stillVisible = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: true, visible: true, text: null }) }),
+    );
+    expect(stillVisible.ok).toBe(false);
+    expect(stillVisible.detail).toContain('still visible');
+    // A selector that matches nothing is NOT "hidden" — it was never shown to be hidden.
+    const missing = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: false, visible: false, text: null }) }),
+    );
+    expect(missing.ok).toBe(false);
+    expect(missing.detail).toContain('absent');
+  });
+
+  it('absent fails (does not silently pass) when the selector cannot be evaluated', async () => {
+    const a: Assertion = { type: 'dom', selector: ':::bad', state: 'absent' };
+    const result = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: false, visible: false, text: null, error: 'bad selector' }) }),
+    );
+    expect(result.ok).toBe(false);
+    expect(result.detail).toContain('bad selector');
+  });
+
   it('surfaces a selector error as a failed result', async () => {
     const a: Assertion = { type: 'dom', selector: 'h1', state: 'attached' };
     const result = await evaluateAssertion(

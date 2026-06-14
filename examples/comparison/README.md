@@ -70,12 +70,18 @@ click-through, so treat the first paid run as a calibration pass:
 - **Cold starts**: `the-internet.herokuapp.com` (dynamic-loading) can sleep on free-tier hosting;
   warm it before a timed run.
 
-## Known gap this set exposes
+## The overlay task
 
-The brief's signature shot is an agent _stumbling at a cookie/consent overlay_. Grading
-"the overlay was dismissed" needs a **negative DOM assertion** (`state: absent` / `hidden`),
-which the spec doesn't have yet — today's `dom` states are `visible | attached | text`, none
-of which can assert an element is _gone_. Until that lands, the overlay-dismissal task can't be
-graded deterministically (it would pass on load), so this set lets divergence surface naturally
-in the long `saucedemo` checkout instead. Adding `state: absent` is the spec follow-up that
-unlocks the canonical "failed at the cookie banner" demo task.
+Grading "the agent cleared the overlay" needs a **negative DOM assertion** — and as of
+2026-06-14 the spec has one: `state: absent` (no element matches) and `state: hidden` (present
+but not visible). `entry-ad-overlay.yaml` exercises `hidden` on a blocking modal.
+
+A negative check can pass _vacuously_, and this fixture shows exactly why: the-internet's
+`#modal` is rendered `display:none` and only revealed ~500ms after load, then dismissing hides
+it again — so `#modal state:hidden` is true both before the ad appears and after it's dismissed.
+The non-vacuous gate is the paired **network** assertion: dismissing fires `POST /entry_ad`,
+which only a real dismiss triggers (and which both harnesses capture same-origin). Together they
+grade an actual dismissal, not a no-op. (Caveat: on this page a click _anywhere_ dismisses, so
+it validates dismiss-detection rather than "could the agent find the Close control"; the brief's
+true "stumbled at the consent banner" shot wants a stricter fixture — a TODO.) It isn't in
+`baseline.json`, which predates it.

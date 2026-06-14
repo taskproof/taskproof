@@ -25,7 +25,22 @@ const domAssertionSchema = z.strictObject({
   type: z.literal('dom'),
   /** CSS selector evaluated against the final DOM. */
   selector: z.string().min(1),
-  state: z.enum(['visible', 'attached', 'text']).default('visible'),
+  /**
+   * What must hold for the selector in the final DOM:
+   * - `visible` (default): at least one match is laid out and visible.
+   * - `attached`: at least one match exists in the DOM (visible or not).
+   * - `text`: a match exists and its text contains `text`.
+   * - `absent`: NO element matches (e.g. a dialog the agent dismissed was removed).
+   * - `hidden`: a match exists but is not visible (e.g. a modal closed to `display:none`).
+   *   Use `absent`/`hidden` to grade "the agent cleared the overlay/dialog".
+   *
+   * SOUNDNESS: a negative check (`absent`, or `hidden` against an element that starts hidden)
+   * can pass *vacuously* — a failed/blank/wrong page also has no/invisible element. Always
+   * pair a negative dom check with a positive anchor (a `url` match, or a `visible`/`text`
+   * check, or a `network` request that only the intended action triggers) so a page that
+   * never loaded the element cannot be graded as a successful dismissal.
+   */
+  state: z.enum(['visible', 'attached', 'text', 'absent', 'hidden']).default('visible'),
   /** Required when `state` is "text": substring the selected element's text must contain. */
   text: z.string().min(1).optional(),
   description: z.string().optional(),

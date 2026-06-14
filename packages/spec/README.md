@@ -49,8 +49,12 @@ assertions: # at least one; ALL must hold for a run to pass
 ## Assertion types
 
 - **`url`** — glob pattern against the final page URL: `{ type: url, pattern: "**/order/confirmed**" }`
-- **`dom`** — CSS selector against the final DOM with `state: visible | attached | text`
-  (`text` requires a `text:` substring): `{ type: dom, selector: "h1", state: text, text: "Thank you" }`
+- **`dom`** — CSS selector against the final DOM with `state: visible | attached | text | absent | hidden`
+  (`text` requires a `text:` substring): `{ type: dom, selector: "h1", state: text, text: "Thank you" }`.
+  `absent` = no element matches; `hidden` = a match exists but isn't visible (e.g. a modal closed
+  to `display:none`) — use these to grade "the agent cleared the overlay". A negative check can
+  pass vacuously on a blank/wrong page, so always pair `absent`/`hidden` with a positive anchor
+  (a `url`, `visible`/`text`, or `network` assertion).
 - **`network`** — glob pattern against requests observed during the run, with optional `method`
   and `status` (exact code or class like `"2xx"`): `{ type: network, urlPattern: "**/api/orders", method: POST, status: "2xx" }`
 

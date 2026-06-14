@@ -1,0 +1,26 @@
+specVersion: '0.1'
+id: entry-ad-overlay
+goal: 'An advertisement modal pops up shortly after the page loads, covering the content. Dismiss it so the page is usable again.'
+entryUrl: 'https://the-internet.herokuapp.com/entry_ad'
+maxSteps: 12
+maxCostUsd: 0.75
+passPolicy:
+  k: 3
+  minPasses: 2
+# Exercises the dom `hidden` state (added 2026-06-14) AND shows why a negative check needs a
+# positive anchor. On this page `#modal` is rendered `display:none` and only REVEALED ~500ms
+# after load via setTimeout(showAd); dismissing sets it back to `display:none`. So
+# `#modal state:hidden` is true both BEFORE the ad appears and AFTER it's dismissed — on its
+# own it would pass vacuously (an agent that does nothing "passes"). The non-vacuous gate is
+# the network assertion: dismissing fires `$.post('/entry_ad')`, which only happens on a real
+# dismiss and is captured same-origin by both harnesses. Both assertions must hold, so the
+# POST is what actually proves the agent cleared the overlay.
+# (Note: on entry_ad a click anywhere dismisses the ad, so this validates dismiss-detection,
+# not "could the agent find the Close control" — a stricter cookie-consent fixture is a TODO.)
+assertions:
+  - type: dom
+    selector: '#modal'
+    state: hidden
+  - type: network
+    urlPattern: '**/entry_ad'
+    method: POST

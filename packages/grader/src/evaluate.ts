@@ -87,20 +87,51 @@ export async function evaluateAssertion(
       ...base,
     };
   }
-  // state 'text' (assertion.text is guaranteed present by the spec schema)
-  const needle = assertion.text ?? '';
-  const haystack = result.text ?? '';
-  const ok = result.exists && haystack.includes(needle);
-  return {
-    type: 'dom',
-    ok,
-    detail: ok
-      ? `"${assertion.selector}" text contains "${needle}"`
-      : result.exists
-        ? `"${assertion.selector}" text did not contain "${needle}"`
-        : `"${assertion.selector}" not found`,
-    ...base,
-  };
+  if (assertion.state === 'absent') {
+    return {
+      type: 'dom',
+      ok: !result.exists,
+      detail: result.exists
+        ? `"${assertion.selector}" is still present`
+        : `"${assertion.selector}" is absent`,
+      ...base,
+    };
+  }
+  if (assertion.state === 'hidden') {
+    // Present in the DOM but not visible. A selector that matches nothing fails here (it was
+    // never shown to be hidden) — use `absent` when removal is the expected outcome.
+    const ok = result.exists && !result.visible;
+    return {
+      type: 'dom',
+      ok,
+      detail: ok
+        ? `"${assertion.selector}" is present but hidden`
+        : result.exists
+          ? `"${assertion.selector}" is still visible`
+          : `"${assertion.selector}" not found (use state "absent" if removal is expected)`,
+      ...base,
+    };
+  }
+  if (assertion.state === 'text') {
+    // assertion.text is guaranteed present by the spec schema when state is "text".
+    const needle = assertion.text ?? '';
+    const haystack = result.text ?? '';
+    const ok = result.exists && haystack.includes(needle);
+    return {
+      type: 'dom',
+      ok,
+      detail: ok
+        ? `"${assertion.selector}" text contains "${needle}"`
+        : result.exists
+          ? `"${assertion.selector}" text did not contain "${needle}"`
+          : `"${assertion.selector}" not found`,
+      ...base,
+    };
+  }
+  // Exhaustiveness: adding a dom state to the spec enum without a branch here is a compile
+  // error, not a silent fall-through to the text matcher (which `includes('')` would pass).
+  const unhandled: never = assertion.state;
+  throw new Error(`unhandled dom assertion state: ${String(unhandled)}`);
 }
 
 /** Evaluate every assertion in order. */
