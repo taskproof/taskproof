@@ -8,6 +8,8 @@ import { aggregatePassK, deterministicPass } from '@taskproof/grader';
 import { MANIFEST_VERSION, type ManifestCell, type RunManifest } from '@taskproof/report';
 import { safeParseTaskSpec, type PassPolicy, type TaskSpec } from '@taskproof/spec';
 
+import { resolveSpecFiles } from './files.js';
+
 export interface RunOptions {
   models: string[];
   outDir: string;
@@ -52,8 +54,9 @@ export async function runSpecs(
   options: RunOptions,
   onProgress: ProgressFn = () => {},
 ): Promise<RunManifest> {
+  const resolved = await resolveSpecFiles(files);
   const specs: TaskSpec[] = [];
-  for (const file of files) {
+  for (const file of resolved) {
     const result = safeParseTaskSpec(await readFile(file, 'utf8'), { filename: file });
     if (!result.ok) throw result.error;
     specs.push(result.spec);
