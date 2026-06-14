@@ -25,6 +25,13 @@ The report's **"Where the harnesses diverged"** callout names any task the two h
 disagreed on, with both cells' pass@k, step count, cost, and the failing cell's reason —
 the demo frame.
 
+A **baseline** from a real 10/10 run is committed at `baseline.json` (Claude vs browser-use,
+2026-06-14). After a re-run, diff against it to see what moved:
+
+```bash
+taskproof diff --dir taskproof-runs --baseline examples/comparison/baseline.json --markdown
+```
+
 ## The five tasks (a demo arc, not a flat benchmark)
 
 | Spec                          | Role                          | What it shows                                                             |

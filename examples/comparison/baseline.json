@@ -1,0 +1,198 @@
+{
+  "manifestVersion": "0.1",
+  "generatedAtMs": 1781397841910,
+  "totalCostUsd": 20.539764249999998,
+  "cells": [
+    {
+      "taskId": "books-find-upc",
+      "goal": "From the catalog, open the product detail page for the book 'A Light in the Attic' and confirm you have reached its product page showing the product information table.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.39894999999999997,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "books-find-upc__claude-opus-4-8__run0__1",
+        "books-find-upc__claude-opus-4-8__run1__2",
+        "books-find-upc__claude-opus-4-8__run2__3"
+      ],
+      "stepCount": 4
+    },
+    {
+      "taskId": "books-find-upc",
+      "goal": "From the catalog, open the product detail page for the book 'A Light in the Attic' and confirm you have reached its product page showing the product information table.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.79220125,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "books-find-upc__browser-use__run0__4",
+        "books-find-upc__browser-use__run1__5",
+        "books-find-upc__browser-use__run2__6"
+      ],
+      "stepCount": 3
+    },
+    {
+      "taskId": "dynamic-loading-wait",
+      "goal": "Click the 'Start' button and wait for the page to finish loading, then confirm the result text appears.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.24954500000000002,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "dynamic-loading-wait__claude-opus-4-8__run0__7",
+        "dynamic-loading-wait__claude-opus-4-8__run1__8",
+        "dynamic-loading-wait__claude-opus-4-8__run2__9"
+      ],
+      "stepCount": 3
+    },
+    {
+      "taskId": "dynamic-loading-wait",
+      "goal": "Click the 'Start' button and wait for the page to finish loading, then confirm the result text appears.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.9080202500000001,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "dynamic-loading-wait__browser-use__run0__10",
+        "dynamic-loading-wait__browser-use__run1__11",
+        "dynamic-loading-wait__browser-use__run2__12"
+      ],
+      "stepCount": 4
+    },
+    {
+      "taskId": "saucedemo-buy-tshirt",
+      "goal": "Log in with username standard_user and password secret_sauce, add the 'Sauce Labs Bolt T-Shirt' to the cart, open the cart, check out using first name Test, last name User, zip 94016, and finish the purchase until you reach the order-complete confirmation.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 4.00906,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "saucedemo-buy-tshirt__claude-opus-4-8__run0__13",
+        "saucedemo-buy-tshirt__claude-opus-4-8__run1__14",
+        "saucedemo-buy-tshirt__claude-opus-4-8__run2__15"
+      ],
+      "stepCount": 17
+    },
+    {
+      "taskId": "saucedemo-buy-tshirt",
+      "goal": "Log in with username standard_user and password secret_sauce, add the 'Sauce Labs Bolt T-Shirt' to the cart, open the cart, check out using first name Test, last name User, zip 94016, and finish the purchase until you reach the order-complete confirmation.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 7.414117,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "saucedemo-buy-tshirt__browser-use__run0__16",
+        "saucedemo-buy-tshirt__browser-use__run1__17",
+        "saucedemo-buy-tshirt__browser-use__run2__18"
+      ],
+      "stepCount": 20
+    },
+    {
+      "taskId": "scrapingcourse-cart-network",
+      "goal": "On the shop page, find the 'Affirm Water Bottle' and click its 'Add to cart' button directly in the product listing (do not open the product detail page), then open the cart and confirm the Affirm Water Bottle is in it.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 2,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 3.7389149999999995,
+      "statuses": ["completed", "completed", "budget_exceeded"],
+      "runIds": [
+        "scrapingcourse-cart-network__claude-opus-4-8__run0__19",
+        "scrapingcourse-cart-network__claude-opus-4-8__run1__20",
+        "scrapingcourse-cart-network__claude-opus-4-8__run2__21"
+      ],
+      "stepCount": 16,
+      "failureSummary": "final URL https://www.scrapingcourse.com/ecommerce/ did not match **/ecommerce/cart/**"
+    },
+    {
+      "taskId": "scrapingcourse-cart-network",
+      "goal": "On the shop page, find the 'Affirm Water Bottle' and click its 'Add to cart' button directly in the product listing (do not open the product detail page), then open the cart and confirm the Affirm Water Bottle is in it.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 1.22314,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "scrapingcourse-cart-network__browser-use__run0__22",
+        "scrapingcourse-cart-network__browser-use__run1__23",
+        "scrapingcourse-cart-network__browser-use__run2__24"
+      ],
+      "stepCount": 4
+    },
+    {
+      "taskId": "wikipedia-shannon-baseline",
+      "goal": "Use the Wikipedia search box to find the article for 'Claude Shannon', open it, and confirm you have reached his article page.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.5249550000000001,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "wikipedia-shannon-baseline__claude-opus-4-8__run0__25",
+        "wikipedia-shannon-baseline__claude-opus-4-8__run1__26",
+        "wikipedia-shannon-baseline__claude-opus-4-8__run2__27"
+      ],
+      "stepCount": 5
+    },
+    {
+      "taskId": "wikipedia-shannon-baseline",
+      "goal": "Use the Wikipedia search box to find the article for 'Claude Shannon', open it, and confirm you have reached his article page.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 1.28086075,
+      "statuses": ["completed", "completed", "completed"],
+      "runIds": [
+        "wikipedia-shannon-baseline__browser-use__run0__28",
+        "wikipedia-shannon-baseline__browser-use__run1__29",
+        "wikipedia-shannon-baseline__browser-use__run2__30"
+      ],
+      "stepCount": 4
+    }
+  ]
+}
