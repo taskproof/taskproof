@@ -67,6 +67,8 @@ const sidecarUsageSchema = z.object({
 export const sidecarRunResponseSchema = z.object({
   status: z.enum(['completed', 'max_steps', 'budget_exceeded', 'aborted', 'error']),
   finalUrl: z.string().optional(),
+  /** Whether the final page rendered real content (body has children); guards `absent`. */
+  pageReady: z.boolean().optional(),
   steps: z.array(sidecarStepSchema).default([]),
   network: z.array(sidecarNetworkSchema).default([]),
   domProbes: z.record(z.string(), sidecarDomProbeSchema).default({}),

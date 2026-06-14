@@ -122,6 +122,21 @@ describe('dom assertions', () => {
     expect(present.detail).toContain('still present');
   });
 
+  it('absent does NOT pass vacuously on a page that rendered no content (pageReady false)', async () => {
+    const a: Assertion = { type: 'dom', selector: '.consent', state: 'absent' };
+    const deadPage = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: false, visible: false, text: null, pageReady: false }) }),
+    );
+    expect(deadPage.ok).toBe(false);
+    expect(deadPage.detail).toContain('failed load');
+    const realPage = await evaluateAssertion(
+      a,
+      probe({ dom: () => ({ exists: false, visible: false, text: null, pageReady: true }) }),
+    );
+    expect(realPage.ok).toBe(true);
+  });
+
   it('hidden passes when present-but-not-visible, fails when visible or absent', async () => {
     const a: Assertion = { type: 'dom', selector: '.modal', state: 'hidden' };
     const dismissed = await evaluateAssertion(

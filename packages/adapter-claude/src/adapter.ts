@@ -297,17 +297,24 @@ async function runClaude(
 
 /** Inspect a CSS selector against the live page for the grader's dom assertions. */
 async function domProbe(page: Page, selector: string): Promise<DomProbeResult> {
+  // Did the page render real content? Lets the grader reject a vacuous `absent` pass on a
+  // blank / failed-navigation page (a missing element there is not a dismissal). Passed as a
+  // string so it's evaluated in the browser (this package has no DOM lib types).
+  const pageReady = await page
+    .evaluate('!!(document.body && document.body.childElementCount > 0)')
+    .then((value) => value === true)
+    .catch(() => false);
   try {
     const locator = page.locator(selector);
     const count = await locator.count();
-    if (count === 0) return { exists: false, visible: false, text: null };
+    if (count === 0) return { exists: false, visible: false, text: null, pageReady };
     const first = locator.first();
     const visible = await first.isVisible();
     const text = (await first.textContent()) ?? '';
-    return { exists: true, visible, text };
+    return { exists: true, visible, text, pageReady };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return { exists: false, visible: false, text: null, error: message };
+    return { exists: false, visible: false, text: null, error: message, pageReady };
   }
 }
 

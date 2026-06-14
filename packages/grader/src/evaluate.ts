@@ -88,12 +88,17 @@ export async function evaluateAssertion(
     };
   }
   if (assertion.state === 'absent') {
+    // A missing element on a blank/failed page is not a dismissal: when the probe reports the
+    // page rendered no content (pageReady === false), don't count `absent` as a pass.
+    const ok = !result.exists && result.pageReady !== false;
     return {
       type: 'dom',
-      ok: !result.exists,
+      ok,
       detail: result.exists
         ? `"${assertion.selector}" is still present`
-        : `"${assertion.selector}" is absent`,
+        : result.pageReady === false
+          ? `"${assertion.selector}" is absent, but the page rendered no content (likely a failed load) — not counted as cleared`
+          : `"${assertion.selector}" is absent`,
       ...base,
     };
   }
