@@ -7,6 +7,8 @@ agent-usability across releases.
 
 > Status: pre-release. Runs from this repo for now — the npm package is a reserved placeholder.
 
+![taskproof comparing Claude computer-use vs. browser-use on the same tasks: the pass/fail matrix with cost and step count per harness, then a graded per-run trace with screenshots](docs/demo.gif)
+
 ## What it does
 
 Write task specs (YAML: a natural-language goal + deterministic success assertions), point
