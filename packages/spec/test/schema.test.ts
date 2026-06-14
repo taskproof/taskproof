@@ -121,6 +121,19 @@ describe('taskSpecSchema', () => {
     expect(ok.success).toBe(true);
   });
 
+  it('accepts the absent and hidden dom states (and forbids text on them)', () => {
+    expect(
+      parse({ assertions: [{ type: 'dom', selector: '.modal', state: 'absent' }] }).success,
+    ).toBe(true);
+    expect(
+      parse({ assertions: [{ type: 'dom', selector: '.modal', state: 'hidden' }] }).success,
+    ).toBe(true);
+    expect(
+      parse({ assertions: [{ type: 'dom', selector: '.modal', state: 'absent', text: 'x' }] })
+        .success,
+    ).toBe(false);
+  });
+
   it('accepts network status as a code or a class, rejects nonsense', () => {
     const base = { type: 'network', urlPattern: '**/api/**' };
     expect(parse({ assertions: [{ ...base, status: 200 }] }).success).toBe(true);
