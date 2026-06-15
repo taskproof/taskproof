@@ -13,7 +13,7 @@ import {
   type JudgeInput,
 } from '@taskproof/judge';
 import { MANIFEST_VERSION, type ManifestCell, type RunManifest } from '@taskproof/report';
-import { safeParseTaskSpec, type PassPolicy, type TaskSpec } from '@taskproof/spec';
+import { K_MAX, safeParseTaskSpec, type PassPolicy, type TaskSpec } from '@taskproof/spec';
 
 import { resolveSpecFiles } from './files.js';
 
@@ -49,6 +49,12 @@ function toJudgeInput(spec: TaskSpec, artifact: RunArtifact): JudgeInput {
 /** The effective pass@k policy for a run, applying an optional `k` override. */
 export function effectivePolicy(spec: TaskSpec, kOverride?: number): PassPolicy {
   if (kOverride === undefined) return spec.passPolicy;
+  // Defense for programmatic callers: the CLI caps -k, but the override otherwise bypasses the
+  // schema's 1..K_MAX bound — and each run is a paid agent invocation, so an unbounded k is a
+  // real cost footgun.
+  if (!Number.isInteger(kOverride) || kOverride < 1 || kOverride > K_MAX) {
+    throw new Error(`pass@k override (-k) must be an integer in 1..${K_MAX}, got ${kOverride}`);
+  }
   return { k: kOverride, minPasses: Math.min(spec.passPolicy.minPasses, kOverride) };
 }
 
@@ -89,16 +95,17 @@ export async function runSpecs(
 
   await mkdir(options.outDir, { recursive: true });
 
-  // --max-cost is a real, enforced per-turn cap for the Claude adapter, but browser-use runs
-  // to its own completion/maxSteps — taskproof can't stop it mid-run — so the cap is advisory
-  // there (cost may exceed it; the report shows the actual figure). Say so loudly, once.
+  // The budget cap is a soft per-turn cap on the Claude adapter, but browser-use runs to its own
+  // completion/maxSteps — taskproof can't stop it mid-run — so the cap is unenforced there. Say
+  // so loudly, once, whether the cap came from --max-cost OR a spec's maxCostUsd field.
   const usesBrowserUse = options.models.some(
     (m) => m === 'browser-use' || m.startsWith('browser-use:'),
   );
-  if (options.maxCostUsd !== undefined && usesBrowserUse) {
+  const anyCap = options.maxCostUsd !== undefined || specs.some((s) => s.maxCostUsd !== undefined);
+  if (usesBrowserUse && anyCap) {
     onProgress(
-      `note: --max-cost ($${options.maxCostUsd.toFixed(2)}) is NOT enforced mid-run for browser-use; ` +
-        `its maxSteps bound applies and cost may exceed the cap. Lower maxSteps to bound browser-use spend.`,
+      'WARNING: the budget cap is NOT enforced mid-run for browser-use — it runs to its maxSteps ' +
+        'and cost may exceed the cap. Lower maxSteps to bound browser-use spend.',
     );
   }
 
@@ -165,7 +172,16 @@ export async function runSpecs(
         statuses.push(artifact.status);
         runIds.push(runId);
         // Cell cost includes the agent run AND any LLM-judge call, so reported $ isn't understated.
-        cellCost += artifact.usage.costUsd + (artifact.judge?.costUsd ?? 0);
+        const runCostUsd = artifact.usage.costUsd + (artifact.judge?.costUsd ?? 0);
+        cellCost += runCostUsd;
+        // Surface a cap breach (the soft cap can overshoot by ≤1 turn on Claude; browser-use isn't
+        // capped mid-run) so an over-budget run is never silently reported as fine.
+        const cap = options.maxCostUsd ?? spec.maxCostUsd;
+        if (cap !== undefined && runCostUsd > cap) {
+          onProgress(
+            `  ⚠ run cost $${runCostUsd.toFixed(4)} exceeded the $${cap.toFixed(2)} cap (soft cap; see Limitations)`,
+          );
+        }
         if (run === 0) stepCount = artifact.steps.length;
         if (!passed && failureSummary === undefined) {
           const failing = artifact.assertions.find((a) => !a.ok);

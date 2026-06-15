@@ -22,8 +22,9 @@ const artifact = await adapter.run(
 
 What it does each turn: screenshot → send to Claude with the `computer` tool → execute
 the requested actions on the page (clicks, typing, scrolling, drags, key combos, zoom) →
-return a fresh screenshot. It tracks token cost with a hard `--max-cost` cap, records a
-per-step trace (narration + actions + screenshots), and logs network requests.
+return a fresh screenshot. It tracks token cost with a soft `--max-cost` cap (it stops before a
+turn it can't afford, so it can overshoot by ≤1 turn's cost), records a per-step trace
+(narration + actions + screenshots), and logs network requests.
 
 - **Models:** `computer_20251124` + beta `computer-use-2025-11-24` for Opus 4.8/4.7/4.6,
   Sonnet 4.6, Opus 4.5; `computer_20250124` for Sonnet 4.5 / Haiku 4.5. Default display is

@@ -36,7 +36,6 @@ async function runBrowserUse(input: AdapterRunInput, config: AdapterConfig): Pro
   const baseUrl =
     sidecarConfig.sidecarUrl ?? process.env['TASKPROOF_BROWSER_USE_URL'] ?? DEFAULT_SIDECAR_URL;
   const display = config.display ?? DEFAULT_DISPLAY;
-  const maxCostUsd = config.maxCostUsd ?? spec.maxCostUsd;
   const startedAtMs = Date.now();
 
   const request: SidecarRunRequest = {
@@ -50,7 +49,8 @@ async function runBrowserUse(input: AdapterRunInput, config: AdapterConfig): Pro
       .filter((assertion) => assertion.type === 'dom')
       .map((assertion) => assertion.selector),
     ...(spec.allowedDomains.length > 0 ? { allowedDomains: spec.allowedDomains } : {}),
-    ...(maxCostUsd !== undefined ? { maxCostUsd } : {}),
+    // NB: no maxCostUsd — taskproof can't enforce a $ cap mid-run for browser-use (it runs to
+    // maxSteps), so we don't send a field that would imply otherwise. maxSteps bounds the run.
   };
 
   try {

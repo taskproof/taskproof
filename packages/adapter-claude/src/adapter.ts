@@ -152,9 +152,11 @@ async function runClaude(
       }
 
       // Pre-flight budget gate: stop BEFORE paying for a turn we can't afford, rather than only
-      // noticing we overshot after it's already billed. The next turn is estimated by the largest
-      // turn so far (input grows each turn, so this is a floor); the post-turn check below is the
-      // backstop if a turn still spikes past the estimate. (No-op on turn 0: estimate is 0.)
+      // noticing we overshot after it's already billed. The next turn is *estimated* by the
+      // largest turn cost so far — only a best-effort guess, not a guaranteed floor: under prompt
+      // caching a later turn can be cheaper (cache reads bill at 0.1x), so the estimate can run
+      // high or low. The post-turn backstop below — not this gate — is what actually bounds the
+      // overshoot to ≤1 turn. (No-op on turn 0: estimate is 0.)
       if (meter.wouldExceed(maxTurnCostUsd)) {
         status = 'budget_exceeded';
         break;

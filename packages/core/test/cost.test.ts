@@ -101,12 +101,24 @@ describe('CostMeter', () => {
     expect(meter.remainingUsd()).toBeUndefined();
   });
 
-  it('rejects a NaN / Infinity / negative cap (no silently-unbounded run)', () => {
-    // A NaN cap would make every `> cap` comparison false, silently disabling the budget.
+  it('rejects a NaN / Infinity / non-positive cap (no silently-unbounded run)', () => {
+    // A NaN cap would make every `> cap` comparison false, silently disabling the budget; a 0
+    // cap reads as "spend nothing" yet still bills one turn — both are footguns. The constructor
+    // matches the schema's `.positive()` and the CLI's `> 0` check.
     expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: Number.NaN })).toThrow();
     expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: Infinity })).toThrow();
     expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: -1 })).toThrow();
-    expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: 0 })).not.toThrow();
+    expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: 0 })).toThrow(/positive/);
     expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: 2.5 })).not.toThrow();
+  });
+
+  it('rejects a non-finite turn cost in record() (would poison the budget total)', () => {
+    // A NaN/Infinity usage value must not silently flow into `total` — once total is NaN, every
+    // `wouldExceed`/`enforce` comparison is false and the soft cap is permanently defeated.
+    const meter = new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: 10 });
+    expect(() => meter.record({ inputTokens: Number.NaN, outputTokens: 0 })).toThrow(/finite/);
+    expect(() => meter.record({ inputTokens: Infinity, outputTokens: 0 })).toThrow(/finite/);
+    // A clean record after a rejected one still works and the total is uncorrupted.
+    expect(meter.record({ inputTokens: 1_000_000, outputTokens: 0 }).totalUsd).toBeCloseTo(5);
   });
 });

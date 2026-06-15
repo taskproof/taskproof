@@ -16,7 +16,10 @@ export interface AdapterRunInput {
 export interface AdapterConfig {
   /** Model id to drive the agent (e.g. "claude-opus-4-8"). */
   model: string;
-  /** Hard per-run budget cap in USD. Falls back to the spec's `maxCostUsd`. */
+  /**
+   * Soft per-run budget cap in USD. Falls back to the spec's `maxCostUsd`. Claude stops before a
+   * turn it can't afford (overshoot ≤1 turn); browser-use is bounded by `maxSteps`, not cost.
+   */
   maxCostUsd?: number;
   /** Run the browser headless (default true in CI). */
   headless?: boolean;

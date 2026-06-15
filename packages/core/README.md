@@ -10,7 +10,8 @@ produced a run:
   serialize to this identical shape. _That uniformity is the moat._
 - **The adapter interface** (`Adapter`) — `run(input, config) => Promise<RunArtifact>`.
 - **The cost meter** (`CostMeter`) — token→USD accounting with cache-aware pricing and a
-  hard per-run budget cap.
+  soft per-run budget cap (`wouldExceed()` lets a caller stop before the next turn it can't
+  afford; a turn can still overshoot the cap by its own cost since cost is only known once billed).
 
 ```ts
 import { CostMeter, parseRunArtifact, type Adapter } from '@taskproof/core';

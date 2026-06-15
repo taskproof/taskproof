@@ -18,20 +18,24 @@ describe('buildProgram', () => {
 });
 
 describe('numeric flag validation', () => {
-  it('parsePositiveFloat rejects NaN / non-positive / trailing-garbage, accepts a positive number', () => {
-    expect(parsePositiveFloat('--max-cost', '1.5')).toBe(1.5);
-    expect(() => parsePositiveFloat('--max-cost', 'garbage')).toThrow(/positive number/);
-    expect(() => parsePositiveFloat('--max-cost', '1.5abc')).toThrow(/positive number/);
-    expect(() => parsePositiveFloat('--max-cost', '')).toThrow(/positive number/);
-    expect(() => parsePositiveFloat('--max-cost', '0')).toThrow(/positive number/);
-    expect(() => parsePositiveFloat('--max-cost', '-2')).toThrow(/positive number/);
+  it('parsePositiveFloat: accepts plain decimals in (0, max]; rejects garbage/sci/hex/over-max', () => {
+    expect(parsePositiveFloat('--max-cost', '1.5', 1000)).toBe(1.5);
+    expect(parsePositiveFloat('--max-cost', '0.5', 1000)).toBe(0.5);
+    expect(parsePositiveFloat('--max-cost', '.5', 1000)).toBe(0.5); // leading-dot accepted
+    expect(parsePositiveFloat('--max-cost', '1.0', 1000)).toBe(1); // trailing zero accepted
+    expect(parsePositiveFloat('--max-cost', '1000', 1000)).toBe(1000); // exactly max is allowed
+    // '1.' (trailing dot, no fractional digit) is deliberately rejected; pin it so an
+    // alternation tweak can't silently start accepting it.
+    for (const bad of ['garbage', '1.5abc', '1e6', '0x10', '+5', '1.', '', '0', '-2', '1001']) {
+      expect(() => parsePositiveFloat('--max-cost', bad, 1000)).toThrow(/--max-cost/);
+    }
   });
 
-  it('parsePositiveInt rejects NaN / non-positive / fractional, accepts a positive integer', () => {
-    expect(parsePositiveInt('-k', '3')).toBe(3);
-    expect(() => parsePositiveInt('-k', 'NaN')).toThrow(/positive integer/);
-    expect(() => parsePositiveInt('-k', '3.9')).toThrow(/positive integer/);
-    expect(() => parsePositiveInt('-k', '0')).toThrow(/positive integer/);
-    expect(() => parsePositiveInt('-k', '-1')).toThrow(/positive integer/);
+  it('parsePositiveInt: accepts integers in 1..max; rejects NaN/Infinity/fractional/over-max', () => {
+    expect(parsePositiveInt('-k', '3', 25)).toBe(3);
+    expect(parsePositiveInt('-k', '25', 25)).toBe(25);
+    for (const bad of ['NaN', 'Infinity', '3.9', '0', '-1', '26', '1e2', '']) {
+      expect(() => parsePositiveInt('-k', bad, 25)).toThrow(/-k/);
+    }
   });
 });

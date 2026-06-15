@@ -64,17 +64,19 @@ export interface CostMeterOptions {
   model?: string;
   /** Explicit pricing; overrides the table lookup (required for unknown models). */
   pricing?: ModelPricing;
-  /** Hard per-run budget cap in USD; omitted means unbounded. */
+  /** Soft per-run budget cap in USD (see {@link CostMeter}); omitted means unbounded. */
   maxCostUsd?: number;
 }
 
 type Totals = Required<TokenUsage>;
 
 /**
- * Accumulates token usage across an agent run and tracks cost against an optional
- * hard cap. The meter never throws on `record`; callers decide how to react —
- * `enforce()` throws past the cap, `wouldExceed()` / `remainingUsd()` allow a soft
- * check before spending the next turn.
+ * Accumulates token usage across an agent run and tracks cost against an optional budget cap.
+ * The cap is SOFT, not hard: a turn's cost is unknown until it's billed, so callers gate the
+ * next turn via `wouldExceed()` / `remainingUsd()` (stop before paying) — but a turn that spikes
+ * past the running estimate can still exceed the cap by up to one turn's cost. `record()` throws
+ * only on a non-finite turn cost (a data error that would otherwise poison the budget); after a
+ * clean record, `enforce()` throws once the total is already over.
  */
 export class CostMeter {
   readonly pricing: ModelPricing;
@@ -99,13 +101,14 @@ export class CostMeter {
     this.pricing = pricing;
     if (
       options.maxCostUsd !== undefined &&
-      (!Number.isFinite(options.maxCostUsd) || options.maxCostUsd < 0)
+      (!Number.isFinite(options.maxCostUsd) || options.maxCostUsd <= 0)
     ) {
       // A NaN cap (e.g. from `--max-cost garbage` → parseFloat) would make every `> cap`
-      // comparison false, silently disabling the budget. Reject it rather than run unbounded.
-      throw new Error(
-        `maxCostUsd must be a finite, non-negative number, got ${options.maxCostUsd}`,
-      );
+      // comparison false, silently disabling the budget. A 0 cap reads as "spend nothing" but
+      // still bills one turn under the soft-cap model — a footgun — so reject ≤ 0 too. This
+      // matches the schema's `.positive()` and the CLI's `> 0` check; the only callers that pass
+      // a cap go through one of those, so legitimate runs are unaffected.
+      throw new Error(`maxCostUsd must be a finite, positive number, got ${options.maxCostUsd}`);
     }
     this.maxCostUsd = options.maxCostUsd;
   }
@@ -113,6 +116,15 @@ export class CostMeter {
   /** Add one turn's usage to the running totals and return its and the cumulative cost. */
   record(usage: TokenUsage): { costUsd: number; totalUsd: number } {
     const costUsd = priceUsage(usage, this.pricing);
+    if (!Number.isFinite(costUsd)) {
+      // A non-finite turn cost (NaN/Infinity from a malformed usage object) would poison `total`
+      // for the rest of the run — every `wouldExceed`/`enforce` comparison against NaN is false,
+      // silently defeating the budget cap. Reject it rather than corrupt the meter. Symmetric
+      // with the constructor's guard on `maxCostUsd`.
+      throw new Error(
+        `CostMeter.record: turn cost must be finite, got ${costUsd} from usage ${JSON.stringify(usage)}`,
+      );
+    }
     this.total += costUsd;
     this.running.inputTokens += usage.inputTokens;
     this.running.outputTokens += usage.outputTokens;

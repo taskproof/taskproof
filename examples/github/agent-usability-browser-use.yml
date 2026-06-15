@@ -70,6 +70,10 @@ jobs:
           done
           echo "sidecar did not become ready in time" >&2; exit 1
       # ---------------------------------------------------------------------------------
+      # NOTE: --max-cost is advisory on the browser-use lane — taskproof can't stop browser-use
+      # mid-run, so it runs to each spec's maxSteps regardless of cost (the CLI warns about this
+      # at runtime, and still flags a per-run breach after the fact). Bound spend with maxSteps
+      # in your task specs; keep --max-cost only as a reporting tripwire.
       - name: Run agents
         run: >-
           node .taskproof-src/packages/cli/dist/index.js run taskproof/tasks/*.yaml

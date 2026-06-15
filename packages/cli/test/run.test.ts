@@ -17,6 +17,15 @@ describe('effectivePolicy', () => {
   it('keeps minPasses when the override k is larger', () => {
     expect(effectivePolicy(spec, 10)).toEqual({ k: 10, minPasses: 4 });
   });
+
+  it('rejects an out-of-range k (the override bypasses the schema bound)', () => {
+    // Each run is a paid agent invocation, so a programmatic caller passing k=100 or k=0
+    // must throw, not silently launch 100 runs or zero.
+    expect(() => effectivePolicy(spec, 100)).toThrow(/1\.\.25/);
+    expect(() => effectivePolicy(spec, 0)).toThrow(/1\.\.25/);
+    expect(() => effectivePolicy(spec, 2.5)).toThrow(/1\.\.25/);
+    expect(() => effectivePolicy(spec, -1)).toThrow(/1\.\.25/);
+  });
 });
 
 describe('formatReport', () => {

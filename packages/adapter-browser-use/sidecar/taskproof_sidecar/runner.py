@@ -167,7 +167,6 @@ def _assemble(
     dom_probes: dict[str, dict[str, Any]],
     network: list[dict[str, Any]],
     usage_summary: Any,
-    budget_exceeded: bool,
     page_ready: bool | None = None,
 ) -> dict[str, Any]:
     urls: list[Any] = _safe(history.urls, [])
@@ -209,12 +208,13 @@ def _assemble(
         cache_creation_tokens=getattr(usage_obj, "total_prompt_cache_creation_tokens", 0) or 0,
         cost_usd=getattr(usage_obj, "total_cost", 0.0) or 0.0,
     )
+    # No budget_exceeded: taskproof can't enforce a $ cap mid-run for browser-use (it runs to
+    # maxSteps), so this adapter never reports that status — maxSteps is the real bound.
     status = extract.derive_status(
         is_done=is_done,
         has_errors=has_errors,
         num_steps=n,
         max_steps=req.maxSteps,
-        budget_exceeded=budget_exceeded,
     )
     return extract.assemble_response(
         status=status,
@@ -297,7 +297,6 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
             dom_probes,
             network,
             usage_summary,
-            budget_exceeded=False,
             page_ready=page_ready,
         )
     except Exception as exc:  # noqa: BLE001 - return an artifact, never a bare 500

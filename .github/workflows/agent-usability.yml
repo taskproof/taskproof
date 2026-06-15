@@ -3,7 +3,8 @@
 #
 # Cost control:
 #   - Runs ONE cheap control task (Wikipedia, ~$0.45 for pass@3), Claude only (no sidecar),
-#     with a hard per-run cap. It validates the run→diff→comment→gate pipeline, not the full
+#     with a soft per-run cap (--max-cost; Claude stops before a turn it can't afford, so it can
+#     overshoot by ≤1 turn). It validates the run→diff→comment→gate pipeline, not the full
 #     matrix — run the full examples/comparison set manually / nightly when you want that.
 #   - The paid steps are gated on the ANTHROPIC_API_KEY secret, so before you add it (and on
 #     fork PRs, which don't get the secret) the job just builds and stays green — no spend, no

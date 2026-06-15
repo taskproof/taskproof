@@ -88,7 +88,9 @@ objection to testing them ("it's flaky") is designed around, not ignored:
 - **Deterministic assertions first** — `url`/`dom`/`network` checks decide the verdict; an
   optional, versioned LLM judge can layer on top for goals that aren't reducible to a selector,
   but it never replaces the deterministic checks.
-- **Hard cost caps** — every spec carries a `maxCostUsd`, and `run` takes `--max-cost`.
+- **Soft cost caps** — every spec carries a `maxCostUsd` and `run` takes `--max-cost`; on Claude
+  the run stops before a turn it can't afford (overshoot ≤1 turn), while browser-use is bounded by
+  `maxSteps`, not cost.
 - **Regression diffs, not absolute gates** — CI compares against a saved baseline and reports
   what moved, so a flaky cell shows up as signal rather than a spuriously red build.
 

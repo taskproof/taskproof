@@ -25,13 +25,9 @@ def test_derive_status_error_when_unfinished_with_errors():
     )
 
 
-def test_derive_status_budget_and_abort_take_precedence():
-    assert (
-        extract.derive_status(
-            is_done=False, has_errors=True, num_steps=20, max_steps=20, budget_exceeded=True
-        )
-        == "budget_exceeded"
-    )
+def test_derive_status_abort_takes_precedence():
+    # `aborted` wins over a max_steps/error condition. (No budget_exceeded case: browser-use
+    # is never budget-capped mid-run, so this adapter never produces that status.)
     assert (
         extract.derive_status(
             is_done=False, has_errors=True, num_steps=20, max_steps=20, aborted=True

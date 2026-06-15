@@ -2,29 +2,31 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 
 import { Command, InvalidArgumentError } from 'commander';
+import { K_MAX, MAX_COST_USD } from '@taskproof/spec';
 
 import { formatFileResult, validateFiles } from './validate.js';
 
 // Resolves to packages/cli/package.json from both src/ (tests) and dist/ (published).
 const pkg = createRequire(import.meta.url)('../package.json') as { version: string };
 
-// `Number()` (not parseFloat/parseInt) so trailing garbage ("1.5abc") and fractional ints
-// ("3.9") are rejected rather than silently coerced to 1.5 / truncated to 3.
-const toNumber = (value: string): number => (value.trim() === '' ? NaN : Number(value));
+// Plain-decimal only: reject hex (0x10), scientific (1e6), signs, and trailing garbage
+// ("1.5abc") rather than silently coercing them — a budget/run-count flag should be literal.
+const PLAIN_FLOAT = /^\d*\.\d+$|^\d+$/;
+const PLAIN_INT = /^\d+$/;
 
-/** Reject NaN / non-positive numeric flags at the CLI boundary (commander prints + exits). */
-export function parsePositiveFloat(flag: string, value: string): number {
-  const n = toNumber(value);
-  if (!Number.isFinite(n) || n <= 0) {
-    throw new InvalidArgumentError(`${flag} must be a positive number (got "${value}")`);
+/** Reject non-decimal / non-positive / over-max numeric flags at the CLI boundary. */
+export function parsePositiveFloat(flag: string, value: string, max: number): number {
+  const n = PLAIN_FLOAT.test(value.trim()) ? Number(value) : NaN;
+  if (!Number.isFinite(n) || n <= 0 || n > max) {
+    throw new InvalidArgumentError(`${flag} must be a positive number ≤ ${max} (got "${value}")`);
   }
   return n;
 }
 
-export function parsePositiveInt(flag: string, value: string): number {
-  const n = toNumber(value);
-  if (!Number.isInteger(n) || n <= 0) {
-    throw new InvalidArgumentError(`${flag} must be a positive integer (got "${value}")`);
+export function parsePositiveInt(flag: string, value: string, max: number): number {
+  const n = PLAIN_INT.test(value.trim()) ? Number(value) : NaN;
+  if (!Number.isInteger(n) || n <= 0 || n > max) {
+    throw new InvalidArgumentError(`${flag} must be an integer in 1..${max} (got "${value}")`);
   }
   return n;
 }
@@ -61,10 +63,12 @@ export function buildProgram(): Command {
     .argument('<files...>', 'task spec YAML files')
     .option('--models <list>', 'comma-separated model ids', 'claude-opus-4-8')
     .option('--out <dir>', 'directory for run artifacts', 'taskproof-runs')
-    .option('--max-cost <usd>', 'hard per-run budget cap in USD', (v) =>
-      parsePositiveFloat('--max-cost', v),
+    .option('--max-cost <usd>', 'per-run budget cap in USD (soft cap on the Claude adapter)', (v) =>
+      parsePositiveFloat('--max-cost', v, MAX_COST_USD),
     )
-    .option('-k, --runs <n>', 'override the spec pass@k k', (v) => parsePositiveInt('-k/--runs', v))
+    .option('-k, --runs <n>', 'override the spec pass@k k', (v) =>
+      parsePositiveInt('-k/--runs', v, K_MAX),
+    )
     .option('--headed', 'run with a visible browser (default headless)')
     .option('--no-judge', 'skip the LLM judge even when a spec sets a `judge` rubric')
     .action(

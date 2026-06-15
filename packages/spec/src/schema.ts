@@ -3,6 +3,11 @@ import { z } from 'zod';
 /** The current task-spec format version. Bump only via the RFC process once published. */
 export const SPEC_VERSION = '0.1';
 
+/** Max pass@k `k` (and the `-k`/`--runs` CLI override). Bounds paid runs per cell. */
+export const K_MAX = 25;
+/** Max per-run budget cap in USD (and the `--max-cost` CLI flag). A mistake-guard, not a limit. */
+export const MAX_COST_USD = 1000;
+
 /**
  * A hostname, optionally with a single leading `*.` wildcard to allow subdomains
  * (checkout flows commonly hop to e.g. `checkout.example.com`). Single-label names
@@ -87,7 +92,7 @@ export const assertionSchema = z
  */
 export const passPolicySchema = z
   .strictObject({
-    k: z.number().int().min(1).max(25),
+    k: z.number().int().min(1).max(K_MAX),
     minPasses: z.number().int().min(1),
   })
   .refine((policy) => policy.minPasses <= policy.k, {
@@ -132,11 +137,18 @@ const taskSpecObjectSchema = z.strictObject({
     .min(1)
     .max(200)
     .default(20),
-  /** Optional hard budget cap for a single run of this task, in USD. */
+  /**
+   * Optional SOFT budget cap for a single run of this task, in USD. On the Claude adapter the
+   * run stops before paying for a turn it can't afford (so it can overshoot by ≤1 turn's cost);
+   * for browser-use it's NOT enforced mid-run — `maxSteps` is the real bound there.
+   */
   maxCostUsd: z
     .number({ error: 'maxCostUsd must be a finite number of US dollars (e.g. 1.50)' })
     .positive()
-    .max(1000, 'maxCostUsd is a per-run cap; values over 1000 USD are almost certainly a mistake')
+    .max(
+      MAX_COST_USD,
+      `maxCostUsd is a per-run cap; values over ${MAX_COST_USD} USD are almost certainly a mistake`,
+    )
     .optional(),
   /**
    * Defaults to a single run — fine for local smoke checks; CI gating should set k >= 3

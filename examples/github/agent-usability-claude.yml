@@ -57,7 +57,8 @@ jobs:
         working-directory: .taskproof-src
       # ---------------------------------------------------------------------------------
 
-      # Cheap per-PR lane: one pass per task (-k 1) with a hard budget cap.
+      # Cheap per-PR lane: one pass per task (-k 1) with a soft budget cap (--max-cost; Claude
+      # stops before a turn it can't afford, so it may exceed by ≤1 turn's cost).
       - name: Run agents
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

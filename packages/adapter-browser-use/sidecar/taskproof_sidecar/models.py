@@ -19,4 +19,5 @@ class RunRequest(BaseModel):
     headless: bool = True
     domSelectors: list[str] = []
     allowedDomains: list[str] | None = None
-    maxCostUsd: float | None = None
+    # No maxCostUsd: taskproof can't enforce a $ cap mid-run for browser-use (it runs to
+    # maxSteps), so the sidecar doesn't accept a field that would falsely imply it does.

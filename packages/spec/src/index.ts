@@ -1,4 +1,6 @@
 export {
+  K_MAX,
+  MAX_COST_USD,
   SPEC_VERSION,
   assertionSchema,
   passPolicySchema,

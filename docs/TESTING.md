@@ -9,8 +9,9 @@ reserved placeholder, so `npx taskproof` doesn't work yet).
 - **Node ≥ 22** and **pnpm 10**
 - An **Anthropic API key** — `export ANTHROPIC_API_KEY=sk-ant-…`
 - A running spend appetite: a computer-use task costs roughly **$0.05–$2** depending on how
-  many steps it takes. Every spec supports a hard `maxCostUsd` cap, and `run` takes
-  `--max-cost`.
+  many steps it takes. Every spec supports a soft `maxCostUsd` cap (on Claude the run stops
+  before a turn it can't afford, so it can overshoot by ≤1 turn's cost; browser-use is bounded
+  by `maxSteps`, not cost), and `run` takes `--max-cost`.
 
 ## Setup (once)
 
@@ -47,7 +48,7 @@ id: pricing-trial
 goal: 'Find the pricing page and start a free trial of any paid plan.'
 entryUrl: 'https://your-site.com'
 maxSteps: 25 # give up after this many agent steps
-maxCostUsd: 2.00 # hard budget cap for one run
+maxCostUsd: 2.00 # soft budget cap for one run (Claude only; browser-use bounds on maxSteps)
 passPolicy: # agents are non-deterministic — run k times, pass if ≥ minPasses succeed
   k: 3
   minPasses: 2
@@ -80,7 +81,7 @@ threshold** (so it works as a CI gate). Artifacts (per-step traces + screenshots
 Useful flags:
 
 - `--models claude-opus-4-8,claude-sonnet-4-6` — compare models (one column each)
-- `--max-cost 1.50` — hard per-run USD cap, overrides the spec
+- `--max-cost 1.50` — soft per-run USD cap (Claude only; browser-use runs to `maxSteps`), overrides the spec
 - `-k 1` — override pass@k (a single run; good for a quick/cheap check)
 - `--headed` — watch the browser instead of running headless
 

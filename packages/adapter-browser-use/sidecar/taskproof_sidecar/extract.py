@@ -17,18 +17,17 @@ def derive_status(
     has_errors: bool,
     num_steps: int,
     max_steps: int,
-    budget_exceeded: bool = False,
     aborted: bool = False,
 ) -> str:
     """Map browser-use lifecycle flags to the project's RunStatus enum.
 
     Pass/fail is decided later by assertions on the TS side — this is only *why the run
-    stopped*, mirroring the Claude adapter's statuses.
+    stopped*, mirroring the Claude adapter's statuses. No `budget_exceeded`: taskproof can't
+    enforce a $ cap mid-run for browser-use (it runs to maxSteps), so this adapter never
+    produces that status — the shared enum still carries it because the Claude adapter does.
     """
     if aborted:
         return "aborted"
-    if budget_exceeded:
-        return "budget_exceeded"
     if not is_done and num_steps >= max_steps:
         return "max_steps"
     if has_errors and not is_done:
