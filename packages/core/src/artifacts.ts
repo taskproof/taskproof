@@ -76,6 +76,10 @@ export const judgeVerdictSchema = z.strictObject({
   reasoning: z.string(),
   /** The versioned judge prompt that produced this verdict, for reproducibility. */
   promptVersion: z.string().min(1),
+  /** The judge model that produced this verdict (separate from the agent's model). */
+  model: z.string().min(1).optional(),
+  /** USD cost of the judge call, so the run's total cost includes LLM-judge spend. */
+  costUsd: z.number().nonnegative().default(0),
   /** Set when the judge couldn't produce a clean verdict (API/parse failure → fails safe). */
   error: z.string().optional(),
 });

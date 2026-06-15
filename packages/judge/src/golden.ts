@@ -88,7 +88,7 @@ export const GOLDEN_CASES: GoldenCase[] = [
     expectPass: false,
   },
   {
-    name: 'uppercase verdict value (enum miss → keyword fallback)',
+    name: 'uppercase verdict value (case-normalized in JSON)',
     input: searchInput,
     response: '{"verdict": "PASS", "reason": "Article reached."}',
     expectPass: true,
@@ -121,6 +121,55 @@ export const GOLDEN_CASES: GoldenCase[] = [
     name: 'empty response fails safe',
     input: checkoutShallow,
     response: '',
+    expectPass: false,
+  },
+  // --- adversarial: the false-positive vectors a keyword fallback would mis-pass ---
+  {
+    name: 'FAIL prose containing the word "pass" (no JSON)',
+    input: checkoutShallow,
+    response: 'The agent did not pass the check; it never reached checkout.',
+    expectPass: false,
+  },
+  {
+    name: 'FAIL prose with "pass" before "fail" (no JSON)',
+    input: checkoutShallow,
+    response: 'It could not pass the verification step, so this is a fail.',
+    expectPass: false,
+  },
+  {
+    name: 'conflicting JSON objects fail safe',
+    input: checkoutShallow,
+    response: '{"verdict":"pass"} {"verdict":"fail"}',
+    expectPass: false,
+  },
+  {
+    name: 'broken JSON with stray braces + failure prose',
+    input: checkoutShallow,
+    response: '{oops}: the agent failed to pass the gate and stopped.',
+    expectPass: false,
+  },
+  {
+    name: 'whitespace-only fails safe',
+    input: checkoutShallow,
+    response: '   \n\t  ',
+    expectPass: false,
+  },
+  {
+    name: 'valid fail JSON survives a trailing prose footnote with a stray brace',
+    input: checkoutShallow,
+    response: '{"verdict":"fail","reason":"item unconfirmed"} (see note {ref})',
+    expectPass: false,
+  },
+  {
+    name: 'JSON fail whose reason contains "passed" stays fail',
+    input: checkoutShallow,
+    response: '{"verdict":"fail","reason":"the agent never passed the gate"}',
+    expectPass: false,
+  },
+  {
+    name: 'refusal arguing failure without the word "fail"',
+    input: checkoutShallow,
+    response: 'I cannot confirm the task was completed based on the evidence provided.',
     expectPass: false,
   },
 ];

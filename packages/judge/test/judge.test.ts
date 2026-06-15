@@ -20,7 +20,7 @@ describe('parseVerdict (golden set)', () => {
   it('fails safe (never passes) on an unrecoverable response', () => {
     const v = parseVerdict('total nonsense with no verdict at all');
     expect(v.pass).toBe(false);
-    expect(v.reasoning).toContain('could not parse');
+    expect(v.reasoning).toContain('no parseable JSON verdict');
   });
 });
 
@@ -57,15 +57,29 @@ describe('buildJudgePrompt', () => {
 describe('judgeRun', () => {
   it('stamps the prompt version and maps a passing response', async () => {
     const verdict = await judgeRun(sample, () =>
-      Promise.resolve('{"verdict":"pass","reason":"done"}'),
+      Promise.resolve({ text: '{"verdict":"pass","reason":"done"}' }),
     );
-    expect(verdict).toEqual({ pass: true, reasoning: 'done', promptVersion: JUDGE_PROMPT_VERSION });
+    expect(verdict).toEqual({
+      pass: true,
+      reasoning: 'done',
+      promptVersion: JUDGE_PROMPT_VERSION,
+      costUsd: 0,
+    });
+  });
+
+  it('propagates the judge call cost and model onto the verdict', async () => {
+    const verdict = await judgeRun(sample, () =>
+      Promise.resolve({ text: '{"verdict":"pass"}', costUsd: 0.012, model: 'claude-opus-4-8' }),
+    );
+    expect(verdict.costUsd).toBe(0.012);
+    expect(verdict.model).toBe('claude-opus-4-8');
   });
 
   it('turns a thrown completion into a failing, error-carrying verdict (fails safe)', async () => {
     const verdict = await judgeRun(sample, () => Promise.reject(new Error('429 rate limited')));
     expect(verdict.pass).toBe(false);
     expect(verdict.error).toContain('429');
+    expect(verdict.costUsd).toBe(0);
     expect(verdict.promptVersion).toBe(JUDGE_PROMPT_VERSION);
   });
 
@@ -75,7 +89,7 @@ describe('judgeRun', () => {
     await judgeRun(sample, (system, user) => {
       seenSystem = system;
       seenUser = user;
-      return Promise.resolve('{"verdict":"fail","reason":"x"}');
+      return Promise.resolve({ text: '{"verdict":"fail","reason":"x"}' });
     });
     expect(seenSystem).toContain('strict evaluator');
     expect(seenUser).toContain('Buy a t-shirt');

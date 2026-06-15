@@ -8,7 +8,7 @@
  * passed, then ask for an evidence-grounded pass/fail. Screenshot/key-frame evidence is the
  * next iteration; v1 judges from the text trajectory + final URL + assertion results.
  */
-export const JUDGE_PROMPT_VERSION = '2026-06-15.1';
+export const JUDGE_PROMPT_VERSION = '2026-06-15.2';
 
 export interface JudgeStep {
   index: number;
@@ -45,8 +45,10 @@ Rules:
 - If the evidence is insufficient to CONFIRM the success criteria were met, answer "fail".
 - Ignore minor cosmetic deviations; judge whether the criteria were genuinely satisfied.
 
-Respond with ONLY a JSON object and nothing else:
-{"verdict": "pass" | "fail", "reason": "<one or two sentences citing the specific evidence>"}`;
+Respond with ONLY a single JSON object and nothing else:
+{"verdict": "pass" | "fail", "reason": "<one or two sentences citing the specific evidence>"}
+
+Any response that is not a single clean JSON object — extra prose, multiple objects, or a contradiction — is treated as a FAIL.`;
 
 /** Build the user-message evidence prompt for a single run. */
 export function buildJudgePrompt(input: JudgeInput): string {

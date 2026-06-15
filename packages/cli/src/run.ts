@@ -125,6 +125,8 @@ export async function runSpecs(
         const deterministic = deterministicPass(artifact.assertions);
         let passed = deterministic;
         if (spec.judge !== undefined && options.judge !== false && deterministic) {
+          // judgeRun never throws (failures become a failing verdict); this try only guards
+          // createAnthropicJudge() construction (e.g. an SDK setup error).
           try {
             judgeComplete ??= createAnthropicJudge();
             const verdict = await judgeRun(toJudgeInput(spec, artifact), judgeComplete);
@@ -136,6 +138,7 @@ export async function runSpecs(
               pass: false,
               reasoning: `judge unavailable: ${message}`,
               promptVersion: JUDGE_PROMPT_VERSION,
+              costUsd: 0,
               error: message,
             };
             passed = false;
@@ -147,12 +150,17 @@ export async function runSpecs(
         perRunPassed.push(passed);
         statuses.push(artifact.status);
         runIds.push(runId);
-        cellCost += artifact.usage.costUsd;
+        // Cell cost includes the agent run AND any LLM-judge call, so reported $ isn't understated.
+        cellCost += artifact.usage.costUsd + (artifact.judge?.costUsd ?? 0);
         if (run === 0) stepCount = artifact.steps.length;
         if (!passed && failureSummary === undefined) {
           const failing = artifact.assertions.find((a) => !a.ok);
+          const judgeReason = artifact.judge?.reasoning;
           failureSummary =
-            failing?.detail ?? artifact.judge?.reasoning ?? artifact.error ?? artifact.status;
+            failing?.detail ??
+            (judgeReason !== undefined && judgeReason !== '' ? judgeReason : undefined) ??
+            artifact.error ??
+            artifact.status;
         }
         onProgress(
           `  ↳ ${passed ? 'PASS' : 'fail'} (${artifact.status}, ${artifact.steps.length} steps, $${artifact.usage.costUsd.toFixed(4)}${artifact.judge !== undefined ? `, judge ${artifact.judge.pass ? 'pass' : 'fail'}` : ''})`,

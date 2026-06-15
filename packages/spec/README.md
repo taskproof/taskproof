@@ -32,19 +32,20 @@ assertions: # at least one; ALL must hold for a run to pass
 
 ## Fields
 
-| Field            | Required | Notes                                                                                                                                                                                                  |
-| ---------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `specVersion`    | yes      | Format version, currently `"0.1"`. Must be a quoted string — YAML reads unquoted `0.1` as a number, which cannot round-trip versions (0.10 becomes 0.1), so the parser rejects it with a quoting hint. |
-| `id`             | yes      | Kebab-case, stable across runs — baselines and diffs key on it.                                                                                                                                        |
-| `goal`           | yes      | The natural-language instruction handed verbatim to each agent.                                                                                                                                        |
-| `description`    | no       | Human-facing context; never shown to the agent.                                                                                                                                                        |
-| `tags`           | no       | Free-form labels for filtering (`docs`, `smoke`, …).                                                                                                                                                   |
-| `entryUrl`       | yes      | http(s) URL where every run starts. Credentials (`user:pass@`) are rejected — specs land in reports and artifacts.                                                                                     |
-| `allowedDomains` | no       | Hostnames the agent may visit; `*.example.com` wildcards and `localhost` allowed. Defaults to the entry hostname.                                                                                      |
-| `maxSteps`       | no       | Hard step cap before the run is failed (default 20).                                                                                                                                                   |
-| `maxCostUsd`     | no       | Hard budget cap per run; the runner aborts past it.                                                                                                                                                    |
-| `passPolicy`     | no       | pass@k with a threshold. The default (`k: 1`) is a single smoke run for local dev; CI gating should set `k ≥ 3` with a threshold — never a binary gate.                                                |
-| `assertions`     | yes      | Deterministic checks, all required to pass. LLM-judge grading layers on top of these, never replaces them.                                                                                             |
+| Field            | Required | Notes                                                                                                                                                                                                                 |
+| ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `specVersion`    | yes      | Format version, currently `"0.1"`. Must be a quoted string — YAML reads unquoted `0.1` as a number, which cannot round-trip versions (0.10 becomes 0.1), so the parser rejects it with a quoting hint.                |
+| `id`             | yes      | Kebab-case, stable across runs — baselines and diffs key on it.                                                                                                                                                       |
+| `goal`           | yes      | The natural-language instruction handed verbatim to each agent.                                                                                                                                                       |
+| `description`    | no       | Human-facing context; never shown to the agent.                                                                                                                                                                       |
+| `tags`           | no       | Free-form labels for filtering (`docs`, `smoke`, …).                                                                                                                                                                  |
+| `entryUrl`       | yes      | http(s) URL where every run starts. Credentials (`user:pass@`) are rejected — specs land in reports and artifacts.                                                                                                    |
+| `allowedDomains` | no       | Hostnames the agent may visit; `*.example.com` wildcards and `localhost` allowed. Defaults to the entry hostname.                                                                                                     |
+| `maxSteps`       | no       | Hard step cap before the run is failed (default 20).                                                                                                                                                                  |
+| `maxCostUsd`     | no       | Hard budget cap per run; the runner aborts past it.                                                                                                                                                                   |
+| `passPolicy`     | no       | pass@k with a threshold. The default (`k: 1`) is a single smoke run for local dev; CI gating should set `k ≥ 3` with a threshold — never a binary gate.                                                               |
+| `assertions`     | yes      | Deterministic checks, all required to pass. LLM-judge grading layers on top of these, never replaces them.                                                                                                            |
+| `judge`          | no       | Natural-language rubric for the optional LLM judge (WebJudge layer). Runs only _after_ the deterministic assertions pass, and can turn a pass into a fail, never the reverse. Omit to skip LLM judging. 1–2000 chars. |
 
 ## Assertion types
 
