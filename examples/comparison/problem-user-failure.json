@@ -14,11 +14,7 @@
         "passed": false
       },
       "costUsd": 6.15809,
-      "statuses": [
-        "budget_exceeded",
-        "budget_exceeded",
-        "budget_exceeded"
-      ],
+      "statuses": ["budget_exceeded", "budget_exceeded", "budget_exceeded"],
       "runIds": [
         "saucedemo-problem-user-checkout__claude-opus-4-8__run0__1",
         "saucedemo-problem-user-checkout__claude-opus-4-8__run1__2",
@@ -38,11 +34,7 @@
         "passed": false
       },
       "costUsd": 8.036689500000001,
-      "statuses": [
-        "completed",
-        "completed",
-        "completed"
-      ],
+      "statuses": ["completed", "completed", "completed"],
       "runIds": [
         "saucedemo-problem-user-checkout__browser-use__run0__4",
         "saucedemo-problem-user-checkout__browser-use__run1__5",
