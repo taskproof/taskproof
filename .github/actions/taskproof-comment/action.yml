@@ -19,11 +19,12 @@ inputs:
     default: 'taskproof-baseline.json'
   taskproof:
     description: >-
-      Command used to invoke the taskproof CLI. Once the package is published this is
-      `npx taskproof`; pre-release, build from source and pass
-      `node <path>/packages/cli/dist/index.js`.
+      Command used to invoke the taskproof CLI. Required — there is no default while the npm
+      package is a pre-release placeholder (a silent `npx taskproof` default would install the
+      0.0.0 stub and fail confusingly). Build from source and pass
+      `node <path>/packages/cli/dist/index.js`, or `npx taskproof@<version>` once published.
     required: false
-    default: 'npx taskproof'
+    default: ''
   github-token:
     description: 'Token used to post the PR comment. Needs `pull-requests: write`.'
     required: false
@@ -69,6 +70,15 @@ runs:
         TP_MARKER: '<!-- taskproof:agent-usability-diff -->'
       run: |
         set -uo pipefail
+
+        # Fail loud if no CLI command was supplied. The npm package is a pre-release placeholder,
+        # so there is no usable default — an empty `taskproof` input is a misconfiguration, not a
+        # silent `npx taskproof` that would install the 0.0.0 stub and fail with a confusing error.
+        if [ -z "${TP_CMD// /}" ]; then
+          echo "::error title=taskproof::The 'taskproof' input is empty. Set it to your built CLI (e.g. 'node path/to/packages/cli/dist/index.js') or 'npx taskproof@<version>' once the package is published. See the action README."
+          exit 1
+        fi
+
         comment_file="${RUNNER_TEMP:-/tmp}/taskproof-comment.md"
 
         if [ ! -f "$TP_BASELINE" ]; then

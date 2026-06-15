@@ -13,11 +13,8 @@ edit, or reject contributions and comments that don't align with this standard.
 
 ## Reporting
 
-If you experience or witness unacceptable behavior, report it privately to the maintainers.
-
-> **Maintainer TODO (before the repo goes public):** set a private contact for conduct reports —
-> a dedicated email, or direct people to open a private report via the repo's Security tab. Until
-> this is filled in, there is no working reporting channel.
+If you experience or witness unacceptable behavior, report it privately to the maintainer at
+**chris@betzsoftware.com**.
 
 Reports will be handled confidentially and reviewed as promptly as a nights-and-weekends project
 allows. Maintainers are obligated to respect the privacy and safety of anyone who reports an
