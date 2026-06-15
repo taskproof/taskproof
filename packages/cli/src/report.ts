@@ -13,6 +13,31 @@ export interface GenerateReportResult {
   runs: number;
 }
 
+/**
+ * Detect an image's MIME type from its magic bytes, defaulting to PNG (what the adapters capture
+ * today). Inlining a JPEG/WebP as `data:image/png` is wrong — browsers sniff and usually cope,
+ * but a correct type lets a report use far smaller screenshot formats (a hostable report).
+ */
+export function detectImageMime(bytes: Buffer): string {
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return 'image/jpeg';
+  }
+  if (
+    bytes.length >= 12 &&
+    bytes.toString('ascii', 0, 4) === 'RIFF' &&
+    bytes.toString('ascii', 8, 12) === 'WEBP'
+  ) {
+    return 'image/webp';
+  }
+  if (
+    bytes.length >= 6 &&
+    (bytes.toString('ascii', 0, 6) === 'GIF89a' || bytes.toString('ascii', 0, 6) === 'GIF87a')
+  ) {
+    return 'image/gif';
+  }
+  return 'image/png';
+}
+
 /** Read a run directory's manifest + artifacts and write a self-contained HTML report. */
 export async function generateReport(dir: string, outFile: string): Promise<GenerateReportResult> {
   const manifestRaw: unknown = JSON.parse(await readFile(join(dir, MANIFEST_FILENAME), 'utf8'));
@@ -33,7 +58,8 @@ export async function generateReport(dir: string, outFile: string): Promise<Gene
     if (screenshotCache.has(path)) return screenshotCache.get(path);
     let uri: string | undefined;
     try {
-      uri = `data:image/png;base64,${readFileSync(path).toString('base64')}`;
+      const bytes = readFileSync(path);
+      uri = `data:${detectImageMime(bytes)};base64,${bytes.toString('base64')}`;
     } catch {
       uri = undefined;
     }

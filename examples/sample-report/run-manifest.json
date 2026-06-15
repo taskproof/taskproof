@@ -1,0 +1,55 @@
+{
+  "manifestVersion": "0.1",
+  "generatedAtMs": 1781538785580,
+  "totalCostUsd": 14.194779500000001,
+  "cells": [
+    {
+      "taskId": "saucedemo-problem-user-checkout",
+      "goal": "Log in with username problem_user and password secret_sauce, add the 'Sauce Labs Bolt T-Shirt' to the cart, open the cart, check out using first name Test, last name User, zip 94016, and finish the purchase until you reach the order-complete confirmation.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 0,
+        "required": 2,
+        "passed": false
+      },
+      "costUsd": 6.15809,
+      "statuses": [
+        "budget_exceeded",
+        "budget_exceeded",
+        "budget_exceeded"
+      ],
+      "runIds": [
+        "saucedemo-problem-user-checkout__claude-opus-4-8__run0__1",
+        "saucedemo-problem-user-checkout__claude-opus-4-8__run1__2",
+        "saucedemo-problem-user-checkout__claude-opus-4-8__run2__3"
+      ],
+      "stepCount": 21,
+      "failureSummary": "final URL https://www.saucedemo.com/inventory.html did not match **/checkout-complete.html"
+    },
+    {
+      "taskId": "saucedemo-problem-user-checkout",
+      "goal": "Log in with username problem_user and password secret_sauce, add the 'Sauce Labs Bolt T-Shirt' to the cart, open the cart, check out using first name Test, last name User, zip 94016, and finish the purchase until you reach the order-complete confirmation.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 1,
+        "required": 2,
+        "passed": false
+      },
+      "costUsd": 8.036689500000001,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "runIds": [
+        "saucedemo-problem-user-checkout__browser-use__run0__4",
+        "saucedemo-problem-user-checkout__browser-use__run1__5",
+        "saucedemo-problem-user-checkout__browser-use__run2__6"
+      ],
+      "stepCount": 23,
+      "failureSummary": "final URL https://www.saucedemo.com/checkout-step-one.html did not match **/checkout-complete.html"
+    }
+  ]
+}

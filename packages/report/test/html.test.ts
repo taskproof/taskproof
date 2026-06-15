@@ -89,6 +89,35 @@ describe('buildReportHtml', () => {
     expect(html).toContain('✗ 0/1');
   });
 
+  it('labels each run trace by its adapter, not just the underlying model (browser-use ≠ Claude)', () => {
+    // A browser-use run drives an LLM (model: claude-opus-4-8) but the matrix column is the
+    // harness ("browser-use"). The drill-down trace summary must name the harness too, or it
+    // contradicts the matrix it links from.
+    const buArtifact: RunArtifact = {
+      ...artifact('checkout__browser-use__0', 'claude-opus-4-8', false),
+      taskId: 'checkout',
+      adapter: 'browser-use',
+    };
+    const buManifest: RunManifest = {
+      manifestVersion: '0.1',
+      generatedAtMs: 0,
+      totalCostUsd: 0.12,
+      cells: [
+        {
+          taskId: 'checkout',
+          goal: 'buy a t-shirt',
+          model: 'browser-use',
+          passK: { k: 1, passes: 0, required: 1, passed: false },
+          costUsd: 0.12,
+          statuses: ['completed'],
+          runIds: ['checkout__browser-use__0'],
+        },
+      ],
+    };
+    const html = buildReportHtml({ manifest: buManifest, artifacts: [buArtifact] });
+    expect(html).toContain('browser-use · claude-opus-4-8');
+  });
+
   it('renders per-run traces with the goal, assertions, and step text', () => {
     const html = buildReportHtml({ manifest, artifacts });
     expect(html).toContain('id="run-pricing-trial__opus__0"');

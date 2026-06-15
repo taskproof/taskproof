@@ -1,0 +1,750 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "runId": "saucedemo-problem-user-checkout__claude-opus-4-8__run0__1",
+  "taskId": "saucedemo-problem-user-checkout",
+  "adapter": "claude",
+  "model": "claude-opus-4-8",
+  "status": "budget_exceeded",
+  "startedAtMs": 1781537722911,
+  "finishedAtMs": 1781537821443,
+  "finalUrl": "https://www.saucedemo.com/inventory.html",
+  "steps": [
+    {
+      "index": 0,
+      "text": "I'll start by logging in. Let me click the username field and enter the credentials.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              639,
+              173
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-0-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 3723,
+        "outputTokens": 102,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.021165
+      },
+      "url": "https://www.saucedemo.com/",
+      "stopReason": "tool_use",
+      "durationMs": 2716
+    },
+    {
+      "index": 1,
+      "actions": [
+        {
+          "type": "type",
+          "raw": {
+            "action": "type",
+            "text": "problem_user"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-1-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 5178,
+        "outputTokens": 70,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.027640000000000005
+      },
+      "url": "https://www.saucedemo.com/",
+      "stopReason": "tool_use",
+      "durationMs": 2601
+    },
+    {
+      "index": 2,
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              639,
+              227
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-2-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 6601,
+        "outputTokens": 77,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.03493
+      },
+      "url": "https://www.saucedemo.com/",
+      "stopReason": "tool_use",
+      "durationMs": 2838
+    },
+    {
+      "index": 3,
+      "actions": [
+        {
+          "type": "type",
+          "raw": {
+            "action": "type",
+            "text": "secret_sauce"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-3-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 8031,
+        "outputTokens": 72,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.041955
+      },
+      "url": "https://www.saucedemo.com/",
+      "stopReason": "tool_use",
+      "durationMs": 2759
+    },
+    {
+      "index": 4,
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              639,
+              326
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-4-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 9456,
+        "outputTokens": 77,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.049205000000000006
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 2803
+    },
+    {
+      "index": 5,
+      "text": "Logged in successfully. I can see the Sauce Labs Bolt T-Shirt with its \"Add to cart\" button. Let me click it.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              499,
+              607
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-5-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 10886,
+        "outputTokens": 124,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.05753
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 3196
+    },
+    {
+      "index": 6,
+      "text": "The button still says \"Add to cart\" and the cart badge doesn't show a count. This is the problem_user, which has known UI glitches. The button may not have registered. Let me click it again.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              499,
+              607
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-6-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 12363,
+        "outputTokens": 135,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.06519
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 3396
+    },
+    {
+      "index": 7,
+      "text": "The button still shows \"Add to cart\" and the cart badge still appears empty. The problem_user is known to have a glitch where the \"Add to cart\" button on the products list page doesn't work for certain items. Let me check the cart to verify the current state.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              1236,
+              27
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-7-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 13851,
+        "outputTokens": 155,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.07313
+      },
+      "url": "https://www.saucedemo.com/cart.html",
+      "stopReason": "tool_use",
+      "durationMs": 4029
+    },
+    {
+      "index": 8,
+      "text": "As expected with problem_user, the cart is empty \u2014 the \"Add to cart\" buttons on the product list don't work for this glitchy account. I'll need to add the item from the product detail page instead. Let me go back to shopping and open the Bolt T-Shirt's detail page.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              124,
+              234
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-8-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 15359,
+        "outputTokens": 164,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.08089500000000001
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 4376
+    },
+    {
+      "index": 9,
+      "text": "Let me click on the Sauce Labs Bolt T-Shirt title to open its detail page.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              418,
+              437
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-9-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 16876,
+        "outputTokens": 109,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.087105
+      },
+      "url": "https://www.saucedemo.com/inventory-item.html?id=2",
+      "stopReason": "tool_use",
+      "durationMs": 3571
+    },
+    {
+      "index": 10,
+      "text": "This is another problem_user glitch \u2014 clicking the Bolt T-Shirt title opened the \"Sauce Labs Onesie\" detail page instead. The product links are scrambled for this account. Let me go back to products and check which title link actually leads to the Bolt T-Shirt.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              95,
+              84
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-10-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 18338,
+        "outputTokens": 167,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.09586499999999999
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 4923
+    },
+    {
+      "index": 11,
+      "text": "The product detail links are scrambled for the problem_user. The Bolt T-Shirt's add-to-cart functionality is glitchy. I can navigate directly to the correct item's detail page via URL. The Bolt T-Shirt has inventory id 1 on saucedemo. Let me try the URL bar approach. First, I need to find the address bar \u2014 but this appears to be a fullscreen kiosk view without visible browser chrome.\n\nLet me try a different approach \u2014 the add-to-cart buttons on the list page may actually work via the cart icon. Let me re-examine more carefully. Actually, with problem_user, some add-to-cart buttons DO work. Let me try clicking the Bolt T-Shirt's \"Add to cart\" once more and immediately check the button text.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              499,
+              607
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-11-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 19858,
+        "outputTokens": 325,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.10741500000000001
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 8004
+    },
+    {
+      "index": 12,
+      "text": "The Bolt T-Shirt's \"Add to cart\" button definitely does not work for problem_user (it never toggles to \"Remove\" and the cart stays empty). \n\nThe most reliable workaround is to navigate directly to the Bolt T-Shirt's inventory item page via URL, where the add-to-cart usually works correctly. I need to access the browser's address bar. Let me try opening it with a keyboard shortcut to reveal the URL bar.",
+      "actions": [
+        {
+          "type": "key",
+          "raw": {
+            "action": "key",
+            "text": "ctrl+l"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-12-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 21536,
+        "outputTokens": 218,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.11313
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 4846
+    },
+    {
+      "index": 13,
+      "text": "There's no visible address bar (this is a kiosk/fullscreen mode), so URL navigation isn't an option here. \n\nLet me reconsider. The product detail title links are scrambled \u2014 clicking the Bolt T-Shirt title led to the Onesie. The mapping is shuffled. On the detail page, the \"Add to cart\" button DOES work for problem_user. So I need to find which list item's title link actually opens the Bolt T-Shirt detail page.\n\nBolt T-Shirt is item_id 1. The title click on the Bolt T-Shirt led to the Onesie (id 2). The links appear shifted. Let me try clicking the Backpack title \u2014 it may lead to the Bolt T-Shirt. Let me first check the Backpack title.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              394,
+              185
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-13-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 23107,
+        "outputTokens": 322,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.123585
+      },
+      "url": "https://www.saucedemo.com/inventory-item.html?id=5",
+      "stopReason": "tool_use",
+      "durationMs": 6594
+    },
+    {
+      "index": 14,
+      "text": "Backpack title \u2192 Fleece Jacket. So the title links are scrambled in a way I can map out. Let me systematically check each. So far:\n- Backpack title \u2192 Fleece Jacket\n- Bolt T-Shirt title \u2192 Onesie\n\nLet me go back and try the other titles to find which one leads to the Bolt T-Shirt detail page.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              95,
+              84
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-14-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 24782,
+        "outputTokens": 190,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.12866
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 5374
+    },
+    {
+      "index": 15,
+      "text": "Let me check the Bike Light title link next.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              961,
+              185
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-15-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 26325,
+        "outputTokens": 92,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.133925
+      },
+      "url": "https://www.saucedemo.com/inventory-item.html?id=1",
+      "stopReason": "tool_use",
+      "durationMs": 4070
+    },
+    {
+      "index": 16,
+      "text": "The Bike Light title link led to the **Sauce Labs Bolt T-Shirt** detail page ($15.99). This is the correct product. Now let me click \"Add to cart\" here.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              617,
+              397
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-16-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 27770,
+        "outputTokens": 138,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.1423
+      },
+      "url": "https://www.saucedemo.com/inventory-item.html?id=1",
+      "stopReason": "tool_use",
+      "durationMs": 5024
+    },
+    {
+      "index": 17,
+      "text": "The button still shows \"Add to cart\" and the cart icon doesn't show a badge yet. The problem_user has rendering glitches where the button label doesn't update. Let me check the cart to verify whether the item was actually added.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              1236,
+              27
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-17-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 29261,
+        "outputTokens": 149,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.15003
+      },
+      "url": "https://www.saucedemo.com/cart.html",
+      "stopReason": "tool_use",
+      "durationMs": 5651
+    },
+    {
+      "index": 18,
+      "text": "The cart is still empty. The \"Add to cart\" on the Bolt T-Shirt detail page also doesn't register for problem_user \u2014 its button never toggled to \"Remove\". This is the known problem_user defect where the Bolt T-Shirt specifically cannot be added to the cart.\n\nLet me go back to the detail page and try clicking the Add to cart button once more, then watching for the button to change to \"Remove\" before navigating away.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              124,
+              234
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-18-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 30763,
+        "outputTokens": 214,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.15916499999999997
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 6597
+    },
+    {
+      "index": 19,
+      "text": "This took me back to the product list. The problem_user is designed so the Bolt T-Shirt's add-to-cart is broken on both the list and its detail page. However, the OTHER products' \"Add to cart\" buttons may work, and importantly \u2014 the list buttons all carry distinct data-test ids that are also scrambled.\n\nLet me reconsider the glitch pattern. For problem_user, the add-to-cart buttons on the inventory list are wired to the wrong product. So clicking the Backpack's \"Add to cart\" might actually add the Bolt T-Shirt. Let me test this theory by adding items and inspecting the cart. Let me click the Backpack's \"Add to cart\".",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              499,
+              355
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report/saucedemo-problem-user-checkout__claude-opus-4-8__run0__1/step-19-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 32330,
+        "outputTokens": 296,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.16904999999999998
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 8226
+    },
+    {
+      "index": 20,
+      "text": "Now the cart badge shows \"1\" and the Backpack button changed to \"Remove\". So the Backpack's button works and added something. But I need to verify what product was actually added \u2014 for problem_user the button can be wired to the wrong item. Let me check the cart contents.",
+      "actions": [],
+      "usage": {
+        "inputTokens": 33979,
+        "outputTokens": 160,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.17389500000000002
+      },
+      "url": "https://www.saucedemo.com/inventory.html",
+      "stopReason": "tool_use",
+      "durationMs": 5667
+    }
+  ],
+  "network": [
+    {
+      "url": "https://www.saucedemo.com/",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "document",
+      "atMs": 619
+    },
+    {
+      "url": "https://www.saucedemo.com/static/css/main.8a7d64a1.css",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 673
+    },
+    {
+      "url": "https://www.saucedemo.com/static/js/main.bcf4bc5f.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 790
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 840
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2Yp2ywxg089UriI5-g4vlH9VoD8Cmcqbu0-K6z9mXg.woff2",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "font",
+      "atMs": 1148
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/dmmono/v16/aFTR7PB1QTsUX8KYvumzEYOtbYf-Vlg.woff2",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "font",
+      "atMs": 1193
+    },
+    {
+      "url": "https://events.backtrace.io/api/unique-events/submit?universe=UNIVERSE&token=TOKEN",
+      "method": "POST",
+      "status": 401,
+      "resourceType": "fetch",
+      "atMs": 1195
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/dmmono/v16/aFTU7PB1QTsUX8KYthqQBK6PYK0.woff2",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "font",
+      "atMs": 1199
+    },
+    {
+      "url": "https://events.backtrace.io/api/summed-events/submit?universe=UNIVERSE&token=TOKEN",
+      "method": "POST",
+      "status": 401,
+      "resourceType": "fetch",
+      "atMs": 1199
+    },
+    {
+      "url": "https://events.backtrace.io/api/unique-events/submit?universe=UNIVERSE&token=TOKEN",
+      "method": "POST",
+      "status": 401,
+      "resourceType": "fetch",
+      "atMs": 11416
+    },
+    {
+      "url": "https://events.backtrace.io/api/summed-events/submit?universe=UNIVERSE&token=TOKEN",
+      "method": "POST",
+      "status": 401,
+      "resourceType": "fetch",
+      "atMs": 11417
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/menu3x.52cc17a327296e6394f33e8c20abc62c.svg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 14888
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/close@3x.a30a8a1db39c69f50a19aa3c34876918.svg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 14889
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/sl-404.168b1cce10384b857a6f.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 14889
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/cart3x.3669d74ad0f420aa005c.svg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 14891
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/filter3x.2943df5bcabfd174febc.svg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 14892
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/arrow3x.4b825b78b4bd5f987b7d.svg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 14892
+    },
+    {
+      "url": "https://events.backtrace.io/api/unique-events/submit?universe=UNIVERSE&token=TOKEN",
+      "method": "POST",
+      "status": 401,
+      "resourceType": "fetch",
+      "atMs": 31537
+    },
+    {
+      "url": "https://events.backtrace.io/api/summed-events/submit?universe=UNIVERSE&token=TOKEN",
+      "method": "POST",
+      "status": 401,
+      "resourceType": "fetch",
+      "atMs": 31538
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/red-onesie-1200x1500.2ec615b271ef4c3bc430.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 33445
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/sauce-pullover-1200x1500.51d7ffaf301e698772c8.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 57823
+    },
+    {
+      "url": "https://www.saucedemo.com/static/media/bolt-shirt-1200x1500.c2599ac5f0a35ed5931e.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 67282
+    }
+  ],
+  "assertions": [
+    {
+      "type": "url",
+      "ok": false,
+      "detail": "final URL https://www.saucedemo.com/inventory.html did not match **/checkout-complete.html"
+    },
+    {
+      "type": "dom",
+      "ok": false,
+      "detail": "\".complete-header\" not found"
+    }
+  ],
+  "usage": {
+    "inputTokens": 390373,
+    "outputTokens": 3356,
+    "cacheReadTokens": 0,
+    "cacheCreationTokens": 0,
+    "costUsd": 2.035765
+  }
+}

@@ -33,9 +33,13 @@ saucedemo-problem-user-checkout
 0/2 cell(s) passed · total $14.19        # exits non-zero in CI when a cell fails
 ```
 
-Every number above is from a committed run
-([`examples/comparison/problem-user-failure.json`](examples/comparison/problem-user-failure.json));
-the cost is high because both agents keep retrying the sabotaged form until the step cap.
+Every number above is from a committed run. **See the report it renders** — the pass/fail matrix
+plus drill-down traces with screenshots of exactly where each agent got stuck — in
+[`examples/sample-report/`](examples/sample-report/): open
+[`report.html`](examples/sample-report/report.html) (or
+[view it rendered](https://raw.githack.com/taskproof/taskproof/main/examples/sample-report/report.html))
+— no install or API key needed. The cost is high because both agents keep retrying the sabotaged
+form until the budget cap.
 
 ## Quickstart
 

@@ -2,3 +2,6 @@ dist/
 coverage/
 pnpm-lock.yaml
 packages/spec/test/fixtures/
+# Generated sample-report artifacts (committed run data + the rendered HTML); not hand-edited.
+examples/sample-report/report.html
+examples/sample-report/*.json
