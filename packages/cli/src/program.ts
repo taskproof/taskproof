@@ -8,9 +8,13 @@ import { formatFileResult, validateFiles } from './validate.js';
 // Resolves to packages/cli/package.json from both src/ (tests) and dist/ (published).
 const pkg = createRequire(import.meta.url)('../package.json') as { version: string };
 
+// `Number()` (not parseFloat/parseInt) so trailing garbage ("1.5abc") and fractional ints
+// ("3.9") are rejected rather than silently coerced to 1.5 / truncated to 3.
+const toNumber = (value: string): number => (value.trim() === '' ? NaN : Number(value));
+
 /** Reject NaN / non-positive numeric flags at the CLI boundary (commander prints + exits). */
 export function parsePositiveFloat(flag: string, value: string): number {
-  const n = Number.parseFloat(value);
+  const n = toNumber(value);
   if (!Number.isFinite(n) || n <= 0) {
     throw new InvalidArgumentError(`${flag} must be a positive number (got "${value}")`);
   }
@@ -18,7 +22,7 @@ export function parsePositiveFloat(flag: string, value: string): number {
 }
 
 export function parsePositiveInt(flag: string, value: string): number {
-  const n = Number.parseInt(value, 10);
+  const n = toNumber(value);
   if (!Number.isInteger(n) || n <= 0) {
     throw new InvalidArgumentError(`${flag} must be a positive integer (got "${value}")`);
   }
