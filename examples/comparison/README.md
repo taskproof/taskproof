@@ -50,6 +50,15 @@ pays for a screenshot every step), browser-use is ~$1.40. Per-spec `maxCostUsd` 
 runaway (saucedemo $2.50, others $0.75–$1.00). Far under the $15–75 full nightly matrix; this
 is a focused headline set, not the whole grid.
 
+**How cost is computed (so the comparison is apples-to-apples):** both columns are priced
+through taskproof's one shared cost meter (`@taskproof/core`'s `CostMeter` over `MODEL_PRICING`)
+from each harness's own Anthropic token usage — not from each library's separate cost estimate.
+The browser-use sidecar's own estimate is used only as a fallback for a model not in
+`MODEL_PRICING`. If an LLM-judge rubric is set, its call is metered the same way and added to the
+cell total. (Caveat: the harnesses count tokens slightly differently — computer-use sends a
+screenshot per step; browser-use sends a DOM/AX tree — so equal-task cost differences reflect the
+harness, which is the point of the comparison.)
+
 ## Before you record: calibrate
 
 These specs are designed from live HTTP checks of each target, **not** a full browser

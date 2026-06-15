@@ -166,3 +166,64 @@ describe('parseRunManifest', () => {
     expect(() => parseRunManifest({ ...manifest, manifestVersion: '9' })).toThrow();
   });
 });
+
+describe('network-parity warning (cross-adapter comparability)', () => {
+  function netArtifact(runId: string, adapter: string): RunArtifact {
+    return {
+      artifactSchemaVersion: '0.1',
+      runId,
+      taskId: 'cart',
+      adapter,
+      model: 'claude-opus-4-8',
+      status: 'completed',
+      startedAtMs: 0,
+      finishedAtMs: 1,
+      finalUrl: 'https://shop.example/cart',
+      steps: [],
+      network: [],
+      assertions: [
+        { type: 'url', ok: true, detail: 'matched' },
+        { type: 'network', ok: true, detail: '1 request matched POST **/add' },
+      ],
+      usage: {
+        inputTokens: 1,
+        outputTokens: 1,
+        cacheReadTokens: 0,
+        cacheCreationTokens: 0,
+        costUsd: 0.1,
+      },
+    };
+  }
+  const manifestFor = (runId: string, model: string): RunManifest => ({
+    manifestVersion: '0.1',
+    generatedAtMs: 0,
+    totalCostUsd: 0.1,
+    cells: [
+      {
+        taskId: 'cart',
+        goal: 'add to cart',
+        model,
+        passK: { k: 1, passes: 1, required: 1, passed: true },
+        costUsd: 0.1,
+        statuses: ['completed'],
+        runIds: [runId],
+      },
+    ],
+  });
+
+  it('warns when a network assertion is graded on browser-use', () => {
+    const html = buildReportHtml({
+      manifest: manifestFor('r1', 'browser-use'),
+      artifacts: [netArtifact('r1', 'browser-use')],
+    });
+    expect(html).toContain('network assertions on browser-use capture same-origin');
+  });
+
+  it('does not warn for a network assertion on the Claude adapter', () => {
+    const html = buildReportHtml({
+      manifest: manifestFor('r2', 'claude-opus-4-8'),
+      artifacts: [netArtifact('r2', 'claude')],
+    });
+    expect(html).not.toContain('network assertions on browser-use');
+  });
+});
