@@ -129,15 +129,16 @@ advisory by default — `taskproof diff` exits `0`/`1`/`2` (clean/regression/err
 
 ## Packages
 
-| Package                                                          | What it is                                                                         |
-| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [`@taskproof/spec`](packages/spec)                               | The task-spec format — versioned YAML schema with Zod validation. Start here.      |
-| [`@taskproof/core`](packages/core)                               | Shared contract: the run-artifact schema, the adapter interface, the cost meter.   |
-| [`@taskproof/grader`](packages/grader)                           | Deterministic `url`/`dom`/`network` assertion engine + pass@k aggregation.         |
-| [`@taskproof/report`](packages/report)                           | Self-contained HTML report + the baseline-diff regression engine.                  |
-| [`@taskproof/adapter-claude`](packages/adapter-claude)           | Claude computer-use adapter (Playwright-managed Chromium).                         |
-| [`@taskproof/adapter-browser-use`](packages/adapter-browser-use) | browser-use adapter, via a thin Python/FastAPI sidecar.                            |
-| [`taskproof`](packages/cli)                                      | The `taskproof` CLI: `init` / `validate` / `run` / `report` / `baseline` / `diff`. |
+| Package                                                          | What it is                                                                                                                              |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [`@taskproof/spec`](packages/spec)                               | The task-spec format — versioned YAML schema with Zod validation. Start here.                                                           |
+| [`@taskproof/core`](packages/core)                               | Shared contract: the run-artifact schema, the adapter interface, the cost meter.                                                        |
+| [`@taskproof/grader`](packages/grader)                           | Deterministic `url`/`dom`/`network` assertion engine + pass@k aggregation.                                                              |
+| [`@taskproof/judge`](packages/judge)                             | WebJudge-style LLM judge: versioned prompt + golden-set eval; runs after the deterministic checks and can only turn a pass into a fail. |
+| [`@taskproof/report`](packages/report)                           | Self-contained HTML report + the baseline-diff regression engine.                                                                       |
+| [`@taskproof/adapter-claude`](packages/adapter-claude)           | Claude computer-use adapter (Playwright-managed Chromium).                                                                              |
+| [`@taskproof/adapter-browser-use`](packages/adapter-browser-use) | browser-use adapter, via a thin Python/FastAPI sidecar.                                                                                 |
+| [`taskproof`](packages/cli)                                      | The `taskproof` CLI: `init` / `validate` / `run` / `report` / `baseline` / `diff`.                                                      |
 
 ## Development
 

@@ -32,6 +32,8 @@ A pnpm + TypeScript monorepo. The dependency arrows all point at `@taskproof/cor
 - **`@taskproof/core`** — the shared contract: the `RunArtifact` schema, the `Adapter`
   interface, and the cache-aware `CostMeter`.
 - **`@taskproof/grader`** — deterministic `url`/`dom`/`network` assertions + pass@k.
+- **`@taskproof/judge`** — the optional WebJudge-style LLM judge (versioned prompt + golden set);
+  runs after the deterministic checks and can only turn a pass into a fail.
 - **`@taskproof/report`** — the HTML report and the baseline-diff engine.
 - **`@taskproof/adapter-claude`**, **`@taskproof/adapter-browser-use`** — runner adapters.
 - **`taskproof`** (`packages/cli`) — the CLI.
