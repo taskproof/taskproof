@@ -1,0 +1,91 @@
+name: Bug report
+description: Something in taskproof behaves wrong — a crash, a misgraded run, a broken adapter.
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing. taskproof is pre-release and runs from this repo, so a **commit SHA**
+        and a **minimal task spec that reproduces** are what make a report actionable. If this is
+        an agent simply failing a task (that's often the tool working as intended), it's probably
+        not a bug — but a misgraded run, a crash, or an adapter that emits the wrong artifact is.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you observed, and what you expected instead.
+    validations:
+      required: true
+
+  - type: input
+    id: commit
+    attributes:
+      label: Version / commit
+      description: Output of `git rev-parse --short HEAD` in your taskproof checkout.
+      placeholder: e.g. 9205ef8
+    validations:
+      required: true
+
+  - type: dropdown
+    id: adapter
+    attributes:
+      label: Which adapter(s)
+      multiple: true
+      options:
+        - claude (computer use)
+        - browser-use (Python sidecar)
+        - other / a new adapter
+        - not adapter-specific (CLI, grader, report, spec)
+    validations:
+      required: true
+
+  - type: input
+    id: command
+    attributes:
+      label: Command you ran
+      description: The exact invocation.
+      placeholder: 'taskproof run tasks/checkout.yaml --models claude-opus-4-8,browser-use -k 3'
+    validations:
+      required: true
+
+  - type: textarea
+    id: spec
+    attributes:
+      label: Minimal task spec that reproduces
+      description: The smallest spec YAML that triggers it. Redact any private URLs/credentials.
+      render: yaml
+    validations:
+      required: true
+
+  - type: textarea
+    id: artifact
+    attributes:
+      label: Run output / artifact
+      description: |
+        Paste the matrix output, and — for a misgrade — the relevant run JSON from your `--out`
+        directory (default `taskproof-runs/`). Screenshots from the run trace help too.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        OS, Node version (`node -v`, needs ≥ 22), pnpm version (`pnpm -v`, 10.x). For browser-use:
+        Python/uv version and the sidecar's `browserUseVersion` (from its `/health` endpoint).
+      render: text
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I reproduced this on the latest `main` (or noted the commit above).
+          required: true
+        - label: I removed any credentials, private URLs, or API keys from the spec and logs.
+          required: true

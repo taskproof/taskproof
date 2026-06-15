@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question, idea, or help
+    url: https://github.com/taskproof/taskproof/discussions
+    about: |
+      Questions and ideas go in Discussions — issues are for reproducible bugs and adapter
+      requests. (Maintainer: enable Discussions in the repo settings before going public, or
+      set blank_issues_enabled to true here so this isn't a dead end.)

@@ -1,0 +1,58 @@
+name: Adapter request / proposal
+description: Propose a new runner adapter (a new agent to compare on identical terms).
+labels: ['adapter']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New adapters are the most valuable contribution — the more agents we can run through the
+        same tasks and grade with the same grader, the more useful the matrix is. See
+        [CONTRIBUTING → Adding a runner adapter](https://github.com/taskproof/taskproof/blob/main/CONTRIBUTING.md#adding-a-runner-adapter)
+        for the shape. Open this before writing code so we can agree on it.
+
+  - type: input
+    id: agent
+    attributes:
+      label: Which agent / model
+      placeholder: e.g. Gemini 2.5 Computer Use, OpenAI computer-use tool, Stagehand
+    validations:
+      required: true
+
+  - type: textarea
+    id: api
+    attributes:
+      label: API surface
+      description: |
+        How is it driven (HTTP API, SDK, library)? Is it self-serve with a credit card, or
+        gated? What's the auth model? Link the docs if you have them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why this adapter
+      description: What comparison or use case does it unlock that the existing adapters don't?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: offering
+    attributes:
+      label: Are you offering to implement it?
+      options:
+        - "Yes — I'd like to build it"
+        - 'Maybe, with guidance'
+        - 'No, just requesting'
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contract
+    attributes:
+      label: The one rule
+      options:
+        - label: |
+            I understand an adapter must emit the shared `RunArtifact` and grade through the
+            shared `@taskproof/grader` (and price with `CostMeter`) — that uniformity is the point.
+          required: true
