@@ -19,17 +19,23 @@ taskproof at your site, and it drives real agents through each task, grades them
 and renders a report that pinpoints where they failed — plus a baseline diff so CI catches
 agent-usability regressions.
 
-_Illustrative output, not from a committed run:_
+A real run against saucedemo's `problem_user`, whose checkout form is deliberately broken —
+taskproof catches that neither agent can complete the purchase, and points at the step:
 
 ```text
-$ taskproof run tasks/*.yaml --models claude-opus-4-8,browser-use
+$ taskproof run saucedemo-problem-user-checkout.yaml --models claude-opus-4-8,browser-use
 
-checkout-tshirt
-  ✓ claude-opus-4-8      pass@5 5/5 (need 3)          $1.34
-  ✗ browser-use          pass@5 1/5 (need 3)          $0.92
+saucedemo-problem-user-checkout
+  ✗ claude-opus-4-8   pass@3 0/3 (need 2)   21 steps   $6.16
+  ✗ browser-use       pass@3 1/3 (need 2)   23 steps   $8.04
+      ↳ stuck at /checkout-step-one.html — never reached checkout-complete
 
-3/4 cell(s) passed · total $4.10        # exits non-zero in CI when a cell fails
+0/2 cell(s) passed · total $14.19        # exits non-zero in CI when a cell fails
 ```
+
+Every number above is from a committed run
+([`examples/comparison/problem-user-failure.json`](examples/comparison/problem-user-failure.json));
+the cost is high because both agents keep retrying the sabotaged form until the step cap.
 
 ## Quickstart
 
