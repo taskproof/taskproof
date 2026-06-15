@@ -1,9 +1,12 @@
 # taskproof
 
-Playwright + Lighthouse for the agent channel — an open-source CI harness that runs a matrix
-of real AI agents (Claude computer use, browser-use, …) through defined tasks on your website,
-docs, or MCP server, scoring task completion, cost, and the exact failure point, and diffing
+Playwright for the agent channel — an open-source CI harness that runs a matrix of real AI
+agents (Claude computer use, browser-use, …) through defined tasks on your website, docs, or
+MCP server, scoring task completion, cost, and the exact failure point, and diffing
 agent-usability across releases.
+
+**Readiness checklists tell you whether your site _looks_ agent-friendly. taskproof tells you
+whether agents actually _complete the task_ — where they fail, and what it costs.**
 
 > Status: pre-release. Runs from this repo for now — the npm package is a reserved placeholder.
 
@@ -15,6 +18,8 @@ Write task specs (YAML: a natural-language goal + deterministic success assertio
 taskproof at your site, and it drives real agents through each task, grades them with pass@k,
 and renders a report that pinpoints where they failed — plus a baseline diff so CI catches
 agent-usability regressions.
+
+_Illustrative output, not from a committed run:_
 
 ```text
 $ taskproof run tasks/*.yaml --models claude-opus-4-8,browser-use
@@ -67,10 +72,35 @@ grades through the **same** grader, so a Claude run and a browser-use run are di
 comparable. Adding a vendor is implementing one interface — see
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Why pass@k — non-determinism, by design
+
+Agents don't behave identically run to run, so a single pass/fail would be noise. The usual
+objection to testing them ("it's flaky") is designed around, not ignored:
+
+- **pass@k with a statistical threshold, never a binary gate** — run each task `k` times, pass
+  when at least a threshold succeed.
+- **Deterministic assertions first** — `url`/`dom`/`network` checks decide the verdict; an
+  optional, versioned LLM judge can layer on top for goals that aren't reducible to a selector,
+  but it never replaces the deterministic checks.
+- **Hard cost caps** — every spec carries a `maxCostUsd`, and `run` takes `--max-cost`.
+- **Regression diffs, not absolute gates** — CI compares against a saved baseline and reports
+  what moved, so a flaky cell shows up as signal rather than a spuriously red build.
+
+## Limitations
+
+- **The fidelity gap (read this).** taskproof drives _automatable_ agent harnesses — Claude
+  computer-use and browser-use — as a **proxy** for the consumer agents your users actually run
+  (ChatGPT Atlas, Perplexity Comet, …), which expose no automation API to test against. The same
+  frontier models power both, but taskproof does **not** claim its harnesses behave identically
+  to those products. A calibration study with design partners is planned; until then, read a
+  result as "a capable agent harness can/can't complete this," not "Atlas will/won't."
+- **Pre-release.** The task-spec format and run-artifact schema may still break between `0.x`
+  releases; the npm package is a reserved placeholder, so run from this repo for now.
+
 ## In CI
 
 Commit a baseline on your default branch, then on each PR run the cheap lane and post a
-sticky comment when agent usability regresses:
+sticky comment when agent usability regresses (illustrative):
 
 ```text
 ### ⚠️ taskproof: 1 agent-usability regression(s)

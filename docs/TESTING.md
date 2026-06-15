@@ -186,3 +186,12 @@ third-party/cross-origin endpoint won't pass on that adapter (`url` and `dom` al
   single pass/fail. Use `-k 1` for cheap iteration while writing a spec; raise it for a
   real measurement.
 - Start the `maxCostUsd` cap low while you iterate on a spec.
+
+## The fidelity gap (important)
+
+taskproof drives **automatable** agent harnesses — Claude computer-use and browser-use — as a
+**proxy** for the consumer agents your users actually run (ChatGPT Atlas, Perplexity Comet, …),
+which expose no automation API to test against. The same frontier models power both, but
+taskproof does **not** claim its harnesses behave identically to those products. Read a result
+as "a capable agent harness can/can't complete this," not "Atlas will/won't." A calibration
+study with design partners is planned.
