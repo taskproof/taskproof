@@ -49,7 +49,10 @@ assertions: # at least one; ALL must hold for a run to pass
 
 ## Assertion types
 
-- **`url`** — glob pattern against the final page URL: `{ type: url, pattern: "**/order/confirmed**" }`
+- **`url`** — glob pattern against the **full** final URL (scheme+host+path+query, fully anchored):
+  `{ type: url, pattern: "**/order/confirmed**" }`. A leading `**` matches any host, so anchor the
+  host (`https://shop.example.com/**/confirmed**`) when an off-domain match would be a false pass —
+  browser-use blocks off-domain navigation via `allowedDomains`, but the Claude adapter does not.
 - **`dom`** — CSS selector against the final DOM with `state: visible | attached | text | absent | hidden`
   (`text` requires a `text:` substring): `{ type: dom, selector: "h1", state: text, text: "Thank you" }`.
   `absent` = no element matches; `hidden` = a match exists but isn't visible (e.g. a modal closed

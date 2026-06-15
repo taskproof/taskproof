@@ -9,6 +9,7 @@ import {
   type AssertionResult,
   type CostMeterOptions,
   type RunArtifact,
+  type RunStatus,
   type TokenUsage,
 } from '@taskproof/core';
 import { evaluateAssertions } from '@taskproof/grader';
@@ -19,6 +20,11 @@ import { ADAPTER_NAME, sidecarProbe, toRunArtifact } from './map.js';
 
 export const DEFAULT_SIDECAR_URL = 'http://127.0.0.1:8765';
 const DEFAULT_DISPLAY = { widthPx: 1280, heightPx: 800 } as const;
+// Let the client wait this much past the sidecar's own timeout before giving up, so the
+// sidecar's clean timeout artifact wins over the client tearing down the connection. This is
+// safe because the sidecar's teardown is itself bounded (KILL_TIMEOUT_S in the sidecar), so its
+// total overshoot stays well under this buffer; revisit the two together if either changes.
+const CLIENT_TIMEOUT_BUFFER_MS = 30_000;
 
 /** browser-use-specific config layered on the shared {@link AdapterConfig}. */
 export interface BrowserUseAdapterConfig extends AdapterConfig {
@@ -49,12 +55,33 @@ async function runBrowserUse(input: AdapterRunInput, config: AdapterConfig): Pro
       .filter((assertion) => assertion.type === 'dom')
       .map((assertion) => assertion.selector),
     ...(spec.allowedDomains.length > 0 ? { allowedDomains: spec.allowedDomains } : {}),
+    // timeoutMs IS enforced by the sidecar (it kills Chromium and returns a clean artifact).
+    ...(config.timeoutMs !== undefined ? { timeoutMs: config.timeoutMs } : {}),
     // NB: no maxCostUsd — taskproof can't enforce a $ cap mid-run for browser-use (it runs to
     // maxSteps), so we don't send a field that would imply otherwise. maxSteps bounds the run.
   };
 
+  // Abort if the caller cancels OR — as a backstop for a wholly-unresponsive sidecar — past the
+  // timeout plus the buffer (see CLIENT_TIMEOUT_BUFFER_MS). We own the timer and clear it in the
+  // `finally` so it doesn't linger after a fast run (the CLI is one long-lived process across the
+  // whole matrix); `timedOut` lets the catch label this stop 'aborted', not 'error'.
+  const timeoutController = new AbortController();
+  let timedOut = false;
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+  if (config.timeoutMs !== undefined) {
+    timeoutHandle = setTimeout(() => {
+      timedOut = true;
+      timeoutController.abort();
+    }, config.timeoutMs + CLIENT_TIMEOUT_BUFFER_MS);
+    timeoutHandle.unref();
+  }
+  const abortSignals: AbortSignal[] = [];
+  if (signal) abortSignals.push(signal);
+  if (config.timeoutMs !== undefined) abortSignals.push(timeoutController.signal);
+  const runSignal = abortSignals.length > 0 ? AbortSignal.any(abortSignals) : undefined;
+
   try {
-    const response = parseSidecarResponse(await new SidecarClient(baseUrl).run(request, signal));
+    const response = parseSidecarResponse(await new SidecarClient(baseUrl).run(request, runSignal));
 
     const tokenUsage: TokenUsage = {
       inputTokens: response.usage.inputTokens,
@@ -103,13 +130,21 @@ async function runBrowserUse(input: AdapterRunInput, config: AdapterConfig): Pro
       screenshotPaths,
     });
   } catch (error) {
+    // A caller cancel or our own client-side timeout is a deliberate stop, not a failure — label
+    // it 'aborted' so it matches the Claude adapter (and the sidecar's own timeout artifact),
+    // keeping the cross-adapter status vocabulary uniform. Everything else is a real 'error'.
+    const aborted =
+      signal?.aborted === true ||
+      timedOut ||
+      (error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError'));
+    const status: RunStatus = aborted ? 'aborted' : 'error';
     return {
       artifactSchemaVersion: '0.1',
       runId,
       taskId: spec.id,
       adapter: ADAPTER_NAME,
       model: config.model,
-      status: 'error',
+      status,
       startedAtMs,
       finishedAtMs: Date.now(),
       steps: [],
@@ -124,5 +159,7 @@ async function runBrowserUse(input: AdapterRunInput, config: AdapterConfig): Pro
       },
       error: error instanceof Error ? error.message : String(error),
     };
+  } finally {
+    if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
   }
 }

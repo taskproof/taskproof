@@ -29,6 +29,12 @@ export interface AdapterConfig {
   pricing?: ModelPricing;
   /** Directory to write screenshots and other per-run artifacts into. */
   artifactsDir?: string;
+  /**
+   * Wall-clock cap for a single run, in milliseconds. Claude stops the step loop past the
+   * deadline; browser-use enforces it inside the sidecar (which kills Chromium and returns a
+   * clean artifact) so an over-long run can't orphan the browser or wedge the sidecar lock.
+   */
+  timeoutMs?: number;
 }
 
 /**

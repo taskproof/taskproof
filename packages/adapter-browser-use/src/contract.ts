@@ -18,6 +18,12 @@ export interface SidecarRunRequest {
   /** CSS selectors from the spec's dom assertions, probed against the final page. */
   domSelectors: string[];
   allowedDomains?: string[];
+  /**
+   * Wall-clock cap in ms. The sidecar REALLY enforces this (asyncio.wait_for kills Chromium and
+   * returns a clean artifact) — unlike a $ budget, a time limit IS enforceable mid-run, so this
+   * field is honest. Omitted → the sidecar's generous default.
+   */
+  timeoutMs?: number;
   // No maxCostUsd: a $ budget can't be enforced mid-run for browser-use (it runs to maxSteps),
   // so the contract doesn't accept a field that would falsely imply enforcement.
 }

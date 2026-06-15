@@ -26,6 +26,8 @@ export interface RunOptions {
   k?: number;
   /** Run the LLM judge when a spec sets a `judge` rubric (default true; `--no-judge` disables). */
   judge?: boolean;
+  /** Per-run wall-clock cap in ms, passed to each adapter (Claude loop deadline; sidecar-enforced for browser-use). */
+  timeoutMs?: number;
   /** Wall-clock from which to stamp the manifest (defaults to Date.now()). */
   nowMs?: number;
 }
@@ -109,6 +111,16 @@ export async function runSpecs(
     );
   }
 
+  // pass@k with k=1 is a single smoke run, not a statistical gate — the spec schema advertises
+  // that the run layer warns here. Agents are non-deterministic, so a one-shot run can't be a CI
+  // gate. Warn once if any spec (after the optional -k override) would run at k=1.
+  if (specs.some((s) => effectivePolicy(s, options.k).k === 1)) {
+    onProgress(
+      'NOTE: pass@k k=1 is a single smoke run, not a statistical gate — fine for local/dev, but a ' +
+        'CI gate should use k≥3 with a minPasses threshold (set passPolicy in the spec, or pass -k).',
+    );
+  }
+
   const cells: ManifestCell[] = [];
   let totalCostUsd = 0;
   let counter = 0;
@@ -137,6 +149,7 @@ export async function runSpecs(
           artifactsDir: options.outDir,
         };
         if (options.maxCostUsd !== undefined) config.maxCostUsd = options.maxCostUsd;
+        if (options.timeoutMs !== undefined) config.timeoutMs = options.timeoutMs;
 
         const artifact: RunArtifact = await adapter.run({ spec, runId }, config);
 

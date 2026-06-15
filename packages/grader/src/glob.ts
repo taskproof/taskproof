@@ -3,6 +3,10 @@
  * characters (including `/`); `*` matches within a path segment (no `/`); `?` matches a
  * single character. Patterns are full-match anchored — use a trailing `**` to match a
  * prefix (e.g. `**\/api/orders**` to tolerate query strings).
+ *
+ * NB: the match is against the WHOLE URL (scheme + host + path + query), so a leading `**`
+ * matches any host — `**\/checkout` matches `https://evil.example/checkout`. Anchor the host
+ * in the pattern when that would be a false pass.
  */
 export function globToRegExp(pattern: string): RegExp {
   let out = '';

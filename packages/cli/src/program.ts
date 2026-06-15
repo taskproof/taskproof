@@ -14,6 +14,9 @@ const pkg = createRequire(import.meta.url)('../package.json') as { version: stri
 const PLAIN_FLOAT = /^\d*\.\d+$|^\d+$/;
 const PLAIN_INT = /^\d+$/;
 
+/** Upper bound for `--timeout` (seconds). 6h is far past any sane single-run cap; a guard, not a target. */
+const TIMEOUT_SECONDS_MAX = 21_600;
+
 /** Reject non-decimal / non-positive / over-max numeric flags at the CLI boundary. */
 export function parsePositiveFloat(flag: string, value: string, max: number): number {
   const n = PLAIN_FLOAT.test(value.trim()) ? Number(value) : NaN;
@@ -69,6 +72,9 @@ export function buildProgram(): Command {
     .option('-k, --runs <n>', 'override the spec pass@k k', (v) =>
       parsePositiveInt('-k/--runs', v, K_MAX),
     )
+    .option('--timeout <seconds>', 'per-run wall-clock cap (kills a hung run)', (v) =>
+      parsePositiveFloat('--timeout', v, TIMEOUT_SECONDS_MAX),
+    )
     .option('--headed', 'run with a visible browser (default headless)')
     .option('--no-judge', 'skip the LLM judge even when a spec sets a `judge` rubric')
     .action(
@@ -79,6 +85,7 @@ export function buildProgram(): Command {
           out: string;
           maxCost?: number;
           runs?: number;
+          timeout?: number;
           headed?: boolean;
           judge: boolean;
         },
@@ -104,6 +111,7 @@ export function buildProgram(): Command {
               judge: opts.judge,
               ...(opts.maxCost !== undefined ? { maxCostUsd: opts.maxCost } : {}),
               ...(opts.runs !== undefined ? { k: opts.runs } : {}),
+              ...(opts.timeout !== undefined ? { timeoutMs: opts.timeout * 1000 } : {}),
             },
             (message) => process.stderr.write(`${message}\n`),
           );

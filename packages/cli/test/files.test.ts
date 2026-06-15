@@ -19,4 +19,10 @@ describe('resolveSpecFiles', () => {
   it('rejects empty input', async () => {
     await expect(resolveSpecFiles([])).rejects.toThrow(/no spec files given/);
   });
+
+  it('rejects a directory arg up front (not an opaque EISDIR at readFile time)', async () => {
+    // 'src' is a directory in the cli package (vitest cwd); access() succeeds on it, so the
+    // guard must stat-and-reject it rather than let runSpecs die later on readFile(dir).
+    await expect(resolveSpecFiles(['src'])).rejects.toThrow(/is a directory/);
+  });
 });

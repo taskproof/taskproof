@@ -121,10 +121,14 @@ def assemble_response(
     return response
 
 
-def error_response(message: str, *, usage: dict[str, Any] | None = None) -> dict[str, Any]:
-    """A well-formed response for a sidecar-side failure (never a bare 500)."""
+def error_response(
+    message: str, *, status: str = "error", usage: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    """A well-formed response for a sidecar-side stop (never a bare 500). `status` defaults to
+    "error" but a caller can mark a non-error stop — e.g. "aborted" for a wall-clock timeout —
+    while still carrying the explanatory message."""
     return assemble_response(
-        status="error",
+        status=status,
         final_url=None,
         steps=[],
         network=[],

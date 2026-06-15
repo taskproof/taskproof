@@ -15,6 +15,13 @@ describe('buildProgram', () => {
     const baseline = program.commands.find((c) => c.name() === 'baseline');
     expect(baseline?.commands.map((c) => c.name())).toEqual(['save']);
   });
+
+  it('run exposes the cost/runs/timeout knobs', () => {
+    const program = buildProgram();
+    const run = program.commands.find((c) => c.name() === 'run');
+    const longs = run?.options.map((o) => o.long);
+    expect(longs).toEqual(expect.arrayContaining(['--max-cost', '--runs', '--timeout']));
+  });
 });
 
 describe('numeric flag validation', () => {

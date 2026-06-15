@@ -16,6 +16,7 @@ crashing if a 0.13.x point release shifts an accessor.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import shutil
 import tempfile
@@ -34,6 +35,15 @@ from .models import RunRequest
 BROWSER_USE_VERSION = _pkg_version("browser-use")
 if not BROWSER_USE_VERSION.startswith("0.13"):
     raise RuntimeError(f"taskproof sidecar targets browser-use 0.13.x; found {BROWSER_USE_VERSION}")
+
+# Upper bound on how long we *wait* for the post-run browser teardown. Caps how long a wedged
+# Chromium can hold the shared sidecar run lock (the run body itself is bounded separately by
+# app.py's wait_for). Past this we stop waiting but let the kill finish in the background.
+KILL_TIMEOUT_S = 15.0
+
+# Strong refs to background teardown tasks so the event loop doesn't GC a still-pending kill
+# ("Task was destroyed but it is pending!"); the done-callback drops each when it finishes.
+_pending_teardowns: set[asyncio.Task[Any]] = set()
 
 
 def _safe(fn: Callable[[], Any], default: Any) -> Any:
@@ -303,8 +313,20 @@ async def run_task(req: RunRequest) -> dict[str, Any]:
         return extract.error_response(str(exc))
     finally:
         if agent is not None and not killed:
+            # Bound the teardown. On a wall-clock timeout this `finally` runs under cancellation,
+            # and `asyncio.wait_for` won't raise TimeoutError (nor release the caller's run lock)
+            # until it completes — but `kill()` does a CDP round-trip (SaveStorageStateEvent)
+            # against the possibly-wedged browser, internally bounded only by browser-use's ~300s
+            # event timeout. Without a guard, a hung browser would hold the shared sidecar lock for
+            # minutes, blocking every later run. So run kill() as its own task and wait at most
+            # KILL_TIMEOUT_S: past that we stop waiting (the lock frees) but let it finish in the
+            # background — terminating Chromium rather than leaking the process. `shield` keeps the
+            # kill alive when our wait_for cancels; `_pending_teardowns` keeps a strong ref.
+            kill_task = asyncio.ensure_future(agent.browser_session.kill())
+            _pending_teardowns.add(kill_task)
+            kill_task.add_done_callback(_pending_teardowns.discard)
             try:
-                await agent.browser_session.kill()
-            except Exception:  # noqa: BLE001
+                await asyncio.wait_for(asyncio.shield(kill_task), timeout=KILL_TIMEOUT_S)
+            except Exception:  # noqa: BLE001 - best-effort teardown (incl. TimeoutError)
                 pass
         shutil.rmtree(har_dir, ignore_errors=True)

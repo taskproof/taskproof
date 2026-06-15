@@ -49,13 +49,6 @@ export function sidecarProbe(response: SidecarRunResponse): Probe {
   };
 }
 
-const ZERO_USAGE: TokenUsage = {
-  inputTokens: 0,
-  outputTokens: 0,
-  cacheReadTokens: 0,
-  cacheCreationTokens: 0,
-};
-
 /** Fill optional cache fields so the result matches the artifact's required usage shape. */
 function fullUsage(usage: TokenUsage, costUsd: number) {
   return {
@@ -64,6 +57,37 @@ function fullUsage(usage: TokenUsage, costUsd: number) {
     cacheReadTokens: usage.cacheReadTokens ?? 0,
     cacheCreationTokens: usage.cacheCreationTokens ?? 0,
     costUsd,
+  };
+}
+
+/** Even split of an integer total across `n` slots; the last slot absorbs the remainder. */
+function shareInt(total: number, n: number, isLast: boolean): number {
+  if (n <= 0) return 0;
+  const base = Math.floor(total / n);
+  return isLast ? total - base * (n - 1) : base;
+}
+
+/** Even split of a float total across `n` slots; the last slot absorbs the rounding remainder. */
+function shareFloat(total: number, n: number, isLast: boolean): number {
+  if (n <= 0) return 0;
+  const each = total / n;
+  return isLast ? total - each * (n - 1) : each;
+}
+
+/**
+ * Per-step usage for browser-use. browser-use reports cost/tokens only at the run level, so we
+ * spread the run total evenly across steps (remainder on the last step) — this keeps the trace
+ * honest in aggregate (steps sum to the authoritative run-level `usage`) without the misleading
+ * spike of dumping the whole run cost on one step. It is an even-split estimate, NOT measured
+ * per-step cost; the run-level total is the figure to trust.
+ */
+function evenStepUsage(total: TokenUsage, totalCostUsd: number, n: number, isLast: boolean) {
+  return {
+    inputTokens: shareInt(total.inputTokens, n, isLast),
+    outputTokens: shareInt(total.outputTokens, n, isLast),
+    cacheReadTokens: shareInt(total.cacheReadTokens ?? 0, n, isLast),
+    cacheCreationTokens: shareInt(total.cacheCreationTokens ?? 0, n, isLast),
+    costUsd: shareFloat(totalCostUsd, n, isLast),
   };
 }
 
@@ -109,17 +133,13 @@ function toActions(
 
 /** Map a validated sidecar response into the shared RunArtifact. Pure — no IO. */
 export function toRunArtifact(response: SidecarRunResponse, ctx: MapContext): RunArtifact {
-  const lastIndex = response.steps.length - 1;
+  const n = response.steps.length;
   const steps: StepArtifact[] = response.steps.map((step, i): StepArtifact => {
-    // browser-use only reports run-level token usage, so attribute it all to the final
-    // step and leave earlier steps at zero rather than implying false per-step cost.
-    const usage = i === lastIndex ? ctx.tokenUsage : ZERO_USAGE;
-    const costUsd = i === lastIndex ? ctx.costUsd : 0;
     return {
       index: step.index,
       ...(step.text !== undefined && step.text !== '' ? { text: step.text } : {}),
       actions: toActions(step, ctx.screenshotPaths.get(step.index)),
-      usage: fullUsage(usage, costUsd),
+      usage: evenStepUsage(ctx.tokenUsage, ctx.costUsd, n, i === n - 1),
       ...(step.url !== undefined ? { url: step.url } : {}),
       ...(step.durationMs !== undefined ? { durationMs: step.durationMs } : {}),
     };

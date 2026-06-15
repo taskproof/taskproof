@@ -21,7 +21,14 @@ const allowedDomainSchema = z
 
 const urlAssertionSchema = z.strictObject({
   type: z.literal('url'),
-  /** Glob-style pattern matched against the final page URL, e.g. `**\/checkout/success*`. */
+  /**
+   * Glob-style pattern matched against the FULL final page URL — scheme + host + path + query,
+   * fully anchored. A leading `**` therefore matches any scheme/host, so `**\/checkout/success`
+   * also matches `https://anywhere.example/checkout/success`. Anchor the host when an off-domain
+   * match would be a false pass (e.g. `https://shop.example.com/**\/success`); browser-use blocks
+   * off-domain navigation via `allowedDomains`, but the Claude adapter does not, so the pattern is
+   * the only host guard there. `**` matches across `/`; `*` stays within a path segment.
+   */
   pattern: z.string().min(1),
   description: z.string().optional(),
 });

@@ -79,6 +79,9 @@ async function runClaude(
   const client = new Anthropic({ apiKey });
 
   const startedAtMs = Date.now();
+  // Wall-clock deadline for the whole run, if a timeout was set. Checked at the top of each turn
+  // (between API calls) so a long task stops cleanly rather than running to maxSteps.
+  const deadlineMs = config.timeoutMs !== undefined ? startedAtMs + config.timeoutMs : undefined;
   const network: NetworkEvent[] = [];
   const steps: StepArtifact[] = [];
   let status: RunStatus = 'max_steps';
@@ -147,6 +150,10 @@ async function runClaude(
     let maxTurnCostUsd = 0;
     for (let stepIndex = 0; stepIndex < spec.maxSteps; stepIndex++) {
       if (signal?.aborted) {
+        status = 'aborted';
+        break;
+      }
+      if (deadlineMs !== undefined && Date.now() > deadlineMs) {
         status = 'aborted';
         break;
       }

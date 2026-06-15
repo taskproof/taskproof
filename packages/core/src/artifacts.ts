@@ -12,7 +12,7 @@ export const runStatusSchema = z.enum([
   'completed', // the agent ended its own turn (it believes it is done)
   'max_steps', // hit the task's step cap
   'budget_exceeded', // hit the --max-cost / maxCostUsd cap
-  'aborted', // cancelled via AbortSignal
+  'aborted', // cancelled via AbortSignal or stopped past the wall-clock timeout
   'error', // adapter/runtime/API failure
 ]);
 export type RunStatus = z.infer<typeof runStatusSchema>;

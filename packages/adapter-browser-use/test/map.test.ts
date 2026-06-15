@@ -110,13 +110,21 @@ describe('toRunArtifact (the moat: identical artifact shape)', () => {
     expect(artifact.finalUrl).toContain('/order/confirmed');
   });
 
-  it('attributes run-level token usage to the final step only', () => {
+  it('spreads run-level token usage/cost evenly across steps (no last-step spike), summing to the run total', () => {
     const artifact = toRunArtifact(parseSidecarResponse(fixture), ctx([]));
-    expect(artifact.steps[0]?.usage.inputTokens).toBe(0);
-    expect(artifact.steps[0]?.usage.costUsd).toBe(0);
-    expect(artifact.steps[1]?.usage.inputTokens).toBe(12000);
-    expect(artifact.steps[1]?.usage.costUsd).toBeCloseTo(0.21);
+    // browser-use reports only run-level usage; the trace spreads it evenly (2 steps here:
+    // 12000 tokens → 6000 each, $0.21 → ~$0.105 each) rather than dumping it all on one step.
+    expect(artifact.steps[0]?.usage.inputTokens).toBe(6000);
+    expect(artifact.steps[1]?.usage.inputTokens).toBe(6000);
+    expect(artifact.steps[0]?.usage.costUsd).toBeCloseTo(0.105);
+    expect(artifact.steps[1]?.usage.costUsd).toBeCloseTo(0.105);
+    // Per-step shares sum exactly to the authoritative run-level totals.
+    const stepTokens = artifact.steps.reduce((sum, s) => sum + s.usage.inputTokens, 0);
+    const stepCost = artifact.steps.reduce((sum, s) => sum + s.usage.costUsd, 0);
+    expect(stepTokens).toBe(artifact.usage.inputTokens);
+    expect(stepCost).toBeCloseTo(artifact.usage.costUsd);
     expect(artifact.usage.inputTokens).toBe(12000);
+    expect(artifact.usage.costUsd).toBeCloseTo(0.21);
   });
 
   it('attaches the post-step screenshot to the last action', () => {
