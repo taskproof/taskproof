@@ -1,0 +1,22 @@
+specVersion: '0.1'
+id: saucedemo-problem-user-checkout
+goal: "Log in with username problem_user and password secret_sauce, add the 'Sauce Labs Bolt T-Shirt' to the cart, open the cart, check out using first name Test, last name User, zip 94016, and finish the purchase until you reach the order-complete confirmation."
+entryUrl: 'https://www.saucedemo.com'
+maxSteps: 22
+maxCostUsd: 2.00
+passPolicy:
+  k: 3
+  minPasses: 2
+# The real-failure fixture. saucedemo's `problem_user` login is deliberately sabotaged: the
+# checkout-information form's last-name field won't accept/submit input, so the order can NOT
+# be completed — the agent genuinely cannot reach checkout-complete no matter how capable it is.
+# This is the honest "agent could not complete the task — here's the step it got stuck on"
+# graded FAIL the brief's demo wants, reliably (not a spec miscalibration). Run it with
+# `--models claude-opus-4-8,browser-use` to compare how each harness handles the broken form.
+assertions:
+  - type: url
+    pattern: '**/checkout-complete.html'
+  - type: dom
+    selector: '.complete-header'
+    state: text
+    text: 'Thank you for your order'
