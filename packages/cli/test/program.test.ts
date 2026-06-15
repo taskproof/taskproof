@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildProgram } from '../src/program.js';
+import { buildProgram, parsePositiveFloat, parsePositiveInt } from '../src/program.js';
 
 describe('buildProgram', () => {
   it('registers the command surface', () => {
@@ -14,5 +14,21 @@ describe('buildProgram', () => {
     const program = buildProgram();
     const baseline = program.commands.find((c) => c.name() === 'baseline');
     expect(baseline?.commands.map((c) => c.name())).toEqual(['save']);
+  });
+});
+
+describe('numeric flag validation', () => {
+  it('parsePositiveFloat rejects NaN / non-positive, accepts a positive number', () => {
+    expect(parsePositiveFloat('--max-cost', '1.5')).toBe(1.5);
+    expect(() => parsePositiveFloat('--max-cost', 'garbage')).toThrow(/positive number/);
+    expect(() => parsePositiveFloat('--max-cost', '0')).toThrow(/positive number/);
+    expect(() => parsePositiveFloat('--max-cost', '-2')).toThrow(/positive number/);
+  });
+
+  it('parsePositiveInt rejects NaN / non-positive / fractional, accepts a positive integer', () => {
+    expect(parsePositiveInt('-k', '3')).toBe(3);
+    expect(() => parsePositiveInt('-k', 'NaN')).toThrow(/positive integer/);
+    expect(() => parsePositiveInt('-k', '0')).toThrow(/positive integer/);
+    expect(() => parsePositiveInt('-k', '-1')).toThrow(/positive integer/);
   });
 });

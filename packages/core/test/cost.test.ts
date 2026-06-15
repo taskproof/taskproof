@@ -100,4 +100,13 @@ describe('CostMeter', () => {
     expect(() => meter.enforce()).not.toThrow();
     expect(meter.remainingUsd()).toBeUndefined();
   });
+
+  it('rejects a NaN / Infinity / negative cap (no silently-unbounded run)', () => {
+    // A NaN cap would make every `> cap` comparison false, silently disabling the budget.
+    expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: Number.NaN })).toThrow();
+    expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: Infinity })).toThrow();
+    expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: -1 })).toThrow();
+    expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: 0 })).not.toThrow();
+    expect(() => new CostMeter({ model: 'claude-opus-4-8', maxCostUsd: 2.5 })).not.toThrow();
+  });
 });

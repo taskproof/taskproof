@@ -1,12 +1,29 @@
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
 
-import { Command } from 'commander';
+import { Command, InvalidArgumentError } from 'commander';
 
 import { formatFileResult, validateFiles } from './validate.js';
 
 // Resolves to packages/cli/package.json from both src/ (tests) and dist/ (published).
 const pkg = createRequire(import.meta.url)('../package.json') as { version: string };
+
+/** Reject NaN / non-positive numeric flags at the CLI boundary (commander prints + exits). */
+export function parsePositiveFloat(flag: string, value: string): number {
+  const n = Number.parseFloat(value);
+  if (!Number.isFinite(n) || n <= 0) {
+    throw new InvalidArgumentError(`${flag} must be a positive number (got "${value}")`);
+  }
+  return n;
+}
+
+export function parsePositiveInt(flag: string, value: string): number {
+  const n = Number.parseInt(value, 10);
+  if (!Number.isInteger(n) || n <= 0) {
+    throw new InvalidArgumentError(`${flag} must be a positive integer (got "${value}")`);
+  }
+  return n;
+}
 
 export function buildProgram(): Command {
   const program = new Command();
@@ -40,8 +57,10 @@ export function buildProgram(): Command {
     .argument('<files...>', 'task spec YAML files')
     .option('--models <list>', 'comma-separated model ids', 'claude-opus-4-8')
     .option('--out <dir>', 'directory for run artifacts', 'taskproof-runs')
-    .option('--max-cost <usd>', 'hard per-run budget cap in USD', parseFloat)
-    .option('-k, --runs <n>', 'override the spec pass@k k', (value) => Number.parseInt(value, 10))
+    .option('--max-cost <usd>', 'hard per-run budget cap in USD', (v) =>
+      parsePositiveFloat('--max-cost', v),
+    )
+    .option('-k, --runs <n>', 'override the spec pass@k k', (v) => parsePositiveInt('-k/--runs', v))
     .option('--headed', 'run with a visible browser (default headless)')
     .option('--no-judge', 'skip the LLM judge even when a spec sets a `judge` rubric')
     .action(

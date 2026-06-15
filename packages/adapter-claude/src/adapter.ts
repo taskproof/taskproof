@@ -143,9 +143,20 @@ async function runClaude(
       },
     ];
 
+    // Largest single-turn cost seen so far; used to estimate the next turn for the budget gate.
+    let maxTurnCostUsd = 0;
     for (let stepIndex = 0; stepIndex < spec.maxSteps; stepIndex++) {
       if (signal?.aborted) {
         status = 'aborted';
+        break;
+      }
+
+      // Pre-flight budget gate: stop BEFORE paying for a turn we can't afford, rather than only
+      // noticing we overshot after it's already billed. The next turn is estimated by the largest
+      // turn so far (input grows each turn, so this is a floor); the post-turn check below is the
+      // backstop if a turn still spikes past the estimate. (No-op on turn 0: estimate is 0.)
+      if (meter.wouldExceed(maxTurnCostUsd)) {
+        status = 'budget_exceeded';
         break;
       }
 
@@ -167,6 +178,7 @@ async function runClaude(
         cacheCreationTokens: response.usage.cache_creation_input_tokens ?? 0,
       };
       const { costUsd } = meter.record(usage);
+      maxTurnCostUsd = Math.max(maxTurnCostUsd, costUsd);
 
       const text = response.content
         .filter((block): block is Anthropic.Beta.BetaTextBlock => block.type === 'text')
@@ -199,7 +211,8 @@ async function runClaude(
         break;
       }
 
-      // The agent acted, but we've now spent past the cap — stop before paying for another turn.
+      // Backstop: if this turn spiked past the pre-flight estimate and pushed us over the cap,
+      // stop now (the gate at the loop top handles the normal "can't afford the next turn" case).
       if (meter.maxCostUsd !== undefined && meter.totalUsd > meter.maxCostUsd) {
         steps.push(
           makeStep(

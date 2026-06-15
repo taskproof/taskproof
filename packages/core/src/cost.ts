@@ -97,6 +97,16 @@ export class CostMeter {
       );
     }
     this.pricing = pricing;
+    if (
+      options.maxCostUsd !== undefined &&
+      (!Number.isFinite(options.maxCostUsd) || options.maxCostUsd < 0)
+    ) {
+      // A NaN cap (e.g. from `--max-cost garbage` → parseFloat) would make every `> cap`
+      // comparison false, silently disabling the budget. Reject it rather than run unbounded.
+      throw new Error(
+        `maxCostUsd must be a finite, non-negative number, got ${options.maxCostUsd}`,
+      );
+    }
     this.maxCostUsd = options.maxCostUsd;
   }
 
