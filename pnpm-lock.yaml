@@ -80,6 +80,9 @@ importers:
       '@taskproof/grader':
         specifier: workspace:^
         version: link:../grader
+      '@taskproof/judge':
+        specifier: workspace:^
+        version: link:../judge
       '@taskproof/report':
         specifier: workspace:^
         version: link:../report
@@ -107,6 +110,18 @@ importers:
       '@taskproof/spec':
         specifier: workspace:^
         version: link:../spec
+
+  packages/judge:
+    dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.104.1
+        version: 0.104.1(zod@4.4.3)
+      '@taskproof/core':
+        specifier: workspace:^
+        version: link:../core
+      zod:
+        specifier: ^4.0.0
+        version: 4.4.3
 
   packages/report:
     dependencies:

@@ -145,6 +145,13 @@ const taskSpecObjectSchema = z.strictObject({
   passPolicy: passPolicySchema.default({ k: 1, minPasses: 1 }),
   /** Deterministic success assertions; all must hold for a run to pass. */
   assertions: z.array(assertionSchema).min(1),
+  /**
+   * Optional rubric for the LLM judge: natural-language success criteria the judge checks
+   * against the run's evidence. Runs the WebJudge layer *after* the deterministic assertions
+   * and only on runs that already passed them (deterministic first, LLM second) — use it for
+   * goals a `url`/`dom`/`network` check can't fully capture. Omit to skip LLM judging.
+   */
+  judge: z.string().min(1).max(2000).optional(),
 });
 
 // Zod runs object-level refinements and transforms even when a field check has already

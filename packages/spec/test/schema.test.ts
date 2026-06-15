@@ -134,6 +134,11 @@ describe('taskSpecSchema', () => {
     ).toBe(false);
   });
 
+  it('accepts an optional judge rubric and rejects an empty one', () => {
+    expect(parse({ judge: 'The order was placed and confirmed.' }).success).toBe(true);
+    expect(parse({ judge: '' }).success).toBe(false);
+  });
+
   it('accepts network status as a code or a class, rejects nonsense', () => {
     const base = { type: 'network', urlPattern: '**/api/**' };
     expect(parse({ assertions: [{ ...base, status: 200 }] }).success).toBe(true);

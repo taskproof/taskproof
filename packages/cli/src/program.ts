@@ -43,10 +43,18 @@ export function buildProgram(): Command {
     .option('--max-cost <usd>', 'hard per-run budget cap in USD', parseFloat)
     .option('-k, --runs <n>', 'override the spec pass@k k', (value) => Number.parseInt(value, 10))
     .option('--headed', 'run with a visible browser (default headless)')
+    .option('--no-judge', 'skip the LLM judge even when a spec sets a `judge` rubric')
     .action(
       async (
         files: string[],
-        opts: { models: string; out: string; maxCost?: number; runs?: number; headed?: boolean },
+        opts: {
+          models: string;
+          out: string;
+          maxCost?: number;
+          runs?: number;
+          headed?: boolean;
+          judge: boolean;
+        },
       ) => {
         const models = opts.models
           .split(',')
@@ -66,6 +74,7 @@ export function buildProgram(): Command {
               models,
               outDir: opts.out,
               headed: opts.headed === true,
+              judge: opts.judge,
               ...(opts.maxCost !== undefined ? { maxCostUsd: opts.maxCost } : {}),
               ...(opts.runs !== undefined ? { k: opts.runs } : {}),
             },

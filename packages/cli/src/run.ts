@@ -5,6 +5,13 @@ import { createBrowserUseAdapter } from '@taskproof/adapter-browser-use';
 import { createClaudeAdapter } from '@taskproof/adapter-claude';
 import type { Adapter, AdapterConfig, RunArtifact } from '@taskproof/core';
 import { aggregatePassK, deterministicPass } from '@taskproof/grader';
+import {
+  JUDGE_PROMPT_VERSION,
+  createAnthropicJudge,
+  judgeRun,
+  type Complete,
+  type JudgeInput,
+} from '@taskproof/judge';
 import { MANIFEST_VERSION, type ManifestCell, type RunManifest } from '@taskproof/report';
 import { safeParseTaskSpec, type PassPolicy, type TaskSpec } from '@taskproof/spec';
 
@@ -17,8 +24,26 @@ export interface RunOptions {
   headed?: boolean;
   /** Override the spec's pass@k `k`. */
   k?: number;
+  /** Run the LLM judge when a spec sets a `judge` rubric (default true; `--no-judge` disables). */
+  judge?: boolean;
   /** Wall-clock from which to stamp the manifest (defaults to Date.now()). */
   nowMs?: number;
+}
+
+/** Build the LLM-judge input from a spec + a completed run artifact. */
+function toJudgeInput(spec: TaskSpec, artifact: RunArtifact): JudgeInput {
+  return {
+    goal: spec.goal,
+    ...(spec.judge !== undefined ? { rubric: spec.judge } : {}),
+    ...(artifact.finalUrl !== undefined ? { finalUrl: artifact.finalUrl } : {}),
+    steps: artifact.steps.map((step) => ({
+      index: step.index,
+      ...(step.text !== undefined ? { text: step.text } : {}),
+      actions: step.actions.map((action) => action.type),
+      ...(step.url !== undefined ? { url: step.url } : {}),
+    })),
+    assertions: artifact.assertions.map((a) => ({ type: a.type, ok: a.ok, detail: a.detail })),
+  };
 }
 
 /** The effective pass@k policy for a run, applying an optional `k` override. */
@@ -66,6 +91,8 @@ export async function runSpecs(
   const cells: ManifestCell[] = [];
   let totalCostUsd = 0;
   let counter = 0;
+  // Created lazily on the first spec that opts into the judge (so non-judge runs need no key).
+  let judgeComplete: Complete | undefined;
 
   for (const spec of specs) {
     for (const selector of options.models) {
@@ -91,9 +118,32 @@ export async function runSpecs(
         if (options.maxCostUsd !== undefined) config.maxCostUsd = options.maxCostUsd;
 
         const artifact: RunArtifact = await adapter.run({ spec, runId }, config);
+
+        // Deterministic first, LLM second: grade the assertions, then — only when the spec
+        // opted in and the deterministic checks already passed — run the judge as a second
+        // gate that can turn a pass into a fail (never the reverse).
+        const deterministic = deterministicPass(artifact.assertions);
+        let passed = deterministic;
+        if (spec.judge !== undefined && options.judge !== false && deterministic) {
+          try {
+            judgeComplete ??= createAnthropicJudge();
+            const verdict = await judgeRun(toJudgeInput(spec, artifact), judgeComplete);
+            artifact.judge = verdict;
+            passed = verdict.pass;
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            artifact.judge = {
+              pass: false,
+              reasoning: `judge unavailable: ${message}`,
+              promptVersion: JUDGE_PROMPT_VERSION,
+              error: message,
+            };
+            passed = false;
+          }
+        }
+
         await writeFile(join(options.outDir, `${runId}.json`), JSON.stringify(artifact, null, 2));
 
-        const passed = deterministicPass(artifact.assertions);
         perRunPassed.push(passed);
         statuses.push(artifact.status);
         runIds.push(runId);
@@ -101,10 +151,11 @@ export async function runSpecs(
         if (run === 0) stepCount = artifact.steps.length;
         if (!passed && failureSummary === undefined) {
           const failing = artifact.assertions.find((a) => !a.ok);
-          failureSummary = failing?.detail ?? artifact.error ?? artifact.status;
+          failureSummary =
+            failing?.detail ?? artifact.judge?.reasoning ?? artifact.error ?? artifact.status;
         }
         onProgress(
-          `  ↳ ${passed ? 'PASS' : 'fail'} (${artifact.status}, ${artifact.steps.length} steps, $${artifact.usage.costUsd.toFixed(4)})`,
+          `  ↳ ${passed ? 'PASS' : 'fail'} (${artifact.status}, ${artifact.steps.length} steps, $${artifact.usage.costUsd.toFixed(4)}${artifact.judge !== undefined ? `, judge ${artifact.judge.pass ? 'pass' : 'fail'}` : ''})`,
         );
       }
 

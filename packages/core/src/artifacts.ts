@@ -65,6 +65,22 @@ export const assertionResultSchema = z.strictObject({
 });
 export type AssertionResult = z.infer<typeof assertionResultSchema>;
 
+/**
+ * Verdict from the optional LLM judge (the WebJudge layer), recorded when a spec opts in via
+ * its `judge` rubric. The judge runs *after* the deterministic assertions and only on runs that
+ * already passed them — deterministic first, LLM second. The schema lives here (not in
+ * `@taskproof/judge`) so the artifact can carry it without a dependency cycle.
+ */
+export const judgeVerdictSchema = z.strictObject({
+  pass: z.boolean(),
+  reasoning: z.string(),
+  /** The versioned judge prompt that produced this verdict, for reproducibility. */
+  promptVersion: z.string().min(1),
+  /** Set when the judge couldn't produce a clean verdict (API/parse failure → fails safe). */
+  error: z.string().optional(),
+});
+export type JudgeVerdict = z.infer<typeof judgeVerdictSchema>;
+
 /** A network request observed during the run (drives `network` assertions later). */
 export const networkEventSchema = z.strictObject({
   url: z.string().min(1),
@@ -91,6 +107,8 @@ export const runArtifactSchema = z.strictObject({
   network: z.array(networkEventSchema).default([]),
   /** Deterministic assertion outcomes, evaluated against the final state at end-of-run. */
   assertions: z.array(assertionResultSchema).default([]),
+  /** Optional LLM-judge verdict (present only when the spec opted in via `judge`). */
+  judge: judgeVerdictSchema.optional(),
   usage: usageSchema,
   /** Populated when status is "error". */
   error: z.string().optional(),
