@@ -48,3 +48,10 @@ tasks is the headline comparison: same model, two different agent harnesses.
 > only enables CDP `Network` on the initial session, so a **cross-origin navigation** to a
 > new target is missed; full coverage would need per-target `Network.enable` via
 > `Target.attachedToTarget`. HTTP (non-TLS) isn't captured.
+>
+> **Budget cap (`maxCostUsd` / `--max-cost`) is NOT enforced mid-run here.** Unlike the Claude
+> adapter, which gates each turn against the cap before paying, taskproof can't stop a
+> browser-use run partway — it runs to its own completion or `maxSteps`. The cap is therefore
+> advisory for this adapter: cost may exceed it (the report shows the real figure), and the CLI
+> warns when you pass `--max-cost` with a browser-use model. **`maxSteps` is the hard bound on
+> browser-use spend** — lower it to bound cost.

@@ -88,6 +88,20 @@ export async function runSpecs(
   }
 
   await mkdir(options.outDir, { recursive: true });
+
+  // --max-cost is a real, enforced per-turn cap for the Claude adapter, but browser-use runs
+  // to its own completion/maxSteps — taskproof can't stop it mid-run — so the cap is advisory
+  // there (cost may exceed it; the report shows the actual figure). Say so loudly, once.
+  const usesBrowserUse = options.models.some(
+    (m) => m === 'browser-use' || m.startsWith('browser-use:'),
+  );
+  if (options.maxCostUsd !== undefined && usesBrowserUse) {
+    onProgress(
+      `note: --max-cost ($${options.maxCostUsd.toFixed(2)}) is NOT enforced mid-run for browser-use; ` +
+        `its maxSteps bound applies and cost may exceed the cap. Lower maxSteps to bound browser-use spend.`,
+    );
+  }
+
   const cells: ManifestCell[] = [];
   let totalCostUsd = 0;
   let counter = 0;
