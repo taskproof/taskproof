@@ -10,9 +10,10 @@ Open [`report.html`](report.html) (it's self-contained), or
 (`claude-opus-4-8`) and **browser-use** — against [saucedemo.com](https://www.saucedemo.com)'s
 `problem_user`, whose checkout form is deliberately broken. pass@3 on each. Both harnesses **fail**
 the task (Claude 0/3, browser-use 1/3 — under the need-2 threshold), and the report pinpoints
-where: the matrix up top, then expandable per-run traces with a screenshot at each step. This is
-the same run the project README's headline example is taken from — total **$14.19**, high because
-both agents keep retrying the sabotaged form until the budget cap.
+where each stalls: Claude never gets a working item to checkout and loops on `/inventory.html`
+(hitting its per-run cost cap on every run); browser-use reaches the sabotaged form at
+`/checkout-step-one.html` and grinds it to its step limit, with one run fluking through. This is
+the same run the project README's headline example is taken from — total **$14.19** across 6 runs.
 
 ## What's committed here
 

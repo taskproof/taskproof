@@ -27,8 +27,9 @@ $ taskproof run saucedemo-problem-user-checkout.yaml --models claude-opus-4-8,br
 
 saucedemo-problem-user-checkout
   ✗ claude-opus-4-8   pass@3 0/3 (need 2)   21 steps   $6.16
+      ↳ ended on /inventory.html — never got a working item to checkout
   ✗ browser-use       pass@3 1/3 (need 2)   23 steps   $8.04
-      ↳ stuck at /checkout-step-one.html — never reached checkout-complete
+      ↳ ended on /checkout-step-one.html (the sabotaged form) — never reached checkout-complete
 
 0/2 cell(s) passed · total $14.19        # exits non-zero in CI when a cell fails
 ```
@@ -38,8 +39,9 @@ plus drill-down traces with screenshots of exactly where each agent got stuck �
 [`examples/sample-report/`](examples/sample-report/): open
 [`report.html`](examples/sample-report/report.html) (or
 [view it rendered](https://raw.githack.com/taskproof/taskproof/main/examples/sample-report/report.html))
-— no install or API key needed. The cost is high because both agents keep retrying the sabotaged
-form until the budget cap.
+— no install or API key needed. The cost is high because the checkout is unwinnable and both keep
+trying: Claude loops on the broken add-to-cart and hits its per-run cost cap on every run, while
+browser-use grinds the sabotaged form to its step limit (it's bounded by `maxSteps`, not cost).
 
 ## Quickstart
 
