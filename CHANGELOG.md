@@ -9,7 +9,7 @@ schemas until `1.0.0`.
 
 _Nothing yet._
 
-## [0.1.0] — initial release
+## [0.1.0] — 2026-06-15
 
 The first release: a working agent-usability harness end to end — write a task spec, run real
 agents against your site, grade them, and diff against a baseline in CI.

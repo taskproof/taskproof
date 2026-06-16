@@ -8,7 +8,7 @@ agent-usability across releases.
 **Readiness checklists tell you whether your site _looks_ agent-friendly. taskproof tells you
 whether agents actually _complete the task_ — where they fail, and what it costs.**
 
-> Status: pre-release. Runs from this repo for now — the npm package is a reserved placeholder.
+> Status: pre-release (`0.x`) — now on npm: `npm i -g taskproof` (or `npx taskproof`).
 
 ![taskproof comparing Claude computer-use vs. browser-use on the same tasks: the pass/fail matrix with cost and step count per harness, then a graded per-run trace with screenshots](docs/demo.gif)
 
@@ -48,7 +48,7 @@ Requires Node ≥ 22, pnpm 10, and an `ANTHROPIC_API_KEY`.
 ```bash
 pnpm install && pnpm build
 pnpm --filter @taskproof/adapter-claude exec playwright install chromium
-alias taskproof="node $(pwd)/packages/cli/dist/index.js"   # until the npm package ships
+alias taskproof="node $(pwd)/packages/cli/dist/index.js"   # from-source dev alias (or just: npm i -g taskproof)
 export ANTHROPIC_API_KEY=sk-ant-…
 
 # Watch a real agent do a task, get graded, and render a report (~$0.10–0.20):
@@ -106,8 +106,8 @@ objection to testing them ("it's flaky") is designed around, not ignored:
   frontier models power both, but taskproof does **not** claim its harnesses behave identically
   to those products. A calibration study with design partners is planned; until then, read a
   result as "a capable agent harness can/can't complete this," not "Atlas will/won't."
-- **Pre-release.** The task-spec format and run-artifact schema may still break between `0.x`
-  releases; the npm package is a reserved placeholder, so run from this repo for now.
+- **Pre-release (`0.x`).** Published to npm, but the task-spec format and run-artifact schema may
+  still break between `0.x` releases — pin a version in CI.
 
 ## In CI
 
