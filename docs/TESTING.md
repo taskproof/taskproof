@@ -1,8 +1,9 @@
 # Trying taskproof
 
 A hands-on walkthrough of the whole loop: scaffold task specs, run real AI agents against
-a site, and read the report. Pre-release — you run it from this repo (the npm package is a
-reserved placeholder, so `npx taskproof` doesn't work yet).
+a site, and read the report. taskproof is published to npm (`npm i -g taskproof`, or `npx
+taskproof`); it's pre-release (`0.x`), so the task-spec and run-artifact schemas may change
+between releases.
 
 ## Prerequisites
 
@@ -16,16 +17,17 @@ reserved placeholder, so `npx taskproof` doesn't work yet).
 ## Setup (once)
 
 ```bash
-pnpm install
-pnpm build
-# Chromium for the Claude adapter:
-pnpm --filter @taskproof/adapter-claude exec playwright install chromium
-# convenience: a `taskproof` command for this shell (run from the repo root)
-alias taskproof="node $(pwd)/packages/cli/dist/index.js"
+npm install -g taskproof          # or use `npx taskproof <command>` throughout
+taskproof install-browsers        # Chromium for the Claude adapter
 export ANTHROPIC_API_KEY=sk-ant-…
 ```
 
-`taskproof --help` should now list `validate`, `run`, `report`, `init`, `baseline`, `diff`.
+`taskproof --help` should list `validate`, `run`, `report`, `init`, `baseline`, `diff`,
+`install-browsers`.
+
+Working from a clone instead (contributors)? Run `pnpm install && pnpm build`, install Chromium
+with `pnpm --filter @taskproof/adapter-claude exec playwright install chromium`, and alias the
+local build: `alias taskproof="node $(pwd)/packages/cli/dist/index.js"`.
 
 ## The loop
 

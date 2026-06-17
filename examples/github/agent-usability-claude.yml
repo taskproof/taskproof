@@ -48,7 +48,7 @@ jobs:
         if: env.ANTHROPIC_API_KEY != ''
         run: |
           mkdir -p "$RUNNER_TEMP/tp" && cd "$RUNNER_TEMP/tp"
-          npm init -y >/dev/null && npm install taskproof@0.1.0
+          npm init -y >/dev/null && npm install taskproof@0.2.0
           ./node_modules/.bin/playwright install --with-deps chromium
 
       # Cheap per-PR lane: one pass per task (-k 1) with a soft budget cap (--max-cost; Claude
@@ -60,9 +60,9 @@ jobs:
       # Diff against the committed baseline and post / update the sticky PR comment.
       # NB: this action lives in the taskproof repo — it resolves only once that repo is public.
       - if: env.ANTHROPIC_API_KEY != ''
-        uses: taskproof/taskproof/.github/actions/taskproof-comment@v0.1.0 # pin a tag in prod
+        uses: taskproof/taskproof/.github/actions/taskproof-comment@v0.2.0 # pin a tag in prod
         with:
-          taskproof: npx taskproof@0.1.0
+          taskproof: npx taskproof@0.2.0
           run-dir: taskproof-runs
           baseline: taskproof/baseline.json
           fail-on-regression: 'false' # set 'true' to block merges on a regression

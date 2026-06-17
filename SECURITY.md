@@ -20,10 +20,7 @@ fix.
 
 Report privately via GitHub's **[Report a vulnerability](https://github.com/taskproof/taskproof/security/advisories/new)**
 (the "Security" tab → "Report a vulnerability"). This opens a private advisory only the
-maintainers can see. If that link 404s, the maintainer hasn't enabled private reporting yet —
-email **chris@betzsoftware.com** instead. _(Maintainer: private vulnerability reporting is a
-public-repo feature — enable it in Settings → Code security once the repo is public so the link
-above resolves.)_
+maintainers can see. If you'd prefer email, reach me at **chris@betzsoftware.com** instead.
 
 Please include: the affected component (CLI, a runner adapter, the browser-use sidecar, the
 spec/artifact handling), a minimal reproduction, the impact, and any suggested fix. We'll

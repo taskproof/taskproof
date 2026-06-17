@@ -6,7 +6,7 @@ results against a pass@k policy.
 
 - **`url`** — glob-match the final URL.
 - **`network`** — glob-match a recorded request, optionally constraining method and status.
-- **`dom`** — `attached` / `visible` / `text` against a selector. Visibility needs layout,
+- **`dom`** — `attached` / `visible` / `text` / `absent` / `hidden` against a selector. Visibility needs layout,
   so dom is evaluated against a **live page** during the run (the adapter does this and
   embeds the results in the artifact); `artifactProbe` re-grades url/network offline.
 

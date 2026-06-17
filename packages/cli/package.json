@@ -3,6 +3,24 @@
   "version": "0.2.0",
   "description": "CLI for running a matrix of real AI agents through task specs against your site",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taskproof/taskproof.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/taskproof/taskproof#readme",
+  "bugs": "https://github.com/taskproof/taskproof/issues",
+  "keywords": [
+    "ai-agents",
+    "agent-testing",
+    "playwright",
+    "llm",
+    "computer-use",
+    "browser-use",
+    "ci",
+    "evals",
+    "web-testing"
+  ],
   "type": "module",
   "bin": {
     "taskproof": "./dist/index.js"

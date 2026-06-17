@@ -19,10 +19,9 @@ inputs:
     default: 'taskproof-baseline.json'
   taskproof:
     description: >-
-      Command used to invoke the taskproof CLI. Required — there is no default while the npm
-      package is a pre-release placeholder (a silent `npx taskproof` default would install the
-      0.0.0 stub and fail confusingly). Build from source and pass
-      `node <path>/packages/cli/dist/index.js`, or `npx taskproof@<version>` once published.
+      Command used to invoke the taskproof CLI. Required, with no default on purpose: pin a
+      published version with `npx taskproof@<version>`, or build from source and pass
+      `node <path>/packages/cli/dist/index.js`. An explicit command keeps CI runs reproducible.
     required: false
     default: ''
   github-token:
@@ -71,11 +70,11 @@ runs:
       run: |
         set -uo pipefail
 
-        # Fail loud if no CLI command was supplied. The npm package is a pre-release placeholder,
-        # so there is no usable default — an empty `taskproof` input is a misconfiguration, not a
-        # silent `npx taskproof` that would install the 0.0.0 stub and fail with a confusing error.
+        # Fail loud if no CLI command was supplied. The input is required with no default on
+        # purpose, so an empty `taskproof` input is a misconfiguration rather than an unpinned
+        # `npx taskproof` that could drift between releases in CI.
         if [ -z "${TP_CMD// /}" ]; then
-          echo "::error title=taskproof::The 'taskproof' input is empty. Set it to your built CLI (e.g. 'node path/to/packages/cli/dist/index.js') or 'npx taskproof@<version>' once the package is published. See the action README."
+          echo "::error title=taskproof::The 'taskproof' input is empty. Set it to your built CLI (e.g. 'node path/to/packages/cli/dist/index.js') or a pinned 'npx taskproof@<version>'. See the action README."
           exit 1
         fi
 

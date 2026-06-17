@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "description": "The taskproof task-spec format: versioned YAML schema with Zod validation for agent-usability tasks",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taskproof/taskproof.git",
+    "directory": "packages/spec"
+  },
+  "homepage": "https://github.com/taskproof/taskproof#readme",
+  "bugs": "https://github.com/taskproof/taskproof/issues",
   "publishConfig": {
     "access": "public"
   },

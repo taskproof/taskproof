@@ -37,5 +37,5 @@ hostable; a live run captures full-resolution PNGs.
 
 ```bash
 node packages/cli/dist/index.js report --dir examples/sample-report --out examples/sample-report/report.html
-# or, once the npm package ships: taskproof report --dir examples/sample-report
+# or, with the published CLI: taskproof report --dir examples/sample-report
 ```

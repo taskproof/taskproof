@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "description": "Optional LLM judge (WebJudge-style) for taskproof: a versioned rubric prompt that grades goal completion from a run's evidence, gated behind the deterministic assertions",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taskproof/taskproof.git",
+    "directory": "packages/judge"
+  },
+  "homepage": "https://github.com/taskproof/taskproof#readme",
+  "bugs": "https://github.com/taskproof/taskproof/issues",
   "publishConfig": {
     "access": "public"
   },

@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "description": "Renders taskproof run artifacts into a self-contained HTML report: the matrix, the per-step trace, the failing step",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taskproof/taskproof.git",
+    "directory": "packages/report"
+  },
+  "homepage": "https://github.com/taskproof/taskproof#readme",
+  "bugs": "https://github.com/taskproof/taskproof/issues",
   "publishConfig": {
     "access": "public"
   },

@@ -58,10 +58,12 @@ once you trust the signal.
   on fork PRs requires `pull_request_target`, which runs with a write token — only adopt it if
   you understand the security implications (never check out and execute untrusted PR code under
   it). The templates intentionally use plain `pull_request`.
-- **Pre-release**: taskproof isn't on npm yet, so the templates build it from source. When it
-  ships, delete the "Build taskproof from source" block and set `taskproof: npx taskproof@latest`.
-- **Pin the action** in production: use `taskproof/taskproof/.github/actions/taskproof-comment@v1`
-  (a tag), not `@main`.
+- **Published vs. from-source**: the Claude template installs the published `taskproof` from npm;
+  the browser-use template still builds from source because it needs the Python sidecar. Pin a
+  different CLI version by editing `taskproof: npx taskproof@<version>` in the Claude template.
+- **Pin the action** in production: use
+  `taskproof/taskproof/.github/actions/taskproof-comment@v0.2.0` (the current release tag), not
+  `@main`; bump it when a new release ships.
 
 ## What the comment looks like
 

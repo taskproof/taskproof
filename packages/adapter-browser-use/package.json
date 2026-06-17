@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "description": "browser-use runner adapter: drives the Python/FastAPI sidecar and emits the identical taskproof artifacts",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taskproof/taskproof.git",
+    "directory": "packages/adapter-browser-use"
+  },
+  "homepage": "https://github.com/taskproof/taskproof#readme",
+  "bugs": "https://github.com/taskproof/taskproof/issues",
   "publishConfig": {
     "access": "public"
   },

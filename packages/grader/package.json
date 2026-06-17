@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "description": "Deterministic assertion engine for taskproof: evaluates url/dom/network assertions against a run and aggregates pass@k",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taskproof/taskproof.git",
+    "directory": "packages/grader"
+  },
+  "homepage": "https://github.com/taskproof/taskproof#readme",
+  "bugs": "https://github.com/taskproof/taskproof/issues",
   "publishConfig": {
     "access": "public"
   },

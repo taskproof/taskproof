@@ -97,7 +97,7 @@ jobs:
 
       # NB: this action lives in the taskproof repo — it resolves only once that repo is public.
       - if: env.ANTHROPIC_API_KEY != ''
-        uses: taskproof/taskproof/.github/actions/taskproof-comment@main
+        uses: taskproof/taskproof/.github/actions/taskproof-comment@v0.2.0
         with:
           taskproof: node .taskproof-src/packages/cli/dist/index.js
           run-dir: taskproof-runs
