@@ -9,6 +9,25 @@ schemas until `1.0.0`.
 
 _Nothing yet._
 
+## [0.2.0] — 2026-06-16
+
+### Added
+
+- **`taskproof install-browsers`** — installs the Chromium the Claude computer-use adapter needs,
+  using the Playwright version that adapter pins. CI setup collapses to
+  `npm i -g taskproof && taskproof install-browsers` (no separate Playwright install step).
+- **Hostable reports** — `taskproof report --max-image-width <px>` (with `--image-quality <q>`)
+  downscales screenshots and re-encodes them as JPEG, shrinking a multi-run report ~5× so it can be
+  hosted or linked from a README. Default behavior is unchanged: full-resolution, lossless inlining.
+
+### Fixed
+
+- The Claude GitHub Action example template now works against the published CLI (it had referenced
+  `install-browsers` before that command shipped in this release).
+- `@taskproof/adapter-browser-use` no longer ships Python build caches (`__pycache__`,
+  `.pytest_cache`) or the sidecar's tests in its npm tarball — only the sidecar source,
+  `pyproject.toml`, and `uv.lock`.
+
 ## [0.1.0] — 2026-06-15
 
 The first release: a working agent-usability harness end to end — write a task spec, run real
@@ -49,5 +68,6 @@ agents against your site, grade them, and diff against a baseline in CI.
 - The budget cap is soft, and is **not** enforced mid-run for browser-use (bound spend with
   `maxSteps` there).
 
-[Unreleased]: https://github.com/taskproof/taskproof/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/taskproof/taskproof/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/taskproof/taskproof/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/taskproof/taskproof/releases/tag/v0.1.0

@@ -1,6 +1,6 @@
 {
   "name": "@taskproof/adapter-browser-use",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "browser-use runner adapter: drives the Python/FastAPI sidecar and emits the identical taskproof artifacts",
   "license": "Apache-2.0",
   "publishConfig": {
@@ -19,7 +19,9 @@
   "files": [
     "dist",
     "src",
-    "sidecar"
+    "sidecar/pyproject.toml",
+    "sidecar/uv.lock",
+    "sidecar/taskproof_sidecar/**/*.py"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

@@ -1,6 +1,6 @@
 {
   "name": "@taskproof/adapter-claude",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Claude computer-use runner adapter: drives Playwright-managed Chromium and emits taskproof artifacts",
   "license": "Apache-2.0",
   "publishConfig": {
