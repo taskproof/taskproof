@@ -1,0 +1,411 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "runId": "search-rivian-r1t__claude-opus-4-8__run0__13",
+  "taskId": "search-rivian-r1t",
+  "adapter": "claude",
+  "model": "claude-opus-4-8",
+  "status": "completed",
+  "startedAtMs": 1781656422911,
+  "finishedAtMs": 1781656439482,
+  "finalUrl": "https://www.evintersection.com/ev/rivian-r1t",
+  "steps": [
+    {
+      "index": 0,
+      "text": "I'll click on the search box and search for the Rivian R1T.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              1162,
+              28
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/search-rivian-r1t__claude-opus-4-8__run0__13/step-0-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 3661,
+        "outputTokens": 99,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.02078
+      },
+      "url": "https://www.evintersection.com/",
+      "stopReason": "tool_use",
+      "durationMs": 2630
+    },
+    {
+      "index": 1,
+      "text": "The search dropdown opened. I'll type \"Rivian R1T\".",
+      "actions": [
+        {
+          "type": "type",
+          "raw": {
+            "action": "type",
+            "text": "Rivian R1T"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/search-rivian-r1t__claude-opus-4-8__run0__13/step-1-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 5113,
+        "outputTokens": 96,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.027965
+      },
+      "url": "https://www.evintersection.com/",
+      "stopReason": "tool_use",
+      "durationMs": 2781
+    },
+    {
+      "index": 2,
+      "text": "The search returned \"Rivian R1T\" as a suggestion. I'll click on it.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              1109,
+              76
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/search-rivian-r1t__claude-opus-4-8__run0__13/step-2-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 6562,
+        "outputTokens": 106,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.03546
+      },
+      "url": "https://www.evintersection.com/",
+      "stopReason": "tool_use",
+      "durationMs": 3173
+    },
+    {
+      "index": 3,
+      "text": "The page still shows the home page. The navigation may take a moment, or my click didn't register correctly on the suggestion. Let me wait and take a screenshot to check.",
+      "actions": [
+        {
+          "type": "screenshot",
+          "raw": {
+            "action": "screenshot"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/search-rivian-r1t__claude-opus-4-8__run0__13/step-3-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 8021,
+        "outputTokens": 101,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.04263
+      },
+      "url": "https://www.evintersection.com/ev/rivian-r1t",
+      "stopReason": "tool_use",
+      "durationMs": 3288
+    },
+    {
+      "index": 4,
+      "text": "The detail page has loaded, showing a large image of the Rivian R1T with \"RIVIAN\" labeled below. The task is complete \u2014 I've used the site's search to find the Rivian R1T and opened its detail page.",
+      "actions": [],
+      "usage": {
+        "inputTokens": 9475,
+        "outputTokens": 70,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.049125
+      },
+      "url": "https://www.evintersection.com/ev/rivian-r1t",
+      "stopReason": "end_turn",
+      "durationMs": 3660
+    }
+  ],
+  "network": [
+    {
+      "url": "https://www.evintersection.com/",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "document",
+      "atMs": 466
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0hardgfujm4-o.css",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 495
+    },
+    {
+      "url": "https://www.evintersection.com/logo.svg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 509
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0g~_ccfr2qn6e.css",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 510
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_clientMiddlewareManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 527
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08-dxlhphevgq.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 527
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/179ik05jwh9e9.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 527
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0dbnmu2kkl~7j.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 527
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_ssgManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 527
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06g.a0iw.fbx6.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 527
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/10ha09z00lesi.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 529
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0vgy2kwyegxqu.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 529
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_buildManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 529
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0prgmz-96cqt~.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 529
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/097hxm_r~_zh~.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 546
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/3acd955dc1a0aeaf53f944a8a1ce1afe8011a884-3559x1729.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 555
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/679916fa9973ee2bf16fb44c6bb28265a4316cae-3615x2096.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 606
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/3c329138be8b53702f8d10847c1c780e0dd9ae8a-5801x2972.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 616
+    },
+    {
+      "url": "https://www.evintersection.com/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 624
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/4ecd2a4349368f6d97d0222235b0f6dc27d942a6-3156x1838.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 680
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/eba97f942df2b6c6b969e5440adee0e3b07a9479-3071x1821.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 681
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/5ed71a58470ec0a8be09d5d2d4695aa104b59369-3201x1800.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 689
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/aba60464f6602dd08761cda6a489305ca892663d-4449x2869.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 701
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/cc642d533333c20009f203b76d3c4519e741e20b-2201x1331.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 712
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/c11808f8ee632c5606145f47d0557ab62162104a-4383x2100.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 713
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/eec676ad51c3cbac1b31a8d028db37a3b817804e-5062x2629.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 736
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/fb439f6e9e006ca0e04cf6cb776c5dd7a521e30a-4902x2817.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 899
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/052c78b81035df75194cc60a60b0236d9fd79d45-4869x2099.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 899
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/038v-fv2g5.x1.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 9566
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0x-mh-kdbcpdn.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 9566
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0qmcze.6yfenw.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 9571
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06mnyn4b5ffc2.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 9578
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08r8n84udct81.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 9630
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/ev/rivian-r1t.json?slug=rivian-r1t",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "fetch",
+      "atMs": 9719
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/ev/rivian-r1t.json?slug=rivian-r1t",
+      "method": "HEAD",
+      "status": 200,
+      "resourceType": "fetch",
+      "atMs": 9754
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/e13843d9101499a444782b7ee4a0707506b54e71-4217x2264.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 9758
+    }
+  ],
+  "assertions": [
+    {
+      "type": "url",
+      "ok": true,
+      "detail": "final URL https://www.evintersection.com/ev/rivian-r1t matched **/ev/rivian-r1t"
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"h1\" text contains \"R1T\""
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"body\" text contains \"Rivian\""
+    }
+  ],
+  "usage": {
+    "inputTokens": 32832,
+    "outputTokens": 472,
+    "cacheReadTokens": 0,
+    "cacheCreationTokens": 0,
+    "costUsd": 0.17596
+  }
+}

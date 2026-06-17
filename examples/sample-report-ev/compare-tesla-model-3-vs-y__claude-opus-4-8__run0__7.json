@@ -1,0 +1,797 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "runId": "compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7",
+  "taskId": "compare-tesla-model-3-vs-y",
+  "adapter": "claude",
+  "model": "claude-opus-4-8",
+  "status": "max_steps",
+  "startedAtMs": 1781656049355,
+  "finishedAtMs": 1781656108838,
+  "finalUrl": "https://www.evintersection.com/compare?vs=tesla-model-3",
+  "steps": [
+    {
+      "index": 0,
+      "text": "I'll start by clicking the \"Compare side-by-side\" button to access the comparison feature.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              202,
+              605
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-0-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 3667,
+        "outputTokens": 107,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.02101
+      },
+      "url": "https://www.evintersection.com/compare",
+      "stopReason": "tool_use",
+      "durationMs": 2833
+    },
+    {
+      "index": 1,
+      "text": "The Compare EVs page loaded with a dropdown. Let me click it to add the first vehicle.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              391,
+              220
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-1-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 5127,
+        "outputTokens": 110,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.028384999999999997
+      },
+      "url": "https://www.evintersection.com/compare",
+      "stopReason": "tool_use",
+      "durationMs": 3165
+    },
+    {
+      "index": 2,
+      "text": "The dropdown is open showing a list of EVs. I see Tesla Cybertruck but need to find Model 3 and Model Y. Let me scroll down within this dropdown list.",
+      "actions": [
+        {
+          "type": "scroll",
+          "raw": {
+            "action": "scroll",
+            "coordinate": [
+              391,
+              400
+            ],
+            "scroll_direction": "down",
+            "scroll_amount": 3
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-2-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 6590,
+        "outputTokens": 188,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.03765
+      },
+      "url": "https://www.evintersection.com/compare",
+      "stopReason": "tool_use",
+      "durationMs": 4038
+    },
+    {
+      "index": 3,
+      "text": "I see more options now. Let me continue scrolling to find the Tesla Model 3 and Model Y.",
+      "actions": [
+        {
+          "type": "scroll",
+          "raw": {
+            "action": "scroll",
+            "coordinate": [
+              391,
+              400
+            ],
+            "scroll_direction": "down",
+            "scroll_amount": 3
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-3-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 8131,
+        "outputTokens": 163,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.04473
+      },
+      "url": "https://www.evintersection.com/compare",
+      "stopReason": "tool_use",
+      "durationMs": 9017
+    },
+    {
+      "index": 4,
+      "text": "Still no Tesla Model 3/Y in view. Let me keep scrolling.",
+      "actions": [
+        {
+          "type": "scroll",
+          "raw": {
+            "action": "scroll",
+            "coordinate": [
+              391,
+              400
+            ],
+            "scroll_direction": "down",
+            "scroll_amount": 3
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-4-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 9647,
+        "outputTokens": 157,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.05216
+      },
+      "url": "https://www.evintersection.com/compare",
+      "stopReason": "tool_use",
+      "durationMs": 3307
+    },
+    {
+      "index": 5,
+      "actions": [
+        {
+          "type": "scroll",
+          "raw": {
+            "action": "scroll",
+            "coordinate": [
+              391,
+              400
+            ],
+            "scroll_direction": "down",
+            "scroll_amount": 3
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-5-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 11157,
+        "outputTokens": 129,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.05901
+      },
+      "url": "https://www.evintersection.com/compare",
+      "stopReason": "tool_use",
+      "durationMs": 3193
+    },
+    {
+      "index": 6,
+      "text": "I can see both Tesla Model 3 and Tesla Model Y. Let me click Tesla Model 3 first.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              91,
+              348
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-6-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 12639,
+        "outputTokens": 116,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.066095
+      },
+      "url": "https://www.evintersection.com/compare",
+      "stopReason": "tool_use",
+      "durationMs": 3458
+    },
+    {
+      "index": 7,
+      "text": "The Tesla Model 3 row is highlighted but the dropdown is still open and the placeholder still shows \"Add an EV to compare\". It seems the selection may not have registered, or the dropdown stays open for multi-select. Let me click Tesla Model Y now as well.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              91,
+              449
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-7-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 14108,
+        "outputTokens": 165,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.07466500000000001
+      },
+      "url": "https://www.evintersection.com/compare?vs=tesla-model-3",
+      "stopReason": "tool_use",
+      "durationMs": 4005
+    },
+    {
+      "index": 8,
+      "text": "Tesla Model 3 is now selected (shown as a chip with a checkmark in the list). Now I'll click Tesla Model Y to add it as the second vehicle.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              91,
+              449
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-8-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 15626,
+        "outputTokens": 133,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.081455
+      },
+      "url": "https://www.evintersection.com/compare?vs=tesla-model-3,tesla-model-y",
+      "stopReason": "tool_use",
+      "durationMs": 4407
+    },
+    {
+      "index": 9,
+      "text": "Both Tesla Model 3 and Tesla Model Y are now selected, and the comparison table is rendering. Let me close the dropdown to view the full comparison by clicking elsewhere on the page.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              640,
+              730
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-9-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 17112,
+        "outputTokens": 143,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.08913499999999999
+      },
+      "url": "https://www.evintersection.com/compare?vs=tesla-model-3",
+      "stopReason": "tool_use",
+      "durationMs": 4213
+    },
+    {
+      "index": 10,
+      "text": "Clicking on the page area appears to have deselected the Tesla Model Y \u2014 now only Tesla Model 3 remains as a chip. The click likely landed on a control that removed the second selection. Let me re-add the Tesla Model Y by opening the dropdown again.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              400,
+              220
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-10-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 18608,
+        "outputTokens": 163,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.09711499999999999
+      },
+      "url": "https://www.evintersection.com/compare?vs=tesla-model-3",
+      "stopReason": "tool_use",
+      "durationMs": 3817
+    },
+    {
+      "index": 11,
+      "text": "The dropdown is open again. Tesla Model 3 has a checkmark. Let me click Tesla Model Y to re-add it.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              91,
+              449
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-11-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 20124,
+        "outputTokens": 121,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.103645
+      },
+      "url": "https://www.evintersection.com/compare?vs=tesla-model-3",
+      "stopReason": "tool_use",
+      "durationMs": 4529
+    },
+    {
+      "index": 12,
+      "text": "The Tesla Model Y row is highlighted but does not yet show a checkmark and the chip hasn't been added yet (only Model 3 chip is visible). The first click of an item seems to just highlight it. Let me click Tesla Model Y again to confirm the selection.",
+      "actions": [
+        {
+          "type": "left_click",
+          "raw": {
+            "action": "left_click",
+            "coordinate": [
+              91,
+              449
+            ]
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-12-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 21598,
+        "outputTokens": 165,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.112115
+      },
+      "url": "https://www.evintersection.com/compare?vs=tesla-model-3,tesla-model-y",
+      "stopReason": "tool_use",
+      "durationMs": 3953
+    },
+    {
+      "index": 13,
+      "text": "Both Tesla Model 3 and Tesla Model Y now appear as chips with checkmarks, and the comparison table is showing both columns. To close the dropdown without deselecting, I'll press Escape rather than clicking on the page.",
+      "actions": [
+        {
+          "type": "key",
+          "raw": {
+            "action": "key",
+            "text": "Escape"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7/step-13-act-0.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 23116,
+        "outputTokens": 146,
+        "cacheReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.11923
+      },
+      "url": "https://www.evintersection.com/compare?vs=tesla-model-3",
+      "stopReason": "tool_use",
+      "durationMs": 4682
+    }
+  ],
+  "network": [
+    {
+      "url": "https://www.evintersection.com/",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "document",
+      "atMs": 379
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0hardgfujm4-o.css",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 407
+    },
+    {
+      "url": "https://www.evintersection.com/logo.svg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 419
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0g~_ccfr2qn6e.css",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 420
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/179ik05jwh9e9.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 436
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/10ha09z00lesi.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 436
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_ssgManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 436
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_clientMiddlewareManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 436
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06g.a0iw.fbx6.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 436
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_buildManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 436
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0dbnmu2kkl~7j.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 436
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/097hxm_r~_zh~.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 438
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08-dxlhphevgq.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 439
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0prgmz-96cqt~.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 439
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0vgy2kwyegxqu.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 439
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/3acd955dc1a0aeaf53f944a8a1ce1afe8011a884-3559x1729.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 455
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/4ecd2a4349368f6d97d0222235b0f6dc27d942a6-3156x1838.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 514
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/679916fa9973ee2bf16fb44c6bb28265a4316cae-3615x2096.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 514
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/eba97f942df2b6c6b969e5440adee0e3b07a9479-3071x1821.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 514
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/5ed71a58470ec0a8be09d5d2d4695aa104b59369-3201x1800.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 515
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/3c329138be8b53702f8d10847c1c780e0dd9ae8a-5801x2972.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 530
+    },
+    {
+      "url": "https://www.evintersection.com/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 531
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/aba60464f6602dd08761cda6a489305ca892663d-4449x2869.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 536
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/cc642d533333c20009f203b76d3c4519e741e20b-2201x1331.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 552
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/c11808f8ee632c5606145f47d0557ab62162104a-4383x2100.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 553
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/eec676ad51c3cbac1b31a8d028db37a3b817804e-5062x2629.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 581
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/052c78b81035df75194cc60a60b0236d9fd79d45-4869x2099.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 635
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/fb439f6e9e006ca0e04cf6cb776c5dd7a521e30a-4902x2817.jpg",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 635
+    },
+    {
+      "url": "https://www.evintersection.com/compare",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "document",
+      "atMs": 3598
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0g~_ccfr2qn6e.css",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 3605
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0hardgfujm4-o.css",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "stylesheet",
+      "atMs": 3605
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06g.a0iw.fbx6.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3607
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0prgmz-96cqt~.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3607
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08-dxlhphevgq.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3608
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0vgy2kwyegxqu.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3608
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_buildManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3608
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_ssgManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3608
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_clientMiddlewareManifest.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3608
+    },
+    {
+      "url": "https://www.evintersection.com/logo.svg",
+      "method": "GET",
+      "status": 304,
+      "resourceType": "image",
+      "atMs": 3620
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-10873kewv98hv.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3636
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0t1au6_4nx.2v.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3636
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/150a1jx9--f0u.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3636
+    },
+    {
+      "url": "https://www.evintersection.com/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "script",
+      "atMs": 3650
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/compare.json?vs=tesla-model-3",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "fetch",
+      "atMs": 29963
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/54634913fbf5c38bec880b7bf42bda526e1f2bf1-5156x3432.jpg?w=640",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 30231
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/compare.json?vs=tesla-model-3%2Ctesla-model-y",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "fetch",
+      "atMs": 33923
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/5ed71a58470ec0a8be09d5d2d4695aa104b59369-3201x1800.jpg?w=640",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 34211
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/compare.json?vs=tesla-model-3",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "fetch",
+      "atMs": 38231
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/compare.json?vs=tesla-model-3%2Ctesla-model-y",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "fetch",
+      "atMs": 50789
+    },
+    {
+      "url": "https://cdn.sanity.io/images/xpzbrfni/production/5ed71a58470ec0a8be09d5d2d4695aa104b59369-3201x1800.jpg?w=640",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "image",
+      "atMs": 50802
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/compare.json?vs=tesla-model-3",
+      "method": "GET",
+      "status": 200,
+      "resourceType": "fetch",
+      "atMs": 54742
+    }
+  ],
+  "assertions": [
+    {
+      "type": "url",
+      "ok": true,
+      "detail": "final URL https://www.evintersection.com/compare?vs=tesla-model-3 matched **/compare**"
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"body\" text contains \"Model 3\""
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"body\" text contains \"Model Y\""
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"body\" text contains \"Max EPA range\""
+    }
+  ],
+  "usage": {
+    "inputTokens": 187250,
+    "outputTokens": 2006,
+    "cacheReadTokens": 0,
+    "cacheCreationTokens": 0,
+    "costUsd": 0.9863999999999999
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "manifestVersion": "0.1",
+  "generatedAtMs": 1781656594107,
+  "totalCostUsd": 8.3750605,
+  "cells": [
+    {
+      "taskId": "best-electric-trucks",
+      "goal": "Find EV Intersection's list of the best electric trucks for 2026, and confirm the Rivian R1T is on it.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.15174500000000002,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "runIds": [
+        "best-electric-trucks__claude-opus-4-8__run0__1",
+        "best-electric-trucks__claude-opus-4-8__run1__2",
+        "best-electric-trucks__claude-opus-4-8__run2__3"
+      ],
+      "stepCount": 2
+    },
+    {
+      "taskId": "best-electric-trucks",
+      "goal": "Find EV Intersection's list of the best electric trucks for 2026, and confirm the Rivian R1T is on it.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.8013962499999999,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "runIds": [
+        "best-electric-trucks__browser-use__run0__4",
+        "best-electric-trucks__browser-use__run1__5",
+        "best-electric-trucks__browser-use__run2__6"
+      ],
+      "stepCount": 3
+    },
+    {
+      "taskId": "compare-tesla-model-3-vs-y",
+      "goal": "Compare the Tesla Model 3 and the Tesla Model Y side by side on EV Intersection.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 2.9613400000000003,
+      "statuses": [
+        "max_steps",
+        "max_steps",
+        "max_steps"
+      ],
+      "runIds": [
+        "compare-tesla-model-3-vs-y__claude-opus-4-8__run0__7",
+        "compare-tesla-model-3-vs-y__claude-opus-4-8__run1__8",
+        "compare-tesla-model-3-vs-y__claude-opus-4-8__run2__9"
+      ],
+      "stepCount": 14
+    },
+    {
+      "taskId": "compare-tesla-model-3-vs-y",
+      "goal": "Compare the Tesla Model 3 and the Tesla Model Y side by side on EV Intersection.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 2.708801,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "runIds": [
+        "compare-tesla-model-3-vs-y__browser-use__run0__10",
+        "compare-tesla-model-3-vs-y__browser-use__run1__11",
+        "compare-tesla-model-3-vs-y__browser-use__run2__12"
+      ],
+      "stepCount": 7
+    },
+    {
+      "taskId": "search-rivian-r1t",
+      "goal": "From the home page, use the site's search to find the Rivian R1T, and open its detail page.",
+      "model": "claude-opus-4-8",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 0.65619,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "runIds": [
+        "search-rivian-r1t__claude-opus-4-8__run0__13",
+        "search-rivian-r1t__claude-opus-4-8__run1__14",
+        "search-rivian-r1t__claude-opus-4-8__run2__15"
+      ],
+      "stepCount": 5
+    },
+    {
+      "taskId": "search-rivian-r1t",
+      "goal": "From the home page, use the site's search to find the Rivian R1T, and open its detail page.",
+      "model": "browser-use",
+      "passK": {
+        "k": 3,
+        "passes": 3,
+        "required": 2,
+        "passed": true
+      },
+      "costUsd": 1.09558825,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "runIds": [
+        "search-rivian-r1t__browser-use__run0__16",
+        "search-rivian-r1t__browser-use__run1__17",
+        "search-rivian-r1t__browser-use__run2__18"
+      ],
+      "stepCount": 4
+    }
+  ]
+}

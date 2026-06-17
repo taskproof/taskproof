@@ -1,0 +1,349 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "runId": "search-rivian-r1t__browser-use__run0__16",
+  "taskId": "search-rivian-r1t",
+  "adapter": "browser-use",
+  "model": "claude-opus-4-8",
+  "status": "completed",
+  "startedAtMs": 1781656490721,
+  "finishedAtMs": 1781656526494,
+  "finalUrl": "https://www.evintersection.com/ev/rivian-r1t",
+  "steps": [
+    {
+      "index": 0,
+      "text": "Initial navigation",
+      "actions": [
+        {
+          "type": "navigate",
+          "raw": {
+            "navigate": {
+              "url": "https://www.evintersection.com",
+              "new_tab": false
+            },
+            "interacted_element": null,
+            "result": "Navigated to https://www.evintersection.com"
+          },
+          "outcome": "ok"
+        }
+      ],
+      "usage": {
+        "inputTokens": 15357,
+        "outputTokens": 353,
+        "cacheReadTokens": 10695,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.09096162499999999
+      }
+    },
+    {
+      "index": 1,
+      "text": "Type 'Rivian R1T' into the search box.",
+      "actions": [
+        {
+          "type": "input",
+          "raw": {
+            "input": {
+              "index": 21,
+              "text": "Rivian R1T",
+              "clear": true
+            },
+            "interacted_element": {
+              "node_id": 3183,
+              "backend_node_id": 21,
+              "frame_id": null,
+              "node_type": 1,
+              "node_value": "",
+              "node_name": "INPUT",
+              "attributes": {
+                "class": "m_8fb7ebe7 mantine-Input-input mantine-Autocomplete-input",
+                "data-variant": "default",
+                "placeholder": "Search",
+                "role": "combobox",
+                "aria-haspopup": "listbox",
+                "aria-expanded": "false",
+                "autocomplete": "off",
+                "id": "mantine-frwh9mv6t",
+                "value": ""
+              },
+              "bounds": {
+                "x": 1062,
+                "y": 10,
+                "width": 202,
+                "height": 36
+              },
+              "x_path": "html/body/div[1]/div/header/div/div[2]/div/input",
+              "element_hash": 1826524480166749200,
+              "stable_hash": 10132797895569224000,
+              "ax_name": "Search"
+            },
+            "result": "Typed 'Rivian R1T'\n\ud83d\udca1 This is an autocomplete field. Wait for suggestions to appear, then click the correct suggestion instead of pressing Enter."
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/search-rivian-r1t__browser-use__run0__16/step-1.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 15357,
+        "outputTokens": 353,
+        "cacheReadTokens": 10695,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.09096162499999999
+      },
+      "url": "https://www.evintersection.com/"
+    },
+    {
+      "index": 2,
+      "text": "Click the 'Rivian R1T' suggestion to open its detail page.",
+      "actions": [
+        {
+          "type": "click",
+          "raw": {
+            "click": {
+              "index": 3131
+            },
+            "interacted_element": {
+              "node_id": 9284,
+              "backend_node_id": 3131,
+              "frame_id": null,
+              "node_type": 1,
+              "node_value": "",
+              "node_name": "DIV",
+              "attributes": {
+                "class": "m_92253aa5 mantine-Autocomplete-option m_390b5f4",
+                "data-combobox-option": "true",
+                "value": "Rivian R1T",
+                "aria-selected": "false",
+                "id": "_r_19_",
+                "role": "option"
+              },
+              "bounds": {
+                "x": 1067,
+                "y": 59,
+                "width": 192,
+                "height": 33.6875
+              },
+              "x_path": "html/body/div[2]/div/div/div/div/div/div[1]/div/div",
+              "element_hash": 6759399473656852000,
+              "stable_hash": 12468201155927001000,
+              "ax_name": "Rivian R1T"
+            },
+            "result": null
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/search-rivian-r1t__browser-use__run0__16/step-2.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 15357,
+        "outputTokens": 353,
+        "cacheReadTokens": 10695,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.09096162499999999
+      },
+      "url": "https://www.evintersection.com/"
+    },
+    {
+      "index": 3,
+      "text": "Task complete \u2014 report success.",
+      "actions": [
+        {
+          "type": "done",
+          "raw": {
+            "done": {
+              "text": "Done. From the EV Intersection home page I used the search box to look up 'Rivian R1T', clicked the autocomplete suggestion, and opened its detail page at https://www.evintersection.com/ev/rivian-r1t. The page shows the Rivian R1T pickup with its review summary, available model trims (Dual Standard, Dual Large, Dual Max, Tri Max, Quad Max), and specs/price/range information.",
+              "success": true,
+              "files_to_display": []
+            },
+            "interacted_element": null,
+            "result": "Task completed: True - Done. From the EV Intersection home page I used the search box to look up 'Rivian R1T', clicked the  - 277 more characters"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/search-rivian-r1t__browser-use__run0__16/step-3.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 15360,
+        "outputTokens": 353,
+        "cacheReadTokens": 10698,
+        "cacheCreationTokens": 0,
+        "costUsd": 0.09096162499999999
+      },
+      "url": "https://www.evintersection.com/ev/rivian-r1t"
+    }
+  ],
+  "network": [
+    {
+      "url": "https://www.evintersection.com/",
+      "method": "GET",
+      "status": 200,
+      "atMs": 0
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0g~_ccfr2qn6e.css",
+      "method": "GET",
+      "status": 200,
+      "atMs": 72
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0hardgfujm4-o.css",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06g.a0iw.fbx6.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0prgmz-96cqt~.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08-dxlhphevgq.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0vgy2kwyegxqu.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/179ik05jwh9e9.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/10ha09z00lesi.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/097hxm_r~_zh~.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0dbnmu2kkl~7j.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_buildManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_ssgManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_clientMiddlewareManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/logo.svg",
+      "method": "GET",
+      "status": 200,
+      "atMs": 73
+    },
+    {
+      "url": "https://www.evintersection.com/site.webmanifest",
+      "method": "GET",
+      "status": 200,
+      "atMs": 79
+    },
+    {
+      "url": "https://www.evintersection.com/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 270
+    },
+    {
+      "url": "https://www.evintersection.com/icon.svg",
+      "method": "GET",
+      "status": 200,
+      "atMs": 421
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/038v-fv2g5.x1.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 20653
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0x-mh-kdbcpdn.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 20679
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08r8n84udct81.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 20680
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06mnyn4b5ffc2.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 20680
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0qmcze.6yfenw.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 20681
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/ev/rivian-r1t.json?slug=rivian-r1t",
+      "method": "GET",
+      "status": 200,
+      "atMs": 20734
+    },
+    {
+      "url": "https://www.evintersection.com/_next/data/mMRgPaPAl9-O7FxxMYdLj/ev/rivian-r1t.json?slug=rivian-r1t",
+      "method": "HEAD",
+      "status": 200,
+      "atMs": 20772
+    }
+  ],
+  "assertions": [
+    {
+      "type": "url",
+      "ok": true,
+      "detail": "final URL https://www.evintersection.com/ev/rivian-r1t matched **/ev/rivian-r1t"
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"h1\" text contains \"R1T\""
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"body\" text contains \"Rivian\""
+    }
+  ],
+  "usage": {
+    "inputTokens": 61431,
+    "outputTokens": 1412,
+    "cacheReadTokens": 42783,
+    "cacheCreationTokens": 0,
+    "costUsd": 0.36384649999999996
+  }
+}

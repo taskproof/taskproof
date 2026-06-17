@@ -1,0 +1,352 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "runId": "best-electric-trucks__browser-use__run0__4",
+  "taskId": "best-electric-trucks",
+  "adapter": "browser-use",
+  "model": "claude-opus-4-8",
+  "status": "completed",
+  "startedAtMs": 1781655953711,
+  "finishedAtMs": 1781655989193,
+  "finalUrl": "https://www.evintersection.com/best/electric-trucks",
+  "steps": [
+    {
+      "index": 0,
+      "text": "Initial navigation",
+      "actions": [
+        {
+          "type": "navigate",
+          "raw": {
+            "navigate": {
+              "url": "https://www.evintersection.com",
+              "new_tab": false
+            },
+            "interacted_element": null,
+            "result": "Navigated to https://www.evintersection.com"
+          },
+          "outcome": "ok"
+        }
+      ],
+      "usage": {
+        "inputTokens": 9290,
+        "outputTokens": 529,
+        "cacheReadTokens": 4753,
+        "cacheCreationTokens": 4753,
+        "costUsd": 0.09177058333333334
+      }
+    },
+    {
+      "index": 1,
+      "text": "Click on the Trucks category to find the trucks list.",
+      "actions": [
+        {
+          "type": "click",
+          "raw": {
+            "click": {
+              "index": 38
+            },
+            "interacted_element": {
+              "node_id": 3217,
+              "backend_node_id": 38,
+              "frame_id": null,
+              "node_type": 1,
+              "node_value": "",
+              "node_name": "A",
+              "attributes": {
+                "style": "--text-fz:var(--mantine-font-size-sm);--text-lh:var(--mantine-line-height-sm);border:1px solid var(--mantine-color-default-border);border-radius:999px;padding:6px 14px",
+                "class": "mantine-focus-auto m_849cf0da m_b6d8b162 mantine-Text-root mantine-Anchor-root",
+                "data-size": "sm",
+                "data-underline": "hover",
+                "href": "/best/electric-trucks"
+              },
+              "bounds": {
+                "x": 277.96875,
+                "y": 323.6875,
+                "width": 72.9375,
+                "height": 34.296875
+              },
+              "x_path": "html/body/div[1]/div/main/div[1]/div[1]/a[3]",
+              "element_hash": 474227200538365200,
+              "stable_hash": 1669998527906169300,
+              "ax_name": "Trucks"
+            },
+            "result": null
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/best-electric-trucks__browser-use__run0__4/step-1.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 9290,
+        "outputTokens": 529,
+        "cacheReadTokens": 4753,
+        "cacheCreationTokens": 4753,
+        "costUsd": 0.09177058333333334
+      },
+      "url": "https://www.evintersection.com/"
+    },
+    {
+      "index": 2,
+      "text": "Report findings and confirm the Rivian R1T is on the list.",
+      "actions": [
+        {
+          "type": "done",
+          "raw": {
+            "done": {
+              "text": "I found EV Intersection's \"Best Electric Trucks for 2026\" list at https://www.evintersection.com/best/electric-trucks. The list contains 6 EVs, and the **Rivian R1T is confirmed to be on it**.\n\nThe full list of 6 trucks:\n1. GMC Sierra EV\n2. Chevrolet Silverado EV\n3. **Rivian R1T** \u2705 (available models: Dual Standard, Dual Large, Dual Max, Tri Max, Quad Max)\n4. GMC Hummer EV Pickup\n5. Tesla Cybertruck\n6. Ford F-150 Lightning",
+              "success": true,
+              "files_to_display": []
+            },
+            "interacted_element": null,
+            "result": "Task completed: True - I found EV Intersection's \"Best Electric Trucks for 2026\" list at https://www.evintersection.com/bes - 326 more characters"
+          },
+          "outcome": "ok",
+          "screenshotPath": "examples/sample-report-ev/best-electric-trucks__browser-use__run0__4/step-2.jpg"
+        }
+      ],
+      "usage": {
+        "inputTokens": 9290,
+        "outputTokens": 530,
+        "cacheReadTokens": 4755,
+        "cacheCreationTokens": 4755,
+        "costUsd": 0.09177058333333335
+      },
+      "url": "https://www.evintersection.com/best/electric-trucks"
+    }
+  ],
+  "network": [
+    {
+      "url": "https://www.evintersection.com/",
+      "method": "GET",
+      "status": 200,
+      "atMs": 0
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0g~_ccfr2qn6e.css",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0hardgfujm4-o.css",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06g.a0iw.fbx6.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0prgmz-96cqt~.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08-dxlhphevgq.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0vgy2kwyegxqu.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/179ik05jwh9e9.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/10ha09z00lesi.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/097hxm_r~_zh~.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0dbnmu2kkl~7j.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_buildManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_ssgManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_clientMiddlewareManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/logo.svg",
+      "method": "GET",
+      "status": 200,
+      "atMs": 66
+    },
+    {
+      "url": "https://www.evintersection.com/site.webmanifest",
+      "method": "GET",
+      "status": 200,
+      "atMs": 72
+    },
+    {
+      "url": "https://www.evintersection.com/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 187
+    },
+    {
+      "url": "https://www.evintersection.com/icon.svg",
+      "method": "GET",
+      "status": 200,
+      "atMs": 509
+    },
+    {
+      "url": "https://www.evintersection.com/best/electric-trucks",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14196
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0g~_ccfr2qn6e.css",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14240
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0hardgfujm4-o.css",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14240
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/06g.a0iw.fbx6.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14240
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0prgmz-96cqt~.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14240
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/08-dxlhphevgq.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14240
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-0vgy2kwyegxqu.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14240
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/179ik05jwh9e9.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14240
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0optpmirv96x8.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14241
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/0he8wpgjc4~q5.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14241
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/chunks/turbopack-01~1wxkgulf8f.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14241
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_buildManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14241
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_ssgManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14241
+    },
+    {
+      "url": "https://www.evintersection.com/_next/static/mMRgPaPAl9-O7FxxMYdLj/_clientMiddlewareManifest.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14241
+    },
+    {
+      "url": "https://www.evintersection.com/logo.svg",
+      "method": "GET",
+      "status": 304,
+      "atMs": 14241
+    },
+    {
+      "url": "https://www.evintersection.com/site.webmanifest",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14260
+    },
+    {
+      "url": "https://www.evintersection.com/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 200,
+      "atMs": 14311
+    }
+  ],
+  "assertions": [
+    {
+      "type": "url",
+      "ok": true,
+      "detail": "final URL https://www.evintersection.com/best/electric-trucks matched **/best/electric-trucks"
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"h1\" text contains \"Best Electric Trucks\""
+    },
+    {
+      "type": "dom",
+      "ok": true,
+      "detail": "\"a[href*='/ev/rivian-r1t']\" is attached"
+    }
+  ],
+  "usage": {
+    "inputTokens": 27870,
+    "outputTokens": 1588,
+    "cacheReadTokens": 14261,
+    "cacheCreationTokens": 14261,
+    "costUsd": 0.27531175
+  }
+}
