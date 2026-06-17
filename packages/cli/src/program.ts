@@ -164,6 +164,16 @@ export function buildProgram(): Command {
       });
     });
 
+  program
+    .command('install-browsers')
+    .description(
+      'Install the Chromium the Claude computer-use adapter needs (via bundled Playwright)',
+    )
+    .action(async () => {
+      const { installBrowsers } = await import('./install-browsers.js');
+      process.exitCode = await installBrowsers();
+    });
+
   const baseline = program
     .command('baseline')
     .description('Save an agent-usability baseline to diff future runs against');

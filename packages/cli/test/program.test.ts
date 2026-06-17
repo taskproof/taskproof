@@ -6,7 +6,15 @@ describe('buildProgram', () => {
   it('registers the command surface', () => {
     const program = buildProgram();
     const names = program.commands.map((command) => command.name()).sort();
-    expect(names).toEqual(['baseline', 'diff', 'init', 'report', 'run', 'validate']);
+    expect(names).toEqual([
+      'baseline',
+      'diff',
+      'init',
+      'install-browsers',
+      'report',
+      'run',
+      'validate',
+    ]);
     expect(program.name()).toBe('taskproof');
   });
 

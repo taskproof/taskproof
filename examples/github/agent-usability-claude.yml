@@ -5,15 +5,14 @@
 # sticky PR comment. By default it does NOT block the merge — the comment is the signal.
 #
 # One-time setup in your repo:
-#   1. `taskproof init --url https://your-site.com`  → writes specs to taskproof/tasks/
+#   1. npx taskproof init --url https://your-site.com   → writes specs to taskproof/tasks/
 #   2. On your default branch, capture a baseline and commit it:
-#        taskproof run taskproof/tasks/*.yaml --models claude-opus-4-8 --out taskproof-runs
-#        taskproof baseline save --to taskproof/baseline.json
+#        npx taskproof install-browsers
+#        npx taskproof run taskproof/tasks/*.yaml --models claude-opus-4-8 --out taskproof-runs
+#        npx taskproof baseline save --to taskproof/baseline.json
 #        git add taskproof/ && git commit -m "taskproof: baseline"
-#   3. Add an `ANTHROPIC_API_KEY` repository secret.
-#
-# Pre-release note: taskproof isn't on npm yet, so this builds it from source. Once it ships,
-# delete the "Build taskproof from source" block and set `taskproof: npx taskproof@latest`.
+#   3. Add an `ANTHROPIC_API_KEY` repository secret (Settings → Secrets and variables → Actions).
+#      Without it — and on fork PRs — this job posts a skip notice and stays green (no spend).
 
 name: agent-usability
 on:
@@ -33,43 +32,35 @@ permissions:
 jobs:
   agent-usability:
     runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - uses: actions/checkout@v4 # your repo (specs + committed baseline)
-
-      # ---- Build taskproof from source (delete once it's published) -------------------
-      - uses: actions/checkout@v4
-        with:
-          repository: taskproof/taskproof # ← the repo that hosts taskproof
-          path: .taskproof-src
-      - uses: pnpm/action-setup@v4
-        with:
-          package_json_file: .taskproof-src/package.json # use taskproof's pinned pnpm
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
-          cache-dependency-path: .taskproof-src/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-        working-directory: .taskproof-src
-      - run: pnpm build
-        working-directory: .taskproof-src
-      - run: pnpm --filter @taskproof/adapter-claude exec playwright install --with-deps chromium
-        working-directory: .taskproof-src
-      # ---------------------------------------------------------------------------------
+
+      - name: No API key — skip the paid run (stays green)
+        if: env.ANTHROPIC_API_KEY == ''
+        run: echo "::notice title=taskproof::ANTHROPIC_API_KEY not set (or a fork PR) — skipped the agent run. Add the secret to enable it."
+
+      # Install the published CLI + the matching Chromium for the Claude adapter.
+      - if: env.ANTHROPIC_API_KEY != ''
+        run: |
+          npm install -g taskproof@0.1.0
+          taskproof install-browsers
 
       # Cheap per-PR lane: one pass per task (-k 1) with a soft budget cap (--max-cost; Claude
       # stops before a turn it can't afford, so it may exceed by ≤1 turn's cost).
       - name: Run agents
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: >-
-          node .taskproof-src/packages/cli/dist/index.js run taskproof/tasks/*.yaml
-          --models claude-opus-4-8 -k 1 --max-cost 1.00 --out taskproof-runs
+        if: env.ANTHROPIC_API_KEY != ''
+        run: taskproof run taskproof/tasks/*.yaml --models claude-opus-4-8 -k 1 --max-cost 1.00 --out taskproof-runs
 
       # Diff against the committed baseline and post / update the sticky PR comment.
-      - uses: taskproof/taskproof/.github/actions/taskproof-comment@main # ← same repo, pin a tag in prod
+      - if: env.ANTHROPIC_API_KEY != ''
+        uses: taskproof/taskproof/.github/actions/taskproof-comment@v0.1.0 # pin a tag in prod
         with:
-          taskproof: node .taskproof-src/packages/cli/dist/index.js
+          taskproof: taskproof
           run-dir: taskproof-runs
           baseline: taskproof/baseline.json
           fail-on-regression: 'false' # set 'true' to block merges on a regression
