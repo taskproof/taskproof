@@ -37,6 +37,13 @@ describe('buildProgram', () => {
     const longs = report?.options.map((o) => o.long);
     expect(longs).toEqual(expect.arrayContaining(['--max-image-width', '--image-quality']));
   });
+
+  it('install-browsers exposes --with-deps (for CI / Linux)', () => {
+    const program = buildProgram();
+    const install = program.commands.find((c) => c.name() === 'install-browsers');
+    const longs = install?.options.map((o) => o.long);
+    expect(longs).toEqual(expect.arrayContaining(['--with-deps']));
+  });
 });
 
 describe('numeric flag validation', () => {

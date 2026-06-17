@@ -38,8 +38,12 @@ function resolvePlaywrightCli(): string | undefined {
  * `taskproof install-browsers` — install the Chromium the Claude adapter needs, via the bundled
  * Playwright. Turnkey alternative to a customer guessing the right `npx playwright install`
  * version (a real rough edge surfaced by dogfooding the published CLI in CI).
+ *
+ * `withDeps` forwards Playwright's `--with-deps`, which also installs the OS-level libraries
+ * Chromium needs (via the system package manager — needs root). That's what CI wants on a Linux
+ * runner; it's off by default because local dev usually has the libs and shouldn't need sudo.
  */
-export async function installBrowsers(): Promise<number> {
+export async function installBrowsers(options: { withDeps?: boolean } = {}): Promise<number> {
   const cli = resolvePlaywrightCli();
   if (cli === undefined) {
     process.stderr.write(
@@ -49,8 +53,9 @@ export async function installBrowsers(): Promise<number> {
     return 1;
   }
   process.stdout.write('Installing Chromium for the Claude computer-use adapter…\n');
+  const args = ['install', ...(options.withDeps === true ? ['--with-deps'] : []), 'chromium'];
   return new Promise<number>((resolve) => {
-    const child = spawn(process.execPath, [cli, 'install', 'chromium'], { stdio: 'inherit' });
+    const child = spawn(process.execPath, [cli, ...args], { stdio: 'inherit' });
     child.on('exit', (code) => resolve(code ?? 1));
     child.on('error', (err) => {
       process.stderr.write(`playwright install failed: ${err.message}\n`);

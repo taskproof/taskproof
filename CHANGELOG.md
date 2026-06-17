@@ -7,7 +7,12 @@ schemas until `1.0.0`.
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+
+- `taskproof install-browsers --with-deps` — also installs the OS-level libraries Chromium needs,
+  forwarding to Playwright's `install --with-deps`. This is what a Linux CI runner wants; without
+  the flag only the browser binary is fetched (the right default for local dev, where installing
+  system packages needs root).
 
 ## [0.2.0] — 2026-06-16
 

@@ -189,9 +189,13 @@ export function buildProgram(): Command {
     .description(
       'Install the Chromium the Claude computer-use adapter needs (via bundled Playwright)',
     )
-    .action(async () => {
+    .option(
+      '--with-deps',
+      "also install Chromium's OS-level dependencies (for CI / Linux; uses the system package manager, needs root)",
+    )
+    .action(async (opts: { withDeps?: boolean }) => {
       const { installBrowsers } = await import('./install-browsers.js');
-      process.exitCode = await installBrowsers();
+      process.exitCode = await installBrowsers({ withDeps: opts.withDeps === true });
     });
 
   const baseline = program
