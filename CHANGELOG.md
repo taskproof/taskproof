@@ -7,12 +7,23 @@ schemas until `1.0.0`.
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.2.1] — 2026-06-17
+
 ### Added
 
 - `taskproof install-browsers --with-deps` — also installs the OS-level libraries Chromium needs,
   forwarding to Playwright's `install --with-deps`. This is what a Linux CI runner wants; without
   the flag only the browser binary is fetched (the right default for local dev, where installing
   system packages needs root).
+
+### Docs
+
+- Accurate package READMEs and metadata: the `taskproof` README now documents the real command
+  surface (it had drifted to a stale scaffold), the adapter-claude and grader READMEs list their
+  full model and assertion support, and every published package gains `repository`/`homepage`/`bugs`
+  links. No code or API changes.
 
 ## [0.2.0] — 2026-06-16
 
@@ -73,6 +84,7 @@ agents against your site, grade them, and diff against a baseline in CI.
 - The budget cap is soft, and is **not** enforced mid-run for browser-use (bound spend with
   `maxSteps` there).
 
-[Unreleased]: https://github.com/taskproof/taskproof/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/taskproof/taskproof/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/taskproof/taskproof/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/taskproof/taskproof/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/taskproof/taskproof/releases/tag/v0.1.0

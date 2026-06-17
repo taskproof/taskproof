@@ -1,6 +1,6 @@
 {
   "name": "@taskproof/report",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Renders taskproof run artifacts into a self-contained HTML report: the matrix, the per-step trace, the failing step",
   "license": "Apache-2.0",
   "repository": {
