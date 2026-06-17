@@ -62,7 +62,7 @@ once you trust the signal.
   the browser-use template still builds from source because it needs the Python sidecar. Pin a
   different CLI version by editing `taskproof: npx taskproof@<version>` in the Claude template.
 - **Pin the action** in production: use
-  `taskproof/taskproof/.github/actions/taskproof-comment@v0.2.0` (the current release tag), not
+  `taskproof/taskproof/.github/actions/taskproof-comment@v0.2.1` (the current release tag), not
   `@main`; bump it when a new release ships.
 
 ## What the comment looks like
