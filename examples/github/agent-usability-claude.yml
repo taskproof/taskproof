@@ -6,11 +6,7 @@
 #
 # One-time setup in your repo:
 #   1. npx taskproof init --url https://your-site.com   → writes specs to taskproof/tasks/
-#   2. On your default branch, capture a baseline and commit it:
-#        npx taskproof install-browsers
-#        npx taskproof run taskproof/tasks/*.yaml --models claude-opus-4-8 --out taskproof-runs
-#        npx taskproof baseline save --to taskproof/baseline.json
-#        git add taskproof/ && git commit -m "taskproof: baseline"
+#   2. On your default branch, capture a baseline and commit it (see this folder's README.md).
 #   3. Add an `ANTHROPIC_API_KEY` repository secret (Settings → Secrets and variables → Actions).
 #      Without it — and on fork PRs — this job posts a skip notice and stays green (no spend).
 
@@ -44,23 +40,29 @@ jobs:
         if: env.ANTHROPIC_API_KEY == ''
         run: echo "::notice title=taskproof::ANTHROPIC_API_KEY not set (or a fork PR) — skipped the agent run. Add the secret to enable it."
 
-      # Install the published CLI + the matching Chromium for the Claude adapter.
-      - if: env.ANTHROPIC_API_KEY != ''
+      # Install the published CLI in an isolated dir (keeps it out of this app's deps) so the
+      # Playwright the Claude adapter pins installs the matching Chromium revision.
+      #   Once a published release includes `taskproof install-browsers`, this whole step becomes:
+      #     npm install -g taskproof@<version> && taskproof install-browsers
+      - name: Set up taskproof + Chromium
+        if: env.ANTHROPIC_API_KEY != ''
         run: |
-          npm install -g taskproof@0.1.0
-          taskproof install-browsers
+          mkdir -p "$RUNNER_TEMP/tp" && cd "$RUNNER_TEMP/tp"
+          npm init -y >/dev/null && npm install taskproof@0.1.0
+          ./node_modules/.bin/playwright install --with-deps chromium
 
       # Cheap per-PR lane: one pass per task (-k 1) with a soft budget cap (--max-cost; Claude
       # stops before a turn it can't afford, so it may exceed by ≤1 turn's cost).
       - name: Run agents
         if: env.ANTHROPIC_API_KEY != ''
-        run: taskproof run taskproof/tasks/*.yaml --models claude-opus-4-8 -k 1 --max-cost 1.00 --out taskproof-runs
+        run: '"$RUNNER_TEMP/tp/node_modules/.bin/taskproof" run taskproof/tasks/*.yaml --models claude-opus-4-8 -k 1 --max-cost 1.00 --out taskproof-runs'
 
       # Diff against the committed baseline and post / update the sticky PR comment.
+      # NB: this action lives in the taskproof repo — it resolves only once that repo is public.
       - if: env.ANTHROPIC_API_KEY != ''
         uses: taskproof/taskproof/.github/actions/taskproof-comment@v0.1.0 # pin a tag in prod
         with:
-          taskproof: taskproof
+          taskproof: npx taskproof@0.1.0
           run-dir: taskproof-runs
           baseline: taskproof/baseline.json
           fail-on-regression: 'false' # set 'true' to block merges on a regression
