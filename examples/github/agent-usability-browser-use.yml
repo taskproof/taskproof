@@ -9,6 +9,8 @@
 # SAME lane you gate on, so cells line up:
 #   taskproof run taskproof/tasks/*.yaml --models browser-use:claude-haiku-4-5 --out taskproof-runs
 #   taskproof baseline save --to taskproof/baseline.json
+# Without an ANTHROPIC_API_KEY secret — and on fork PRs — this job posts a skip notice and
+# stays green (no sidecar, no spend).
 #
 # browser-use caveat: its network capture is same-origin HTTPS only, so `network` assertions
 # against a cross-origin/third-party endpoint won't pass on this lane (url + dom do).
@@ -28,31 +30,44 @@ permissions:
 jobs:
   agent-usability:
     runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - uses: actions/checkout@v4 # your repo (specs + committed baseline)
 
+      - name: No API key — skip the smoke lane (stays green)
+        if: env.ANTHROPIC_API_KEY == ''
+        run: echo "::notice title=taskproof::ANTHROPIC_API_KEY not set (or a fork PR) — skipped the browser-use lane. Add the secret to enable it."
+
       # ---- Build taskproof from source (delete once it's published) -------------------
-      - uses: actions/checkout@v4
+      - if: env.ANTHROPIC_API_KEY != ''
+        uses: actions/checkout@v4
         with:
           repository: taskproof/taskproof # ← the repo that hosts taskproof
           path: .taskproof-src
-      - uses: pnpm/action-setup@v4
+      - if: env.ANTHROPIC_API_KEY != ''
+        uses: pnpm/action-setup@v4
         with:
           package_json_file: .taskproof-src/package.json
-      - uses: actions/setup-node@v4
+      - if: env.ANTHROPIC_API_KEY != ''
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
           cache-dependency-path: .taskproof-src/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
+      - if: env.ANTHROPIC_API_KEY != ''
+        run: pnpm install --frozen-lockfile
         working-directory: .taskproof-src
-      - run: pnpm build
+      - if: env.ANTHROPIC_API_KEY != ''
+        run: pnpm build
         working-directory: .taskproof-src
       # ---------------------------------------------------------------------------------
 
       # ---- Start the browser-use sidecar (Python / uv) --------------------------------
-      - uses: astral-sh/setup-uv@v5
+      - if: env.ANTHROPIC_API_KEY != ''
+        uses: astral-sh/setup-uv@v5
       - name: Start browser-use sidecar
+        if: env.ANTHROPIC_API_KEY != ''
         working-directory: .taskproof-src/packages/adapter-browser-use/sidecar
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -75,11 +90,14 @@ jobs:
       # at runtime, and still flags a per-run breach after the fact). Bound spend with maxSteps
       # in your task specs; keep --max-cost only as a reporting tripwire.
       - name: Run agents
+        if: env.ANTHROPIC_API_KEY != ''
         run: >-
           node .taskproof-src/packages/cli/dist/index.js run taskproof/tasks/*.yaml
           --models browser-use:claude-haiku-4-5 -k 1 --max-cost 0.50 --out taskproof-runs
 
-      - uses: taskproof/taskproof/.github/actions/taskproof-comment@main
+      # NB: this action lives in the taskproof repo — it resolves only once that repo is public.
+      - if: env.ANTHROPIC_API_KEY != ''
+        uses: taskproof/taskproof/.github/actions/taskproof-comment@main
         with:
           taskproof: node .taskproof-src/packages/cli/dist/index.js
           run-dir: taskproof-runs
