@@ -30,6 +30,13 @@ describe('buildProgram', () => {
     const longs = run?.options.map((o) => o.long);
     expect(longs).toEqual(expect.arrayContaining(['--max-cost', '--runs', '--timeout']));
   });
+
+  it('report exposes the hostable-report image knobs', () => {
+    const program = buildProgram();
+    const report = program.commands.find((c) => c.name() === 'report');
+    const longs = report?.options.map((o) => o.long);
+    expect(longs).toEqual(expect.arrayContaining(['--max-image-width', '--image-quality']));
+  });
 });
 
 describe('numeric flag validation', () => {

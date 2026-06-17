@@ -35,7 +35,8 @@
     "@taskproof/judge": "workspace:^",
     "@taskproof/report": "workspace:^",
     "@taskproof/spec": "workspace:^",
-    "commander": "^14.0.0"
+    "commander": "^14.0.0",
+    "jimp": "^1.6.1"
   },
   "engines": {
     "node": ">=22"

@@ -92,6 +92,14 @@ taskproof report --dir runs --out runs/report.html
 open runs/report.html
 ```
 
+The report inlines full-resolution screenshots, so a multi-run report can be tens of MB. To
+produce a smaller, **hostable** report (e.g. to link from a README via raw.githack), downscale
+the screenshots to JPEG:
+
+```bash
+taskproof report --dir runs --out runs/report.html --max-image-width 800   # ~5× smaller
+```
+
 A single self-contained HTML file: the matrix up top, then each run expands to its
 trace — the agent's narration, the actions it took, the screenshot after each step, and
 exactly which assertion passed or failed.

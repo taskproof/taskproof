@@ -16,6 +16,8 @@ const PLAIN_INT = /^\d+$/;
 
 /** Upper bound for `--timeout` (seconds). 6h is far past any sane single-run cap; a guard, not a target. */
 const TIMEOUT_SECONDS_MAX = 21_600;
+/** Upper bound for `--max-image-width` (px); a sanity guard, not a target. */
+const IMAGE_WIDTH_MAX = 4096;
 
 /** Reject non-decimal / non-positive / over-max numeric flags at the CLI boundary. */
 export function parsePositiveFloat(flag: string, value: string, max: number): number {
@@ -131,21 +133,39 @@ export function buildProgram(): Command {
     .description('Render a run directory as a self-contained HTML report')
     .option('--dir <dir>', 'run artifacts directory', 'taskproof-runs')
     .option('--out <file>', 'output HTML file (default <dir>/report.html)')
-    .action(async (opts: { dir: string; out?: string }) => {
-      const { generateReport } = await import('./report.js');
-      const outFile = opts.out ?? join(opts.dir, 'report.html');
-      try {
-        const result = await generateReport(opts.dir, outFile);
-        process.stdout.write(
-          `report written to ${result.outFile} (${result.cells} cell(s), ${result.runs} run(s))\n`,
-        );
-      } catch (error) {
-        process.stderr.write(
-          `report failed: ${error instanceof Error ? error.message : String(error)}\n`,
-        );
-        process.exitCode = 1;
-      }
-    });
+    .option(
+      '--max-image-width <px>',
+      'downscale screenshots to this width as JPEG (a hostable report; default: full-res)',
+      (v) => parsePositiveInt('--max-image-width', v, IMAGE_WIDTH_MAX),
+    )
+    .option('--image-quality <q>', 'JPEG quality 1–100 when downscaling (default 75)', (v) =>
+      parsePositiveInt('--image-quality', v, 100),
+    )
+    .action(
+      async (opts: {
+        dir: string;
+        out?: string;
+        maxImageWidth?: number;
+        imageQuality?: number;
+      }) => {
+        const { generateReport } = await import('./report.js');
+        const outFile = opts.out ?? join(opts.dir, 'report.html');
+        try {
+          const result = await generateReport(opts.dir, outFile, {
+            ...(opts.maxImageWidth !== undefined ? { maxImageWidth: opts.maxImageWidth } : {}),
+            ...(opts.imageQuality !== undefined ? { imageQuality: opts.imageQuality } : {}),
+          });
+          process.stdout.write(
+            `report written to ${result.outFile} (${result.cells} cell(s), ${result.runs} run(s))\n`,
+          );
+        } catch (error) {
+          process.stderr.write(
+            `report failed: ${error instanceof Error ? error.message : String(error)}\n`,
+          );
+          process.exitCode = 1;
+        }
+      },
+    );
 
   program
     .command('init')
